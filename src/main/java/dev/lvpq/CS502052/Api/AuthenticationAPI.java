@@ -3,8 +3,8 @@ package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
-import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +21,7 @@ public class AuthenticationAPI {
     AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ApiResponse<RegisterResponse> register(@RequestBody RegisterRequest request) {
+    public ApiResponse<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
         return ApiResponse.<RegisterResponse>builder()
                 .code(200)
                 .message("Register Success !!!")
