@@ -1,21 +1,15 @@
-package dev.lvpq.CS502052.Entity;
+package dev.lvpq.CS502052.Dto.Response;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
-    @Column(nullable = false, unique = true)
+public class RegisterResponse {
     String name;
     String password;
     String email;
