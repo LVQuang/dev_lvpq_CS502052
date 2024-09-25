@@ -1,6 +1,5 @@
-package dev.lvpq.CS502052.Dto.Request;
+package dev.lvpq.CS502052.Dto.Response;
 
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class RegisterRequest {
+public class UserDetailResponse {
+    String id;
     String name;
-    @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
     String email;
     String phone;
