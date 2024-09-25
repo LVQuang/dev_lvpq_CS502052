@@ -1,5 +1,7 @@
 package dev.lvpq.CS502052.Exception;
 
+import dev.lvpq.CS502052.Dto.Response.ApiResponse;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,7 +17,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<String> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        return ResponseEntity.badRequest().body(Objects.requireNonNull(exception.getFieldError()).getDefaultMessage());
+    ResponseEntity<ApiResponse<ErrorCode>> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        var enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
+        var errorCode = ErrorCode.valueOf(enumKey);
+        return ResponseEntity.badRequest().body(packageApiResponse(errorCode));
+    }
+
+    @ExceptionHandler(AppException.class)
+    ResponseEntity<ApiResponse<ErrorCode>> handlingAppException(AppException exception) {
+        var errorCode = exception.getErrorCode();
+        return ResponseEntity.badRequest().body(packageApiResponse(errorCode));
+    }
+
+//    Define Utils Function To Handle Exception
+    ApiResponse<ErrorCode> packageApiResponse(ErrorCode errorCode) {
+        return ApiResponse.<ErrorCode>builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
     }
 }

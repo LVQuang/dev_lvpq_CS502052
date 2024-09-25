@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class RegisterRequest {
     String name;
-    @Size(min = 8, message = "Password at least 8 characters")
+    @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
     String email;
     String phone;
