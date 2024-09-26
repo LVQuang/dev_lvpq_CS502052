@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Service;
 
+import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
@@ -21,14 +22,27 @@ public class AuthenticationService {
     AuthenticationMapper authenticationMapper;
 
     public RegisterResponse register(RegisterRequest request) {
-        var user = authenticationMapper.convertUser(request);
-        if(userRepository.existsByEmail(user.getEmail()))
+        if(userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
+
+        var user = authenticationMapper.converRegistertUser(request);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
+    }
+
+    public boolean login(LoginRequest request) {
+        if(!userRepository.existsByEmail(request.getEmail()))
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+
+        var user = userRepository.findByEmail(request.getEmail());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCHES);
+        return true;
     }
 }
