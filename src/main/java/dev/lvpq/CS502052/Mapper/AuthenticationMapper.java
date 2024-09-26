@@ -10,3 +10,4 @@ public interface AuthenticationMapper {
     User converRegistertUser(RegisterRequest request);
     RegisterResponse convertRegisterResponse(User user);
 }
+
