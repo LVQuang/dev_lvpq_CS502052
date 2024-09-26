@@ -36,5 +36,4 @@ public class GlobalExceptionHandler {
                 .message(errorCode.getMessage())
                 .build();
     }
-//    hello Minh CHi Cat Tuong
 }

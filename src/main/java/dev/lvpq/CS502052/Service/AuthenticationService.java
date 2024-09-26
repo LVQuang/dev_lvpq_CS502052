@@ -9,6 +9,8 @@ import dev.lvpq.CS502052.Repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,6 +24,10 @@ public class AuthenticationService {
         var user = authenticationMapper.convertUser(request);
         if(userRepository.existsByEmail(user.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
     }
