@@ -3,6 +3,7 @@ package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
+import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -28,11 +29,10 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody LoginRequest request) {
-        if (!authenticationService.login(request)) return null;
-        return ApiResponse.<String>builder()
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        return ApiResponse.<LoginResponse>builder()
                 .code(200)
-                .message("Login Success !")
+                .result(authenticationService.login(request))
                 .build();
     }
 }
