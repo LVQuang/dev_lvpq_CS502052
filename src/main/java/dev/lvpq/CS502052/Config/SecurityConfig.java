@@ -1,5 +1,7 @@
 package dev.lvpq.CS502052.Config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -30,13 +33,22 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(oauth ->
-                        oauth.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
+                        oauth
+                                .bearerTokenResolver(this::tokenResolve)
+                                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
     }
+
+    String tokenResolve(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("myToken");
+        return (token != null) ? token : new DefaultBearerTokenResolver().resolve(request);
+    }
+
 
     @Bean
     JwtDecoder jwtDecoder() {

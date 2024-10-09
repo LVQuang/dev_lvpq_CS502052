@@ -9,6 +9,7 @@ import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Service.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,18 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ApiResponse<LoginResponse> login(
+            @RequestBody @Valid LoginRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        var response = authenticationService.login(request);
+
+        var token = response.getToken();
+        httpRequest.getSession().setAttribute("myToken", token);
+
         return ApiResponse.<LoginResponse>builder()
                 .code(200)
-                .result(authenticationService.login(request))
+                .result(response)
                 .build();
     }
 
