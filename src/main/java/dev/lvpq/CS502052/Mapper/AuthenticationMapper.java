@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AuthenticationMapper {
-    User convertUser(RegisterRequest request);
+    User converRegistertUser(RegisterRequest request);
     RegisterResponse convertRegisterResponse(User user);
 }
+
