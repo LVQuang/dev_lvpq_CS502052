@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .build();
     }
