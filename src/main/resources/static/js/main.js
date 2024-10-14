@@ -563,17 +563,17 @@ $(document).ready(function(){
   
 
  });
- window.addEventListener('scroll', function() {
-  var searchBox = document.getElementById('search_input_box');
-  var scrollY = window.scrollY || window.pageYOffset;
-
-  // Khi cuộn xuống quá 100px, cố định thanh tìm kiếm ở đầu trang
-  if (scrollY > 100) {
-      searchBox.classList.add('fixed-top');
-  } else {
-      searchBox.classList.remove('fixed-top');
-  }
-});
+//  window.addEventListener('scroll', function() {
+//   var searchBox = document.getElementById('search_input_box');
+//   var scrollY = window.scrollY || window.pageYOffset;
+//
+//   // Khi cuộn xuống quá 100px, cố định thanh tìm kiếm ở đầu trang
+//   if (scrollY > 100) {
+//       searchBox.classList.add('fixed-top');
+//   } else {
+//       searchBox.classList.remove('fixed-top');
+//   }
+// });
 
 function closeSearch() {
   // Đóng hộp tìm kiếm (có thể là ẩn hộp tìm kiếm)
