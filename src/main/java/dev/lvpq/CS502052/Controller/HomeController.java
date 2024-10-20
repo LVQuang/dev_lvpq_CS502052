@@ -1,7 +1,9 @@
 package dev.lvpq.CS502052.Controller;
 
 import dev.lvpq.CS502052.Entity.Brand;
+import dev.lvpq.CS502052.Entity.CartItem;
 import dev.lvpq.CS502052.Entity.Product;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +23,7 @@ import java.util.List;
 @Controller
 public class HomeController {
     @GetMapping({"/home","/home.html", "/index.html"})
-    public String showIndexPage(Model model) {
+    public String showIndexPage(HttpServletRequest request, Model model) {
         List<Product> latest_products = getLatestProducts();
         List<Product> coming_products = getComingProducts();
         List<Product> exclusive_products = getExclusiveProducts();
@@ -33,6 +35,7 @@ public class HomeController {
         model.addAttribute("exclusive_products", exclusive_products);
         model.addAttribute("brands", brands);
         model.addAttribute("related_products", related_products);
+        model.addAttribute("requestURI", request.getRequestURI());
         return "index";
     }
     private List<Product> getLatestProducts() {
@@ -83,21 +86,50 @@ public class HomeController {
                 new Product("Exclusive Product 2", "$200.00", "$250.00", "/img/product/e-p1.png"),
                 new Product("Exclusive Product 3", "$120.00", "$180.00", "/img/product/e-p1.png")
         );
-    }
+    } 
+    
     private List<Brand> getBrands(){
         return Arrays.asList(
                 new Brand("Brand 1", "/img/brand/1.png", true ),
                 new Brand("Brand 2", "/img/brand/2.png", true ),
                 new Brand("Brand 3", "/img/brand/3.png", true ),
                 new Brand("Brand 4", "/img/brand/4.png", true )
-
         );
     }
     @GetMapping({"/blog" ,"/blog.html"})
-    String blog() { return "blog";}
+    String blog(HttpServletRequest request, Model model) {
+        model.addAttribute("requestURI", request.getRequestURI());
+        return "blog";
+    }
     @GetMapping({"/login","/login.html"})
-    String login() { return "login";}
+    String login(HttpServletRequest request, Model model)
+    {
+        model.addAttribute("requestURI", request.getRequestURI());
+        return "login";
+    }
 
     @GetMapping({"/category","/category.html"})
-    String shop() {return "category";}
+    String shop(HttpServletRequest request, Model model) {
+        List<Product> related_products = getRelatedProducts();
+        model.addAttribute("related_products", related_products);
+        model.addAttribute("requestURI", request.getRequestURI());
+        return "category";
+    }
+
+    @GetMapping({"/cart","/cart.html"})
+    public String showCart(HttpServletRequest request, Model model) {
+        List<CartItem> cartItems = getCartItems();
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("requestURI", request.getRequestURI());
+        return "cart";
+    }
+
+    private List<CartItem> getCartItems() {
+        // Giả sử dữ liệu tĩnh, bạn có thể thay thế bằng truy vấn cơ sở dữ liệu
+        return Arrays.asList(
+                new CartItem("/img/cart.jpg", "Minimalistic shop for multipurpose use", 360.00, 1),
+                new CartItem("/img2/cart.jpg", "Minimalistic shop for multipurpose use", 390.00, 1)
+//                new CartItem("/img/cart2.jpg", "Another product", "$200.00", 2, "$400.00")
+        );
+    }
 }

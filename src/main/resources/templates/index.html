@@ -44,7 +44,19 @@
 <body>
 	<!-- Start Header Area -->
 	<header  th:insert="fragments/header :: header" class="header_area sticky-header"></header>
-	<section th:insert="fragments/banner :: banner" class="banner-area organic-breadcrumb"></section>
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Home Page</h1>
+					<nav class="d-flex align-items-center">
+						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="category.html">Blog</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
 	<!-- End banner Area -->
 	<!-- start features Area -->
 	<section th:insert ="fragments/features :: features" class="features-area section_gap"></section>
