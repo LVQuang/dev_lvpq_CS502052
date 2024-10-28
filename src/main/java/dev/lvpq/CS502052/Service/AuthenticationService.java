@@ -10,6 +10,7 @@ import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
+import dev.lvpq.CS502052.Enums.Role;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
@@ -29,6 +30,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashSet;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,6 +39,7 @@ import java.util.Date;
 public class AuthenticationService {
     UserRepository userRepository;
     AuthenticationMapper authenticationMapper;
+    PasswordEncoder passwordEncoder;
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
@@ -44,11 +47,13 @@ public class AuthenticationService {
     public RegisterResponse register(RegisterRequest request) {
         if(userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
-
         var user = authenticationMapper.converRegistertUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.CUSTOMER.name());
+        user.setRoles(roles);
 
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
