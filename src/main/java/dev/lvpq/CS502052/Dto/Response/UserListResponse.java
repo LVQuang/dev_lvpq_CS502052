@@ -11,10 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserDetailResponse {
-    String id;
-    String name;
+public class UserListResponse {
     String email;
-    String phone;
     Set<String> roles;
 }

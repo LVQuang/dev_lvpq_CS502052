@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -20,4 +22,5 @@ public class User {
     String password;
     String email;
     String phone;
+    Set<String> roles;
 }

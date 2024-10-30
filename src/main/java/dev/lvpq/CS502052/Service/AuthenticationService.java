@@ -10,6 +10,8 @@ import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
+import dev.lvpq.CS502052.Entity.User;
+import dev.lvpq.CS502052.Enums.Role;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
@@ -24,11 +26,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.StringJoiner;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,6 +43,7 @@ import java.util.Date;
 public class AuthenticationService {
     UserRepository userRepository;
     AuthenticationMapper authenticationMapper;
+    PasswordEncoder passwordEncoder;
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
@@ -44,19 +51,22 @@ public class AuthenticationService {
     public RegisterResponse register(RegisterRequest request) {
         if(userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
-
         var user = authenticationMapper.converRegistertUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.CUSTOMER.name());
+        user.setRoles(roles);
 
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
     }
 
     public LoginResponse login(LoginRequest request) {
-        if (!softAuthenticate(request)) return null;
-        var token = genToken(request.getEmail());
+        var user = softAuthenticate(request);
+        if (user == null) return null;
+        var token = genToken(user);
         return LoginResponse.builder()
                     .token(token)
                     .authenticated(true)
@@ -80,29 +90,27 @@ public class AuthenticationService {
     }
 
     // Defined Function
-    boolean softAuthenticate(LoginRequest request) {
-        if(!userRepository.existsByEmail(request.getEmail()))
-            throw new AppException(ErrorCode.USER_NOT_EXISTED);
-
-        var user = userRepository.findByEmail(request.getEmail());
+    User softAuthenticate(LoginRequest request) {
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCHES);
-        return true;
+        return user;
     }
 
-    String genToken(String email) {
+    String genToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(email)
+                .subject(user.getEmail())
                 .issuer("CS502052.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("customClaim", "Custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(claimsSet.toJSONObject());
@@ -116,5 +124,12 @@ public class AuthenticationService {
             log.error("Cannot generate Token");
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(User user) {
+        StringJoiner result = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles()))
+            user.getRoles().forEach(result::add);
+        return result.toString();
     }
 }
