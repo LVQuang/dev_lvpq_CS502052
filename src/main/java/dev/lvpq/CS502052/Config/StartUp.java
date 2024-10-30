@@ -30,7 +30,7 @@ public class StartUp {
                 var user = User.builder()
                         .name("Manager")
                         .email("manager@gmail.com")
-                        .password(passwordEncoder.encode("manager"))
+                        .password(passwordEncoder.encode("manager123"))
                         .roles(roles)
                         .build();
                 userRepository.save(user);

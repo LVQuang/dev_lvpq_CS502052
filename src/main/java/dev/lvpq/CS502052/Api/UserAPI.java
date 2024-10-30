@@ -7,10 +7,12 @@ import dev.lvpq.CS502052.Service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -32,6 +34,13 @@ public class UserAPI {
                 .code(200)
                 .message("Find All Users Success")
                 .result(userService.getAll())
+                .build();
+    }
+    @GetMapping("/currentUser")
+    public  ApiResponse<UserDetailResponse> getCurrentUser() {
+        return  ApiResponse.<UserDetailResponse>builder().code(200)
+                .message("Find Current User Success")
+                .result(userService.getCurrentInformation())
                 .build();
     }
 }
