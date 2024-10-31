@@ -560,7 +560,7 @@ $(document).ready(function(){
       }
 
 
-  
+
 
  });
 //  window.addEventListener('scroll', function() {
