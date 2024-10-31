@@ -30,7 +30,7 @@ public class UserService {
         return userMapper.toDetailResponse(user
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('Manager')")
     public ArrayList<UserListResponse> getAll() {
         var users = userRepository.findAll();
         return users.stream()
