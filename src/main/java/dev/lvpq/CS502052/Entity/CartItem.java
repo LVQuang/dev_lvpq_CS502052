@@ -8,13 +8,15 @@ import java.math.BigDecimal;
 @Setter
 public class CartItem {
     private String imageUrl;
+    private String name;
     private String description;
     private double unitPrice;
     private int quantity;
     private double totalPrice;
 
-    public CartItem(String imageUrl, String description, double unitPrice, int quantity) {
+    public CartItem(String name, String imageUrl, String description, double unitPrice, int quantity) {
         this.imageUrl = imageUrl;
+        this.name = name;
         this.description = description;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
@@ -31,5 +33,12 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
         this.totalPrice = calculateTotalPrice();
+    }
+    public void increaseQty(){
+        quantity++;
+    }public void decreaseQty(){
+        if(quantity >0){
+            quantity--;
+        }
     }
 }
