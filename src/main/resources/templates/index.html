@@ -78,7 +78,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<th:block th:each="product : ${latest_products}">
+						<th:block th:each="product : ${latest_productViews}">
 							<!-- single product -->
 							<div class="col-lg-3 col-md-6">
 								<div class="single-product">
@@ -129,7 +129,7 @@
 					</div>
 					<!-- single product -->
 					<div class="row">
-						<th:block th:each="product : ${coming_products}">
+						<th:block th:each="product : ${coming_productViews}">
 							<!-- single product -->
 							<div class="col-lg-3 col-md-6">
 								<div class="single-product">
@@ -203,7 +203,7 @@
 					</div>
 					<div class="col-lg-6 no-padding exclusive-right">
 						<div class="active-exclusive-product-slider">
-							<div th:each="product : ${exclusive_products}" class="single-exclusive-slider">
+							<div th:each="product : ${exclusive_productViews}" class="single-exclusive-slider">
 								<img class="img-fluid" th:src="@{${product.imageUrl}}" alt="Exclusive Product">
 								<div class="product-details">
 									<div class="price">
@@ -228,7 +228,7 @@
 		<section class="brand-area section_gap">
 			<div class="container">
 				<div class="row" >
-					<a th:each="brand : ${brands}" class="col single-img" href="">
+					<a th:each="brand : ${brandViews}" class="col single-img" href="">
 						<img class="img-fluid d-block mx-auto" th:src="@{${brand.thumbnail_url}}" alt="">
 					</a>
 				</div>
@@ -251,7 +251,7 @@
 				<div class="row">
 					<div class="col-lg-9">
 						<div class="row">
-							<div th:each="product : ${related_products}" class="col-lg-4 col-md-4 col-sm-6 mb-20">
+							<div th:each="product : ${related_productViews}" class="col-lg-4 col-md-4 col-sm-6 mb-20">
 								<div class="single-related-product d-flex">
 									<a href="#"><img th:src="@{${product.getImageUrl()}}" alt=""></a>
 									<div class="desc">

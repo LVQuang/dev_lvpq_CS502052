@@ -612,7 +612,7 @@
 				<div class="row">
 					<div class="col-lg-9">
 						<div class="row">
-							<div th:each="product : ${related_products}" class="col-lg-4 col-md-4 col-sm-6 mb-20">
+							<div th:each="product : ${related_productViews}" class="col-lg-4 col-md-4 col-sm-6 mb-20">
 								<div class="single-related-product d-flex">
 									<a href="#"><img th:src="@{${product.getImageUrl()}}" alt=""></a>
 									<div class="desc">
@@ -642,7 +642,7 @@
 	<footer th:insert="fragments/footer :: footer" class="footer-area section_gap"></footer>
 	<!-- End footer Area -->
 
-	<!-- Modal Quick Product View -->
+	<!-- Modal Quick ProductView View -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="container relative">

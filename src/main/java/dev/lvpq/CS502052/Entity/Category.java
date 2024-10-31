@@ -18,14 +18,14 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Brand {
+public class Category {
     @Id
-    String brand;
+    String category;
     String meta;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
     LocalDate createAt = LocalDate.now();
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 }
