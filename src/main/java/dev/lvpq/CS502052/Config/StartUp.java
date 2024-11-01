@@ -1,7 +1,8 @@
 package dev.lvpq.CS502052.Config;
 
+import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
-import dev.lvpq.CS502052.Enums.Role;
+import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +26,21 @@ public class StartUp {
     ApplicationRunner applicationRunner (UserRepository userRepository){
         return args -> {
             if (!userRepository.existsByEmail("manager@gmail.com")) {
-                HashSet<String> roles = new HashSet<>();
-                roles.add(Role.MANAGER.name());
                 var user = User.builder()
-                        .name("Manager")
+                        .username("Manager")
                         .email("manager@gmail.com")
                         .password(passwordEncoder.encode("manager123"))
-                        .roles(roles)
                         .build();
+
+                var roleFeature = RoleFeature.MANAGER;
+                var role = Role.builder()
+                        .name(roleFeature.getName())
+                        .description(roleFeature.getDescription())
+                        .meta(roleFeature.getMeta())
+                        .build();
+
+                user.addRole(role);
                 userRepository.save(user);
-                log.warn("Manager Account initialized");
             }
         };
     }
