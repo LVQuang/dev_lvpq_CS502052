@@ -7,13 +7,15 @@ import lombok.Setter;
 @Setter
 public class CartItemView {
     private String imageUrl;
+    private String name;
     private String description;
     private double unitPrice;
     private int quantity;
     private double totalPrice;
 
-    public CartItemView(String imageUrl, String description, double unitPrice, int quantity) {
+    public CartItem(String name, String imageUrl, String description, double unitPrice, int quantity) {
         this.imageUrl = imageUrl;
+        this.name = name;
         this.description = description;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
@@ -30,5 +32,12 @@ public class CartItemView {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
         this.totalPrice = calculateTotalPrice();
+    }
+    public void increaseQty(){
+        quantity++;
+    }public void decreaseQty(){
+        if(quantity >0){
+            quantity--;
+        }
     }
 }

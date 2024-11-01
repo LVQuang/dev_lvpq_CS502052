@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Karma Shop - Admin Dashboard</title>
+    <meta
+            content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+            name="viewport"
+    />
+    <link
+            rel="icon"
+            href="/img/fav.png"
+            type="image/x-icon"
+    />
+
+    <!-- Fonts and icons -->
+    <script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["/admin_style/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="/admin_style/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/admin_style/css/plugins.min.css" />
+    <link rel="stylesheet" href="/admin_style/css/kaiadmin.min.css" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="/admin_style/css/demo.css" />
+</head>
+<body>
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div th:replace="admin_fragments/sidebar :: sidebarFragment"></div>
+    <!-- End Sidebar -->
+
+    <div class="main-panel">
+        <div class="main-header">
+            <div class="main-header-logo">
+                <!-- Logo Header -->
+                <div class="logo-header" data-background-color="dark">
+                    <a href="index.html" class="logo">
+                        <img
+                                src="/img/logo.png"
+                                alt="navbar brand"
+                                class="navbar-brand"
+                                height="20"
+                        />
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
+                    </div>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
+                </div>
+                <!-- End Logo Header -->
+            </div>
+            <!-- Navbar Header -->
+            <div th:replace="admin_fragments/navbar :: navbarFragment"></div>
+            <!-- End Navbar -->
+        </div>
+
+        <div class="container">
+            <div class="page-inner">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                    <div>
+                        <h3 class="fw-bold mb-3">Dashboard</h3>
+                        <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
+                    </div>
+                    <div class="ms-md-auto py-2 py-md-0">
+                        <!-- Button to open the Add Product Modal -->
+                        <button class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openAddProductModal()">Add Product</button>
+                    </div>
+                </div>
+                <!-- Product List Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                        <!-- Dynamic rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Product Modal for Add/Edit -->
+                <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="productForm">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="productModalLabel">Add Product</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="productId" name="productId">
+                                    <div class="mb-3">
+                                        <label for="productName" class="form-label">Product Name</label>
+                                        <input type="text" class="form-control" id="productName" name="productName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="productPrice" class="form-label">Price</label>
+                                        <input type="number" class="form-control" id="productPrice" name="productPrice" required>
+                                    </div>
+
+                                    <!-- Image Upload Section -->
+                                    <div class="mb-3">
+                                        <label for="productImage" class="form-label">Product Image</label>
+                                        <input type="file" class="form-control" id="productImage" accept="image/*" onchange="previewImage()">
+                                    </div>
+                                    <!-- Image Preview Section -->
+                                    <div id="imagePreviewContainer" class="mt-3">
+                                        <!-- Previewed image will appear here -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Product</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            let products = [];
+            const defaultImage = '/img/default_img.png';
+            let editIndex = null;
+
+            // Open Add Product Modal
+            function openAddProductModal() {
+                document.getElementById("productForm").reset();
+                document.getElementById("imagePreviewContainer").innerHTML = ''; // Clear image preview
+                editIndex = null;
+                document.getElementById("productModalLabel").textContent = "Add Product";
+
+            }
+
+            // Open Edit Product Modal
+            function openEditProductModal(index) {
+                const product = products[index];
+                document.getElementById("productId").value = product.id;
+                document.getElementById("productName").value = product.name;
+                document.getElementById("productPrice").value = product.price;
+                editIndex = index;
+                document.getElementById("productModalLabel").textContent = "Edit Product";
+                new bootstrap.Modal(document.getElementById("productModal")).show();
+            }
+
+            // Add/Edit Product Form Submission
+            document.getElementById("productForm").onsubmit = function (e) {
+                e.preventDefault();
+                const id = document.getElementById("productId").value || Date.now().toString();
+                const name = document.getElementById("productName").value;
+                const price = document.getElementById("productPrice").value;
+                const image = document.getElementById("productImage").files[0] || null;
+
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const imageUrl = image ? reader.result : defaultImage;
+                    if (editIndex !== null) {
+                        products[editIndex] = { id, name, price, image: imageUrl };
+                    } else {
+                        products.push({ id, name, price, image: imageUrl });
+                    }
+                    updateProductTable();
+                    bootstrap.Modal.getInstance(document.getElementById("productModal")).hide();
+                };
+                if (image) {
+                    reader.readAsDataURL(image);
+                } else {
+                    reader.onload();
+                }
+            };
+
+            // Delete Product
+            function deleteProduct(index) {
+                products.splice(index, 1);
+                updateProductTable();
+            }
+
+            // Preview Image
+            function previewImage() {
+                const imageInput = document.getElementById('productImage');
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                previewContainer.innerHTML = '';
+                if (imageInput.files && imageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        imgElement.classList.add('img-thumbnail', 'mt-2');
+                        imgElement.style.width = '100px';
+                        imgElement.alt = 'Selected Product Image';
+                        previewContainer.appendChild(imgElement);
+                    };
+                    reader.readAsDataURL(imageInput.files[0]);
+                }
+            }
+
+            // Update Product Table
+            function updateProductTable() {
+                const tableBody = document.getElementById("productTableBody");
+                tableBody.innerHTML = "";
+                products.forEach((product, index) => {
+                    const row = `
+                        <tr>
+                            <td><img src="${product.image || defaultImage}" alt="Product Image" style="width: 100px; height: 100px;"></td>
+                            <td>${product.id}</td>
+                            <td>${product.name}</td>
+                            <td>${product.price}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="openEditProductModal(${index})">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${index})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+        </script>
+    </div>
+
+</div>
+<!--   Core JS Files   -->
+<script src="/admin_style/js/core/jquery-3.7.1.min.js"></script>
+<script src="/admin_style/js/core/popper.min.js"></script>
+<script src="/admin_style/js/core/bootstrap.min.js"></script>
+
+<!-- jQuery Scrollbar -->
+<script src="/admin_style/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<!-- Chart JS -->
+<script src="/admin_style/js/plugin/chart.js/chart.min.js"></script>
+
+<!-- jQuery Sparkline -->
+<script src="/admin_style/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+<!-- Chart Circle -->
+<script src="/admin_style/js/plugin/chart-circle/circles.min.js"></script>
+
+<!-- Datatables -->
+<script src="/admin_style/js/plugin/datatables/datatables.min.js"></script>
+
+<!-- Bootstrap Notify -->
+<script src="/admin_style/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+<!-- jQuery Vector Maps -->
+<script src="/admin_style/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+<script src="/admin_style/js/plugin/jsvectormap/world.js"></script>
+
+<!-- Sweet Alert -->
+<script src="/admin_style/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="/admin_style/js/kaiadmin.min.js"></script>
+
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="/admin_style/js/setting-demo.js"></script>
+<script src="/admin_style/js/demo.js"></script>
+<script>
+    $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#177dff",
+        fillColor: "rgba(23, 125, 255, 0.14)",
+    });
+
+    $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#f3545d",
+        fillColor: "rgba(243, 84, 93, .14)",
+    });
+
+    $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#ffa534",
+        fillColor: "rgba(255, 165, 52, .14)",
+    });
+</script>
+</body>
+</html>
