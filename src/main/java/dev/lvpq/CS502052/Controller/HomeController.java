@@ -160,11 +160,11 @@ public class HomeController {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/contact";
     }
-    private List<CartItem> getCartItems() {
+    private List<CartItemView> getCartItems() {
         // Giả sử dữ liệu tĩnh, bạn có thể thay thế bằng truy vấn cơ sở dữ liệu
         return Arrays.asList(
-                new CartItem("item1","/img/product/p1.jpg", "Minimalistic shop for multipurpose use", 360.00, 1),
-                new CartItem("item2","/img/product/p2.jpg", "Minimalistic shop for multipurpose use", 390.00, 1)
+                new CartItemView("item1","/img/product/p1.jpg", "Minimalistic shop for multipurpose use", 360.00, 1),
+                new CartItemView("item2","/img/product/p2.jpg", "Minimalistic shop for multipurpose use", 390.00, 1)
 //                new CartItem("/img/cart2.jpg", "Another product", "$200.00", 2, "$400.00")
         );
     }

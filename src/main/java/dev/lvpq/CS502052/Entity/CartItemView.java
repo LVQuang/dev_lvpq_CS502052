@@ -13,7 +13,7 @@ public class CartItemView {
     private int quantity;
     private double totalPrice;
 
-    public CartItem(String name, String imageUrl, String description, double unitPrice, int quantity) {
+    public CartItemView(String name, String imageUrl, String description, double unitPrice, int quantity) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.description = description;
