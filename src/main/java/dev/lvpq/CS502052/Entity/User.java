@@ -37,6 +37,20 @@ public class User {
     @Builder.Default
     @ManyToMany(cascade = CascadeType.PERSIST)
     Set<ActivityLog> activityLogs = new HashSet<>();
+    @Builder.Default
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "favourite",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    Set<Product> products = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Review> reviews = new HashSet<>();
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Invoice> invoice = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VoucherDetail> voucherDetails = new HashSet<>();
 
     public void addRole(Role role) {
         roles.add(role);

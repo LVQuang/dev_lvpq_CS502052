@@ -8,11 +8,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public enum ProductStatus {
-    Available("Available", "available"),
-    OutOfStock("Out of Stock", "out-of-stock"),
-    Discontinued("Discontinued", "discontinued"),
-    PreOrder("Pre Invoice", "pre-invoice");
+public enum DiscountType {
+    PERCENTAGE("Percentage", "percentage"),
+    AMOUNT("Amount", "amount");
 
     String name;
     String meta;

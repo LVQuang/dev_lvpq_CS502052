@@ -5,8 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -15,17 +13,20 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ActivityLog {
+@IdClass(InvoiceDetailKey.class)
+public class InvoiceDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
-    String activity;
-    @Builder.Default
-    LocalDate createdAt = LocalDate.now();
+    @ManyToOne
+    @JoinColumn(name = "invoice_id")
+    Invoice invoice;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
+    int quantity;
     String meta;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
-    @ManyToMany(mappedBy = "activityLogs")
-    Set<User> users = new HashSet<>();
+    LocalDate createdAt = LocalDate.now();
 }

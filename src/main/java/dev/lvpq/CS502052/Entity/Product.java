@@ -25,8 +25,12 @@ public class Product {
     double price;
     ProductStatus status;
     int totalSold;
-    String brand;
-    String category;
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    Brand brand;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
     String meta;
     @Builder.Default
     LocalDate createdAt = LocalDate.now();
@@ -35,13 +39,20 @@ public class Product {
     @Builder.Default
     @ManyToMany(cascade = CascadeType.PERSIST)
     Set<Size> sizes = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Review> reviews = new HashSet<>();
+    @Builder.Default
+    @ManyToMany(mappedBy = "products")
+    Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<InvoiceDetail> invoiceDetails = new HashSet<>();
 
     public void addSize(Size size) {
         sizes.add(size);
         size.getProducts().add(this);
     }
 
-    public void removeRole(Size size) {
+    public void removeSize(Size size) {
         sizes.remove(size);
         size.getProducts().add(this);
     }

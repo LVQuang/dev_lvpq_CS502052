@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Entity;
 
+import dev.lvpq.CS502052.Enums.DiscountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,17 +16,21 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ActivityLog {
+public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String activity;
-    @Builder.Default
-    LocalDate createdAt = LocalDate.now();
+    String code;
+    String description;
+    DiscountType discountType;
+    double discountValue;
+    LocalDate startDate;
+    LocalDate endDate;
     String meta;
     @Builder.Default
-    boolean hide = false;
+    LocalDate createdAt = LocalDate.now();
     @Builder.Default
-    @ManyToMany(mappedBy = "activityLogs")
-    Set<User> users = new HashSet<>();
+    boolean hide = false;
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VoucherDetail> voucherDetails = new HashSet<>();
 }
