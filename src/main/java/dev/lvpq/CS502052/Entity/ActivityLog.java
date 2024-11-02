@@ -1,9 +1,6 @@
 package dev.lvpq.CS502052.Entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,14 +15,17 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Brand {
+public class ActivityLog {
     @Id
-    String brand;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+    String activity;
+    @Builder.Default
+    LocalDate createdAt = LocalDate.now();
     String meta;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
-    LocalDate createAt = LocalDate.now();
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Product> products = new HashSet<>();
+    @ManyToMany(mappedBy = "activityLogs")
+    Set<User> users = new HashSet<>();
 }

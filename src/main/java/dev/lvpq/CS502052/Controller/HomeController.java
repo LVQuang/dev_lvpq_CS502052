@@ -1,8 +1,8 @@
 package dev.lvpq.CS502052.Controller;
 
-import dev.lvpq.CS502052.Entity.Brand;
-import dev.lvpq.CS502052.Entity.CartItem;
-import dev.lvpq.CS502052.Entity.Product;
+import dev.lvpq.CS502052.Entity.BrandView;
+import dev.lvpq.CS502052.Entity.CartItemView;
+import dev.lvpq.CS502052.Entity.ProductView;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,76 +24,76 @@ import java.util.List;
 public class HomeController {
     @GetMapping({"/home","/home.html", "/index.html"})
     public String showIndexPage(HttpServletRequest request, Model model) {
-        List<Product> latest_products = getLatestProducts();
-        List<Product> coming_products = getComingProducts();
-        List<Product> exclusive_products = getExclusiveProducts();
-        List<Product> related_products = getRelatedProducts();
+        List<ProductView> latest_productViews = getLatestProducts();
+        List<ProductView> coming_productViews = getComingProducts();
+        List<ProductView> exclusive_productViews = getExclusiveProducts();
+        List<ProductView> related_productViews = getRelatedProducts();
 
-        List<Brand> brands = getBrands();
-        model.addAttribute("latest_products", latest_products);
-        model.addAttribute("coming_products", coming_products);
-        model.addAttribute("exclusive_products", exclusive_products);
-        model.addAttribute("brands", brands);
-        model.addAttribute("related_products", related_products);
+        List<BrandView> brandViews = getBrands();
+        model.addAttribute("latest_productViews", latest_productViews);
+        model.addAttribute("coming_productViews", coming_productViews);
+        model.addAttribute("exclusive_productViews", exclusive_productViews);
+        model.addAttribute("brandViews", brandViews);
+        model.addAttribute("related_productViews", related_productViews);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/index";
     }
-    private List<Product> getLatestProducts() {
+    private List<ProductView> getLatestProducts() {
         // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
         return Arrays.asList(
-                new Product("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
-                new Product("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
-                new Product("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
-                new Product("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
-                new Product("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
-                new Product("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
-                new Product("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
-                new Product("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
+                new ProductView("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
+                new ProductView("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
+                new ProductView("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
+                new ProductView("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
+                new ProductView("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
+                new ProductView("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
+                new ProductView("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
+                new ProductView("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
         );
     }
-    private List<Product> getComingProducts() {
+    private List<ProductView> getComingProducts() {
         // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
         return Arrays.asList(
-                new Product("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
-                new Product("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
-                new Product("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
-                new Product("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
-                new Product("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
-                new Product("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
-                new Product("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
-                new Product("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
+                new ProductView("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
+                new ProductView("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
+                new ProductView("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
+                new ProductView("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
+                new ProductView("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
+                new ProductView("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
+                new ProductView("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
+                new ProductView("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
         );
     }
-    private List<Product> getRelatedProducts() {
+    private List<ProductView> getRelatedProducts() {
         // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
         return Arrays.asList(
-                new Product("r1","Product 1", "$120.00", "$160.00", "/img/r1.jpg"),
-                new Product("r2","Product 2", "$120.00", "$160.00", "/img/r2.jpg"),
-                new Product("r3","Product 3", "$120.00", "$160.00", "/img/r3.jpg"),
-                new Product("r4","Product 4", "$120.00", "$160.00", "/img/r4.jpg"),
-                new Product("r5","Product 5", "$120.00", "$160.00", "/img/r5.jpg"),
-                new Product("r6","Product 6", "$150.00", "$210.00", "/img/r6.jpg"),
-                new Product("r7","Product 7", "$120.00", "$160.00", "/img/r7.jpg"),
-                new Product("r8","Product 8", "$120.00", "$160.00", "/img/r8.jpg"),
-                new Product("r9","Product 9", "$150.00", "$210.00", "/img/r9.jpg"),
-                new Product("r10","Product 7", "$120.00", "$160.00", "/img/r10.jpg"),
-                new Product("r11","Product 8", "$120.00", "$160.00", "/img/r11.jpg")
+                new ProductView("r1","Product 1", "$120.00", "$160.00", "/img/r1.jpg"),
+                new ProductView("r2","Product 2", "$120.00", "$160.00", "/img/r2.jpg"),
+                new ProductView("r3","Product 3", "$120.00", "$160.00", "/img/r3.jpg"),
+                new ProductView("r4","Product 4", "$120.00", "$160.00", "/img/r4.jpg"),
+                new ProductView("r5","Product 5", "$120.00", "$160.00", "/img/r5.jpg"),
+                new ProductView("r6","Product 6", "$150.00", "$210.00", "/img/r6.jpg"),
+                new ProductView("r7","Product 7", "$120.00", "$160.00", "/img/r7.jpg"),
+                new ProductView("r8","Product 8", "$120.00", "$160.00", "/img/r8.jpg"),
+                new ProductView("r9","Product 9", "$150.00", "$210.00", "/img/r9.jpg"),
+                new ProductView("r10","Product 7", "$120.00", "$160.00", "/img/r10.jpg"),
+                new ProductView("r11","Product 8", "$120.00", "$160.00", "/img/r11.jpg")
         );
     }
-    private List<Product>getExclusiveProducts(){
+    private List<ProductView>getExclusiveProducts(){
         return Arrays.asList(
-                new Product("e1","Exclusive Product 1", "$150.00", "$210.00", "/img/product/e-p1.png"),
-                new Product("e2","Exclusive Product 2", "$200.00", "$250.00", "/img/product/e-p1.png"),
-                new Product("e3","Exclusive Product 3", "$120.00", "$180.00", "/img/product/e-p1.png")
+                new ProductView("e1","Exclusive Product 1", "$150.00", "$210.00", "/img/product/e-p1.png"),
+                new ProductView("e2","Exclusive Product 2", "$200.00", "$250.00", "/img/product/e-p1.png"),
+                new ProductView("e3","Exclusive Product 3", "$120.00", "$180.00", "/img/product/e-p1.png")
         );
     } 
     
-    private List<Brand> getBrands(){
+    private List<BrandView> getBrands(){
         return Arrays.asList(
-                new Brand("Brand 1", "/img/brand/1.png", true ),
-                new Brand("Brand 2", "/img/brand/2.png", true ),
-                new Brand("Brand 3", "/img/brand/3.png", true ),
-                new Brand("Brand 4", "/img/brand/4.png", true )
+                new BrandView("BrandView 1", "/img/brand/1.png", true ),
+                new BrandView("BrandView 2", "/img/brand/2.png", true ),
+                new BrandView("BrandView 3", "/img/brand/3.png", true ),
+                new BrandView("BrandView 4", "/img/brand/4.png", true )
         );
     }
     @GetMapping({"/blog" ,"/blog.html"})
@@ -110,8 +110,8 @@ public class HomeController {
 
     @GetMapping({"/category","/category.html"})
     String shop(HttpServletRequest request, Model model) {
-        List<Product> related_products = getRelatedProducts();
-        List<Product> latest_products = getLatestProducts();
+        List<ProductView> related_products = getRelatedProducts();
+        List<ProductView> latest_products = getLatestProducts();
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("related_products", related_products);
         model.addAttribute("requestURI", request.getRequestURI());
@@ -120,8 +120,8 @@ public class HomeController {
 
     @GetMapping({"/cart","/cart.html"})
     public String showCart(HttpServletRequest request, Model model) {
-        List<CartItem> cartItems = getCartItems();
-        model.addAttribute("cartItems", cartItems);
+        List<CartItemView> cartItemViews = getCartItems();
+        model.addAttribute("cartItemViews", cartItemViews);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/cart";
     }
@@ -160,11 +160,11 @@ public class HomeController {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/contact";
     }
-    private List<CartItem> getCartItems() {
+    private List<CartItemView> getCartItems() {
         // Giả sử dữ liệu tĩnh, bạn có thể thay thế bằng truy vấn cơ sở dữ liệu
         return Arrays.asList(
-                new CartItem("item1","/img/product/p1.jpg", "Minimalistic shop for multipurpose use", 360.00, 1),
-                new CartItem("item2","/img/product/p2.jpg", "Minimalistic shop for multipurpose use", 390.00, 1)
+                new CartItemView("item1","/img/product/p1.jpg", "Minimalistic shop for multipurpose use", 360.00, 1),
+                new CartItemView("item2","/img/product/p2.jpg", "Minimalistic shop for multipurpose use", 390.00, 1)
 //                new CartItem("/img/cart2.jpg", "Another product", "$200.00", 2, "$400.00")
         );
     }

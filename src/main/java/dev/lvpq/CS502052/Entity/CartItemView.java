@@ -2,11 +2,10 @@ package dev.lvpq.CS502052.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class CartItem {
+public class CartItemView {
     private String imageUrl;
     private String name;
     private String description;
@@ -14,7 +13,7 @@ public class CartItem {
     private int quantity;
     private double totalPrice;
 
-    public CartItem(String name, String imageUrl, String description, double unitPrice, int quantity) {
+    public CartItemView(String name, String imageUrl, String description, double unitPrice, int quantity) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.description = description;

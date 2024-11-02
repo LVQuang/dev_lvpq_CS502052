@@ -10,8 +10,9 @@ import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
+import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
-import dev.lvpq.CS502052.Enums.Role;
+import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
@@ -31,7 +32,6 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.StringJoiner;
@@ -55,8 +55,15 @@ public class AuthenticationService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.CUSTOMER.name());
+        HashSet<Role> roles = new HashSet<>();
+        var roleFeature =  RoleFeature.CUSTOMER;
+
+        roles.add(Role.builder()
+                .name(roleFeature.getName())
+                .description(roleFeature.getDescription())
+                .meta(roleFeature.getMeta())
+                .build());
+
         user.setRoles(roles);
 
         var userResponse = userRepository.save(user);
@@ -66,6 +73,7 @@ public class AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         var user = softAuthenticate(request);
         if (user == null) return null;
+        user.getRoles().forEach(role -> log.info(role.getName()));
         var token = genToken(user);
         return LoginResponse.builder()
                     .token(token)
@@ -129,7 +137,7 @@ public class AuthenticationService {
     private String buildScope(User user) {
         StringJoiner result = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(result::add);
+            user.getRoles().forEach(role -> result.add(role.getName()));
         return result.toString();
     }
 }
