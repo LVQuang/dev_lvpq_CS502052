@@ -10,12 +10,12 @@ import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
-import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
+import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,6 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.StringJoiner;
 
 @Slf4j
@@ -42,6 +41,7 @@ import java.util.StringJoiner;
 @Service
 public class AuthenticationService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     AuthenticationMapper authenticationMapper;
     PasswordEncoder passwordEncoder;
     @NonFinal
@@ -55,16 +55,8 @@ public class AuthenticationService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<Role> roles = new HashSet<>();
-        var roleFeature =  RoleFeature.CUSTOMER;
-
-        roles.add(Role.builder()
-                .name(roleFeature.getName())
-                .description(roleFeature.getDescription())
-                .meta(roleFeature.getMeta())
-                .build());
-
-        user.setRoles(roles);
+        var role = roleRepository.findByName(RoleFeature.CUSTOMER.getName()).orElse(null);
+        user.addRole(role);
 
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
