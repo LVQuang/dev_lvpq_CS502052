@@ -32,7 +32,7 @@ public class User {
     @Builder.Default
     boolean hide = false;
     @Builder.Default
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     Set<Role> roles = new HashSet<>();
     @Builder.Default
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -54,21 +54,8 @@ public class User {
 
     public void addRole(Role role) {
         roles.add(role);
-        role.getUsers().add(this);
     }
-
     public void removeRole(Role role) {
         roles.remove(role);
-        role.getUsers().remove(this);
-    }
-
-    public void addActivityLog(ActivityLog activityLog) {
-        activityLogs.add(activityLog);
-        activityLog.getUsers().add(this);
-    }
-
-    public void removeActivityLog(ActivityLog activityLog) {
-        activityLogs.remove(activityLog);
-        activityLog.getUsers().remove(this);
     }
 }
