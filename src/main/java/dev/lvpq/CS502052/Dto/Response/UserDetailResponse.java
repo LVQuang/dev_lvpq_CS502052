@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 public class UserDetailResponse {
     String id;
-    String name;
+    String username;
     String email;
     String phone;
     Set<String> roles;
