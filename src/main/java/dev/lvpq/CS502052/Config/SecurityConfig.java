@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/register", "/api/auth/login", "/api/auth/introspect"
+            "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/user"
     };
 
     @Value("${jwt.signerKey}")
@@ -48,7 +48,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+
                 )
                 .build();
     }
