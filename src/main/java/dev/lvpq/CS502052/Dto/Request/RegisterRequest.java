@@ -1,8 +1,11 @@
 package dev.lvpq.CS502052.Dto.Request;
 
+import dev.lvpq.CS502052.Validator.DobConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -15,4 +18,7 @@ public class RegisterRequest {
     String password;
     String email;
     String phone;
+    String address;
+    @DobConstraint(min = 16, message = "DOB_INVALID")
+    LocalDate dateOfBirth;
 }
