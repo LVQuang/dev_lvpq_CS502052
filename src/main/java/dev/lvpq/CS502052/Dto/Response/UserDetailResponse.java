@@ -3,6 +3,7 @@ package dev.lvpq.CS502052.Dto.Response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -16,5 +17,7 @@ public class UserDetailResponse {
     String username;
     String email;
     String phone;
+    String address;
+    LocalDate dateOfBirth;
     Set<String> roles;
 }
