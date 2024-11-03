@@ -36,6 +36,14 @@ public class UserAPI {
                 .result(userService.getAll())
                 .build();
     }
+    @GetMapping("/customer")
+    public  ApiResponse<ArrayList<UserDetailResponse>> getAllCustomer() {
+        return ApiResponse.<ArrayList<UserDetailResponse>>builder()
+                .code(200)
+                .message("Find All Users Success")
+                .result(userService.getAllCustomer())
+                .build();
+    }
     @GetMapping("/currentUser")
     public  ApiResponse<UserDetailResponse> getCurrentUser() {
         return  ApiResponse.<UserDetailResponse>builder().code(200)
