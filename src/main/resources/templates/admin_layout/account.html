@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Karma Shop - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link th:href="@{/img/fav.png}" rel="icon" type="image/x-icon" />
+    <link th:href="@{/admin_style/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/demo.css}" rel="stylesheet" />
+</head>
+<body>
+<script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
+<script>
+    WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+            families: [
+                "Font Awesome 5 Solid",
+                "Font Awesome 5 Regular",
+                "Font Awesome 5 Brands",
+                "simple-line-icons",
+            ],
+            urls: ["/admin_style/css/fonts.min.css"],
+        },
+        active: function () {
+            sessionStorage.fonts = true;
+        },
+    });
+</script>
+<div class="wrapper">
+    <div th:replace="~{admin_fragments/sidebar :: sidebarFragment}"></div>
+    <div class="main-panel">
+        <div class="main-header">
+            <div th:replace="~{admin_fragments/navbar :: navbarFragment}"></div>
+        </div>
+
+        <div class="container">
+            <div class="page-inner">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                    <div>
+                        <h3 class="fw-bold mb-3">Dashboard</h3>
+                        <h6 class="op-7 mb-2">Admin Dashboard</h6>
+                    </div>
+                </div>
+
+                <!-- Account List Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                            <th>User ID</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                        </tr>
+                        </thead>
+                        <tbody id="accountTableBody" th:each="user : ${users}">
+                        <tr>
+                            <td><input type="checkbox" class="userCheckbox" data-user-id="${user.id}"></td>
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.name != null ? user.name : 'N/A'}"></td>
+                            <td th:text="${user.phone != null ? user.phone : 'N/A'}"></td>
+                            <td th:text="${user.roles.contains('Customer') ? 'Customer' : 'N/A'}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let users = [];
+
+            function fetchUsers() {
+                fetch('/api/user/customer')
+                    .then(response => response.json())
+                    .then(data => {
+                        users = data.result;
+                        updateAccountTable();
+                    })
+                    .catch(error => console.error('Error fetching users:', error));
+            }
+
+            document.addEventListener('DOMContentLoaded', fetchUsers);
+
+            function updateAccountTable() {
+                const tableBody = document.getElementById("accountTableBody");
+                tableBody.innerHTML = "";
+                users.forEach(user => {
+                    const row = `
+            <tr>
+                <td><input type="checkbox" class="userCheckbox" data-user-id="${user.id}"></td>
+                <td>${user.id}</td>
+                <td>${user.email}</td>
+                <td>${user.name || 'N/A'}</td>
+                <td>${user.phone || 'N/A'}</td>
+                <td>${user.roles.includes('Customer') ? 'Customer' : 'N/A'}</td>
+            </tr>
+        `;
+                    tableBody.innerHTML += row;
+                });
+            }
+
+            function toggleSelectAll(source) {
+                const checkboxes = document.querySelectorAll('.userCheckbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = source.checked;
+                });
+            }
+
+        </script>
+    </div>
+</div>
+<script th:src="@{/admin_style/js/core/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/admin_style/js/core/popper.min.js}"></script>
+<script th:src="@{/admin_style/js/core/bootstrap.min.js}"></script>
+<script th:src="@{/admin_style/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+</body>
+</html>
