@@ -1,6 +1,7 @@
 package dev.lvpq.CS502052.Entity;
 
 import dev.lvpq.CS502052.Enums.ProductStatus;
+import dev.lvpq.CS502052.Enums.ProductType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +24,9 @@ public class Product {
     String description;
     String name;
     double price;
+    String image;
     ProductStatus status;
+    ProductType type;
     int totalSold;
     @ManyToOne
     @JoinColumn(name = "brand_id")
