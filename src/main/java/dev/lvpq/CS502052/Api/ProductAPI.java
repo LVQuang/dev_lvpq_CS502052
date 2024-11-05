@@ -17,6 +17,7 @@ public class ProductAPI {
 
     private final ProductService productService;
 
+
     @GetMapping("/{id}")
     public ApiResponse<ProductDetailResponse> getProductById(@PathVariable String id) {
         return ApiResponse.<ProductDetailResponse>builder()
@@ -26,11 +27,14 @@ public class ProductAPI {
                 .build();
     }
 
+
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ProductDetailResponse> addProduct(@RequestBody ProductRequest productRequest) {
         return ApiResponse.<ProductDetailResponse>builder()
+
                 .code(200)
+
                 .message("Product added successfully")
                 .result(productService.addProduct(productRequest))
                 .build();
@@ -56,22 +60,30 @@ public class ProductAPI {
                 .build();
     }
     @GetMapping("/latest")
+
     public List<ProductDetailResponse> getLatestProducts() {
+
         return productService.getLatestProducts();
     }
 
     @GetMapping("/related")
+
     public List<ProductDetailResponse> getRelatedProducts() {
+
         return productService.getRelatedProducts();
     }
 
     @GetMapping("/coming")
+
     public List<ProductDetailResponse> getComingProducts() {
+
         return productService.getComingProducts();
     }
 
     @GetMapping("/exclusive")
+
     public List<ProductDetailResponse> getExclusiveProducts() {
+
         return productService.getExclusiveProducts();
     }
 }

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,13 @@ public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
 
+
     public ProductDetailResponse getProductById(String id) {
         return productRepository.findById(id)
                 .map(productMapper::toDetailResponse)
                 .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
     }
+
 
     public ProductDetailResponse addProduct(ProductRequest productRequest) {
         Product product = new Product();
@@ -42,6 +45,7 @@ public class ProductService {
         product.setType(productRequest.getType());
         product.setImage(productRequest.getImage());
         product.setStatus(ProductStatus.valueOf("available"));
+
         // Thêm các thuộc tính khác nếu cần
         Product savedProduct = productRepository.save(product);
         return productMapper.toDetailResponse(savedProduct);
@@ -79,6 +83,7 @@ public class ProductService {
         return productRepository.findAll().stream()
                 .filter(product -> product.getType() == type)
                 .map(productMapper::toDetailResponse)
+
                 .collect(Collectors.toList());
     }
 
@@ -96,6 +101,7 @@ public class ProductService {
     }
 
     public List<ProductDetailResponse> getExclusiveProducts() {
+
         return getProductsByType(ProductType.EXCLUSIVE);
     }
 }
