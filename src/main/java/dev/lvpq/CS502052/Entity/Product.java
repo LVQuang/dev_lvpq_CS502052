@@ -59,4 +59,16 @@ public class Product {
         sizes.remove(size);
         size.getProducts().add(this);
     }
+    public void setAvailable(){
+        this.status = ProductStatus.Available;
+    }
+    public void setOutOfStock(){
+        this.status = ProductStatus.OutOfStock;
+    }
+    public void setDiscontinued(){
+        this.status = ProductStatus.Discontinued;
+    }
+    public void setPreOrder(){
+        this.status = ProductStatus.PreOrder;
+    }
 }

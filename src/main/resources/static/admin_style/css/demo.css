@@ -308,5 +308,19 @@ body[data-background-color="dark"] .demo-icon .icon-class {
   .custom-template {
     width: 85% !important;
     right: -85%; } }
+.table-success {
+  background-color: #7afa98; /* Xanh lá */
+}
 
+.table-danger {
+  background-color: #f38a96; /* Đỏ */
+}
+
+.table-warning {
+  background-color: #ffe083; /* Vàng */
+}
+
+.table-secondary {
+  background-color: #e2e3e5; /* Xám */
+}
 /*# sourceMappingURL=demo.css.map */

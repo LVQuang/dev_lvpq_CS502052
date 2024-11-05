@@ -43,7 +43,7 @@
 
 <body>
 	<!-- Start Header Area -->
-	<header th:insert="client_fragments/header :: header" class="header_area sticky-header"></header>
+	<header th:insert="~{client_fragments/header :: header}" class="header_area sticky-header"></header>
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
@@ -59,17 +59,17 @@
 	</section>
 	<!-- End banner Area -->
 	<!-- start features Area -->
-	<section th:insert ="client_fragments/features :: features" class="features-area section_gap"></section>
+	<section th:insert ="~{client_fragments/features :: features}" class="features-area section_gap"></section>
 	<!-- end features Area -->
 	<!-- Start category Area -->
-		<section th:insert="client_fragments/category-fragment :: category-fragment" class="category-area"></section>
+		<section th:insert="~{client_fragments/category-fragment :: category-fragment}" class="category-area"></section>
 		<!-- End category Area -->
 		<!-- start product Area -->
-		<section th:insert="client_fragments/index-fragment :: index-fragment" ></section>
+		<section th:insert="~{client_fragments/index-fragment :: index-fragment}" ></section>
 		<!-- End related-product Area -->
 
 		<!-- start footer Area -->
-	<footer th:insert="client_fragments/footer :: footer" class="footer-area section_gap"></footer>
+	<footer th:insert="~{client_fragments/footer :: footer}" class="footer-area section_gap"></footer>
 	<!-- End footer Area -->
 
 	<script src="/js/vendor/jquery-2.2.4.min.js"></script>
