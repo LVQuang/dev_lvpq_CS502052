@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 public class ProductDetailResponse {
     String id;
     String name;
+    String image;
     String description;
     double price;
     ProductType type;

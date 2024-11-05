@@ -4,6 +4,7 @@ import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
 import dev.lvpq.CS502052.Entity.Product;
+import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +28,15 @@ import java.util.stream.Collectors;
 public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
+
+
+    public ProductDetailResponse getProductById(String id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDetailResponse)
+                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+    }
+
+
     public ProductDetailResponse addProduct(ProductRequest productRequest) {
         Product product = new Product();
         product.setName(productRequest.getName());
@@ -32,6 +44,8 @@ public class ProductService {
         product.setPrice(productRequest.getPrice());
         product.setType(productRequest.getType());
         product.setImage(productRequest.getImage());
+        product.setStatus(ProductStatus.valueOf("available"));
+
         // Thêm các thuộc tính khác nếu cần
         Product savedProduct = productRepository.save(product);
         return productMapper.toDetailResponse(savedProduct);
@@ -46,6 +60,7 @@ public class ProductService {
         product.setPrice(productRequest.getPrice());
         product.setImage(productRequest.getImage());
         product.setType(productRequest.getType());
+        product.setStatus(productRequest.getStatus());
         // Cập nhật các thuộc tính khác nếu cần
         Product updatedProduct = productRepository.save(product);
         return productMapper.toDetailResponse(updatedProduct);
@@ -58,27 +73,35 @@ public class ProductService {
         productRepository.deleteById(id);
     }
     // Trả về danh sách ProductDetailResponse theo ProductType
-    private List<ProductListResponse> getProductsByType(ProductType type) {
+    public List<ProductDetailResponse> getAllProducts(){
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toDetailResponse)
+                .collect(Collectors.toList());
+    }
+    private List<ProductDetailResponse> getProductsByType(ProductType type) {
         return productRepository.findAll().stream()
                 .filter(product -> product.getType() == type)
-                .map(productMapper::toListResponse)
+                .map(productMapper::toDetailResponse)
+
                 .collect(Collectors.toList());
     }
 
     // Các phương thức lấy sản phẩm theo từng loại
-    public List<ProductListResponse> getLatestProducts() {
+    public List<ProductDetailResponse> getLatestProducts() {
         return getProductsByType(ProductType.LATEST);
     }
 
-    public List<ProductListResponse> getRelatedProducts() {
+    public List<ProductDetailResponse> getRelatedProducts() {
         return getProductsByType(ProductType.RELATED);
     }
 
-    public List<ProductListResponse> getComingProducts() {
+    public List<ProductDetailResponse> getComingProducts() {
         return getProductsByType(ProductType.COMING);
     }
 
-    public List<ProductListResponse> getExclusiveProducts() {
+    public List<ProductDetailResponse> getExclusiveProducts() {
+
         return getProductsByType(ProductType.EXCLUSIVE);
     }
 }

@@ -63,7 +63,7 @@
                             <td><input type="checkbox" class="userCheckbox" data-user-id="${user.id}"></td>
                             <td th:text="${user.id}"></td>
                             <td th:text="${user.email}"></td>
-                            <td th:text="${user.name != null ? user.name : 'N/A'}"></td>
+                            <td th:text="${user.username != null ? user.username : 'N/A'}"></td>
                             <td th:text="${user.phone != null ? user.phone : 'N/A'}"></td>
                             <td th:text="${user.roles.contains('Customer') ? 'Customer' : 'N/A'}"></td>
                         </tr>
@@ -97,7 +97,7 @@
                 <td><input type="checkbox" class="userCheckbox" data-user-id="${user.id}"></td>
                 <td>${user.id}</td>
                 <td>${user.email}</td>
-                <td>${user.name || 'N/A'}</td>
+                <td>${user.username || 'N/A'}</td>
                 <td>${user.phone || 'N/A'}</td>
                 <td>${user.roles.includes('Customer') ? 'Customer' : 'N/A'}</td>
             </tr>

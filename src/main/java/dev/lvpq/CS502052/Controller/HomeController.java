@@ -1,13 +1,18 @@
 package dev.lvpq.CS502052.Controller;
 
+import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
+import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Entity.BrandView;
 import dev.lvpq.CS502052.Entity.CartItemView;
 import dev.lvpq.CS502052.Entity.ProductView;
+import dev.lvpq.CS502052.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,47 +27,26 @@ import java.util.List;
 @RequestMapping("")
 @Controller
 public class HomeController {
+    @Autowired
+    private final ProductService productService;
     @GetMapping({"/home","/home.html", "/index.html"})
     public String showIndexPage(HttpServletRequest request, Model model) {
-        List<ProductView> latest_productViews = getLatestProducts();
-        List<ProductView> coming_productViews = getComingProducts();
-        List<ProductView> exclusive_productViews = getExclusiveProducts();
+        List<ProductDetailResponse> latest_products = productService.getLatestProducts();
+        List<ProductDetailResponse> coming_products = productService.getComingProducts();
+        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();
+//        List<ProductView> latest_products = getLatestProducts();
+
+
         List<ProductView> related_productViews = getRelatedProducts();
 
         List<BrandView> brandViews = getBrands();
-        model.addAttribute("latest_productViews", latest_productViews);
-        model.addAttribute("coming_productViews", coming_productViews);
-        model.addAttribute("exclusive_productViews", exclusive_productViews);
+        model.addAttribute("latest_products", latest_products);
+        model.addAttribute("coming_products", coming_products);
+        model.addAttribute("exclusive_products", exclusive_products);
         model.addAttribute("brandViews", brandViews);
         model.addAttribute("related_productViews", related_productViews);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/index";
-    }
-    private List<ProductView> getLatestProducts() {
-        // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
-        return Arrays.asList(
-                new ProductView("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
-                new ProductView("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
-                new ProductView("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
-                new ProductView("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
-                new ProductView("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
-                new ProductView("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
-                new ProductView("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
-                new ProductView("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
-        );
-    }
-    private List<ProductView> getComingProducts() {
-        // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
-        return Arrays.asList(
-                new ProductView("p1","addidas New Hammer sole for Sports person", "$150.00", "$210.00", "/img/product/p1.jpg"),
-                new ProductView("p2","Product 2", "$120.00", "$160.00", "/img/product/p2.jpg"),
-                new ProductView("p3","Product 3", "$180.00", "$250.00", "/img/product/p3.jpg"),
-                new ProductView("p4","Product 4", "$180.00", "$250.00", "/img/product/p4.jpg"),
-                new ProductView("p5","Product 5", "$180.00", "$250.00", "/img/product/p5.jpg"),
-                new ProductView("p6","Product 6", "$180.00", "$250.00", "/img/product/p6.jpg"),
-                new ProductView("p7","Product 7", "$180.00", "$250.00", "/img/product/p7.jpg"),
-                new ProductView("p8","Product 8", "$180.00", "$250.00", "/img/product/p8.jpg")
-        );
     }
     private List<ProductView> getRelatedProducts() {
         // Giả sử đây là dữ liệu tĩnh, bạn có thể thay bằng việc truy vấn từ cơ sở dữ liệu
@@ -111,7 +95,9 @@ public class HomeController {
     @GetMapping({"/category","/category.html"})
     String shop(HttpServletRequest request, Model model) {
         List<ProductView> related_products = getRelatedProducts();
-        List<ProductView> latest_products = getLatestProducts();
+        List<ProductDetailResponse> latest_products = productService.getLatestProducts();
+//        List<ProductView> latest_products = getLatestProducts();
+
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("related_products", related_products);
         model.addAttribute("requestURI", request.getRequestURI());

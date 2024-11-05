@@ -16,13 +16,14 @@
                     <!-- single product -->
                     <div class="col-lg-3 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" th:src="@{${product.imageUrl}}" alt="">
+                            <img class="img-fluid" th:src="@{${product.image}}" alt="">
                             <div class="product-details">
                                 <h6 th:text="${product.name}"></h6>
                                 <div class="price">
-                                    <h6 th:text="${product.price}"></h6>
-                                    <h6 class="l-through" th:text="${product.originalPrice}"></h6>
+                                    <h6 th:text="'$' + ${product.price}"></h6>
+                                    <h6 class="l-through">$209</h6>
                                 </div>
+
                                 <div class="prd-bottom">
                                     <a href="#" class="social-info">
                                         <span class="ti-bag"></span>
@@ -67,13 +68,14 @@
                     <!-- single product -->
                     <div class="col-lg-3 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" th:src="@{${product.imageUrl}}" alt="">
+                            <img class="img-fluid" th:src="@{${product.image}}" alt="">
                             <div class="product-details">
                                 <h6 th:text="${product.name}"></h6>
                                 <div class="price">
-                                    <h6 th:text="${product.price}"></h6>
-                                    <h6 class="l-through" th:text="${product.originalPrice}"></h6>
+                                    <h6 th:text="'$' + ${product.price}"></h6>
+                                    <h6 class="l-through">$209</h6>
                                 </div>
+
                                 <div class="prd-bottom">
                                     <a href="#" class="social-info">
                                         <span class="ti-bag"></span>
@@ -138,12 +140,13 @@
             <div class="col-lg-6 no-padding exclusive-right">
                 <div class="active-exclusive-product-slider">
                     <div th:each="product : ${exclusive_products}" class="single-exclusive-slider">
-                        <img class="img-fluid" th:src="@{${product.imageUrl}}" alt="Exclusive Product">
+                        <img class="img-fluid" th:src="@{${product.image}}" alt="Exclusive Product">
                         <div class="product-details">
                             <div class="price">
-                                <h6 th:text="${product.price}"></h6>
-                                <h6 class="l-through" th:text="${product.originalPrice}"></h6>
+                                <h6 th:text="'$' + ${product.price}"></h6>
+                                <h6 class="l-through">$209</h6>
                             </div>
+
                             <h4 th:text="${product.name}"></h4>
                             <div class="add-bag d-flex align-items-center justify-content-center">
                                 <a class="add-btn" href="#"><span class="ti-bag"></span></a>
@@ -191,9 +194,10 @@
                             <div class="desc">
                                 <a href="#" class="title" th:text="${product.name}"></a>
                                 <div class="price">
-                                    <h6 th:text="${product.price}"></h6>
-                                    <h6 th:text="${product.originalPrice}" class="l-through"></h6>
+                                    <h6 th:text="'$' + ${product.price}"></h6>
+                                    <h6 class="l-through">$209</h6>
                                 </div>
+
                             </div>
                         </div>
                     </div>
