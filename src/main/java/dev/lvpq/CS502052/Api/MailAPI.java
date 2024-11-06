@@ -1,6 +1,5 @@
-package dev.lvpq.CS502052.Controller;
+package dev.lvpq.CS502052.Api;
 
-import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Exception.MailException;
 import dev.lvpq.CS502052.Service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/mail")
-public class MailController {
+public class MailAPI {
 
     @Autowired
     private MailService mailService;

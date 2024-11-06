@@ -3,8 +3,6 @@ package dev.lvpq.CS502052.Controller;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
-import dev.lvpq.CS502052.Dto.Response.UserListResponse;
-import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Service.ProductService;
 import dev.lvpq.CS502052.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,28 +30,27 @@ public class AdminController {
     private final UserService userService;
     @Autowired
     private final ProductService productService;
-    @GetMapping({"/admin"})
-    public String admin(Model model, HttpServletRequest request){
-        model.addAttribute("request", request);
+
+    @GetMapping("/admin")
+    public String admin(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
         return "/admin_layout/index";
     }
 
     @GetMapping({"product.html", "product"})
-    public String manage_product(Model model, HttpServletRequest request){
+    public String manage_product(Model model, HttpServletRequest request) {
         List<ProductDetailResponse> all_products = productService.getAllProducts();
         model.addAttribute("all_products", all_products);
-        model.addAttribute("request", request);
-
+        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
         return "/admin_layout/product";
     }
 
-    @GetMapping({"account.html", "account"})
+    @GetMapping({"voucher.html", "voucher"})
     public String getUsers(Model model, HttpServletRequest request) {
-        // Lấy danh sách người dùng từ dịch vụ
-        List<UserDetailResponse> users = userService.getAllCustomer(); // Sử dụng kiểu dữ liệu UserDetailResponse
-        model.addAttribute("users", users); //
-        model.addAttribute("request", request);
-        return "/admin_layout/account";
+        List<UserDetailResponse> users = userService.getAllCustomer();
+        model.addAttribute("users", users);
+        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        return "/admin_layout/voucher";
     }
 
     @PostMapping
