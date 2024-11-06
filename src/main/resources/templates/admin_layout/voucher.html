@@ -1,0 +1,274 @@
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Karma Shop - Manage Voucher</title>
+        <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+        <link th:href="@{/img/fav.png}" rel="icon" type="image/x-icon" />
+        <link th:href="@{/admin_style/css/bootstrap.min.css}" rel="stylesheet" />
+        <link th:href="@{/admin_style/css/plugins.min.css}" rel="stylesheet" />
+        <link th:href="@{/admin_style/css/kaiadmin.min.css}" rel="stylesheet" />
+        <link th:href="@{/admin_style/css/demo.css}" rel="stylesheet" />
+    </head>
+    <body>
+    <script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["/admin_style/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+
+    <div class="wrapper">
+        <div th:replace="~{admin_fragments/sidebar :: sidebarFragment}"></div>
+        <!-- End Sidebar -->
+        <div class="main-panel">
+            <div class="main-header">
+                <div class="main-header-logo">
+                    <!-- Logo Header -->
+                    <div class="logo-header" data-background-color="dark">
+                        <a href="index.html" class="logo">
+                            <img
+                                    src="/img/logo.png"
+                                    alt="navbar brand"
+                                    class="navbar-brand"
+                                    height="20"
+                            />
+                        </a>
+                        <div class="nav-toggle">
+                            <button class="btn btn-toggle toggle-sidebar">
+                                <i class="gg-menu-right"></i>
+                            </button>
+                            <button class="btn btn-toggle sidenav-toggler">
+                                <i class="gg-menu-left"></i>
+                            </button>
+                        </div>
+                        <button class="topbar-toggler more">
+                            <i class="gg-more-vertical-alt"></i>
+                        </button>
+                    </div>
+                    <!-- End Logo Header -->
+                </div>
+                <!-- Navbar Header -->
+                <div th:replace="~{admin_fragments/navbar :: navbarFragment}"></div>
+                <!-- End Navbar -->
+            </div>
+            <div class="container">
+                <div class="page-inner">
+                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                        <div>
+                            <h3 class="fw-bold mb-3">Account</h3>
+                            <h6 class="op-7 mb-2">Manage Voucher</h6>
+                        </div>
+                        <button id="sendEmailBtn" class="btn btn-primary ms-auto" onclick="sendEmail()" disabled>Send Email</button>
+                    </div>
+
+                    <!-- Account List Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                                <th>User ID</th>
+                                <th>Email</th>
+                                <th>Username</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody id="accountTableBody" th:each="user : ${users}">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Send Email Modal -->
+                <div class="modal fade" id="sendEmailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="sendEmailModalLabel">Send Email</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="emailForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="toEmails" class="form-label">To Emails</label>
+                                        <input type="text" class="form-control" id="toEmails" name="toEmails" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">Subject</label>
+                                        <input type="text" class="form-control" id="subject" name="subject" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="body" class="form-label">Body</label>
+                                        <textarea class="form-control" id="body" name="body" rows="4" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="attachment" class="form-label">Attachment</label>
+                                        <input type="file" class="form-control" id="attachment" name="attachments" multiple>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="submitEmail()">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Spinner Modal -->
+                <div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p>Sending email...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    fetchUsers();
+                });
+
+                function fetchUsers() {
+                    fetch('/api/user/customer')
+                        .then(response => response.json())
+                        .then(data => {
+                            users = data.result;
+                            updateAccountTable();
+                        })
+                        .catch(error => console.error('Error fetching users:', error));
+                }
+
+                function updateAccountTable() {
+                    const tableBody = document.getElementById("accountTableBody");
+                    tableBody.innerHTML = "";
+                    users.forEach(user => {
+                        const row = `
+            <tr>
+                <td><input type="checkbox" class="userCheckbox" data-user-id="${user.id}" data-user-email="${user.email}" onchange="updateSendEmailButton()"></td>
+                <td>${user.id}</td>
+                <td>${user.email}</td>
+                <td>${user.username || 'N/A'}</td>
+                <td>${user.phone || 'N/A'}</td>
+                <td>${user.roles.includes('Customer') ? 'Customer' : 'N/A'}</td>
+            </tr>
+        `;
+                        tableBody.innerHTML += row;
+                    });
+                }
+
+                function updateSendEmailButton() {
+                    const selectedUsers = document.querySelectorAll('.userCheckbox:checked');
+                    const sendEmailBtn = document.getElementById("sendEmailBtn");
+                    sendEmailBtn.disabled = selectedUsers.length === 0;
+                }
+
+                function sendEmail() {
+                    const selectedUsers = Array.from(document.querySelectorAll('.userCheckbox:checked'));
+                    const emails = selectedUsers
+                        .map(userCheckbox => userCheckbox.getAttribute('data-user-email')) // Sử dụng data-user-email thay vì lọc lại
+                        .filter(email => email !== null); // Lọc bỏ các giá trị null
+
+                    if (emails.length > 0) {
+                        const toEmailsField = document.getElementById("toEmails");
+                        toEmailsField.value = "";
+
+                        toEmailsField.value = emails.join(', ');
+
+                        const sendEmailModal = new bootstrap.Modal(document.getElementById('sendEmailModal'));
+                        sendEmailModal.show();
+                    } else {
+                        alert('No users selected!');
+                    }
+                }
+                function submitEmail() {
+                    // Hiển thị modal chờ
+                    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+                    loadingModal.show(); // Hiển thị spinner
+
+                    const emailForm = document.getElementById("emailForm");
+                    const formData = new FormData(emailForm); // Lấy tất cả dữ liệu từ form (bao gồm các tệp đính kèm)
+
+                    fetch('/api/mail/send', {
+                        method: 'POST',
+                        body: formData // Gửi dữ liệu form bao gồm các tệp đính kèm
+                    })
+                        .then(response => {
+                            // Kiểm tra xem phản hồi có phải là JSON hay không
+                            const contentType = response.headers.get("content-type");
+                            if (contentType && contentType.includes("application/json")) {
+                                return response.json();  // Trả về đối tượng JSON nếu phản hồi là JSON
+                            } else {
+                                return response.text();  // Nếu không phải JSON, trả về văn bản
+                            }
+                        })
+                        .then(data => {
+                            // Ẩn modal chờ khi có phản hồi từ server
+                            loadingModal.hide();
+
+                            if (typeof data === "string") {
+                                // Nếu phản hồi là văn bản (không phải JSON)
+                                alert(data);
+                            } else if (data.success === true) {
+                                // Kiểm tra nếu success là true
+                                alert(data.message || "Email sent successfully!");
+                                const sendEmailModal = bootstrap.Modal.getInstance(document.getElementById('sendEmailModal'));
+                                sendEmailModal.hide();
+                            } else {
+                                alert("Failed to send email.");
+                            }
+                        })
+                        .catch(error => {
+                            // Ẩn modal chờ khi có lỗi
+                            loadingModal.hide();
+                            console.error('Error sending email:', error);
+                            alert("An error occurred while sending the email. Please try again.");
+                        });
+                }
+
+
+
+                function toggleSelectAll(source) {
+                    const checkboxes = document.querySelectorAll('.userCheckbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = source.checked;
+                    });
+                    updateSendEmailButton();
+                }
+            </script>
+
+        </div>
+    </div>
+    <script src="/admin_style/js/core/jquery-3.7.1.min.js"></script>
+    <script src="/admin_style/js/core/popper.min.js"></script>
+    <script src="/admin_style/js/core/bootstrap.min.js"></script>
+    <script src="/admin_style/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/admin_style/js/plugin/chart.js/chart.min.js"></script>
+    <script src="/admin_style/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+    <script src="/admin_style/js/plugin/chart-circle/circles.min.js"></script>
+    <script src="/admin_style/js/plugin/datatables/datatables.min.js"></script>
+    <script src="/admin_style/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="/admin_style/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="/admin_style/js/plugin/jsvectormap/world.js"></script>
+    <script src="/admin_style/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="/admin_style/js/kaiadmin.min.js"></script>
+    <script src="/admin_style/js/setting-demo.js"></script>
+    <script src="/admin_style/js/demo.js"></script>
+    </body>
+    </html>

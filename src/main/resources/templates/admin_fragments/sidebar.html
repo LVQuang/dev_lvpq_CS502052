@@ -1,4 +1,3 @@
-<!-- sidebar.html -->
 <div th:fragment="sidebarFragment" class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
         <!-- Logo Header -->
@@ -27,7 +26,7 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
-                <li class="nav-item active">
+                <li class="nav-item" th:classappend="${request.requestURI.contains('/admin') ? ' active' : ''}">
                     <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
@@ -44,26 +43,12 @@
                     </div>
                 </li>
                 <li class="nav-section">
-          <span class="sidebar-mini-icon">
-            <i class="fas fa-user"></i>
-          </span>
+                    <span class="sidebar-mini-icon">
+                        <i class="fas fa-user"></i>
+                    </span>
                     <h4 class="text-section">Manage</h4>
                 </li>
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#account">
-                        <i class="fas fa-user"></i>
-                        <p>Manage Account</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="account">
-                        <ul class="nav nav-collapse">
-                            <li>
-                                <a href="account">
-                                    <span class="sub-item">Accounts</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <li class="nav-item" th:classappend="${request.requestURI.contains('/product') ? ' active' : ''}">
                     <a data-bs-toggle="collapse" href="#product">
                         <i class="fas fa-layer-group"></i>
                         <p>Manage Product</p>
@@ -74,6 +59,23 @@
                             <li>
                                 <a href="product">
                                     <span class="sub-item">Products</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item" th:classappend="${request.requestURI.contains('/voucher') ? ' active' : ''}">
+                    <a data-bs-toggle="collapse" href="#account">
+                        <i class="fas fa-user"></i>
+                        <p>Manage Account</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse" id="account">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="voucher">
+                                    <i class="fas fa-gift"></i>
+                                    <span class="sub-item">Manage Voucher</span>
                                 </a>
                             </li>
                         </ul>
