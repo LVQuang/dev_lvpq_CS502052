@@ -4,33 +4,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Karma Shop - Manage Product</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-
-    <!-- Fonts and icons -->
-    <script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
-    <script>
-        WebFont.load({
-            google: { families: ["Public Sans:300,400,500,600,700"] },
-            custom: {
-                families: [
-                    "Font Awesome 5 Solid",
-                    "Font Awesome 5 Regular",
-                    "Font Awesome 5 Brands",
-                    "simple-line-icons",
-                ],
-                urls: ["/admin_style/css/fonts.min.css"],
-            },
-            active: function () {
-                sessionStorage.fonts = true;
-            },
-        });
-    </script>
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="/admin_style/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/admin_style/css/plugins.min.css" />
-    <link rel="stylesheet" href="/admin_style/css/kaiadmin.min.css" />
-    <link rel="stylesheet" href="/admin_style/css/demo.css" />
+    <link th:href="@{/img/fav.png}" rel="icon" type="image/x-icon" />
+    <link th:href="@{/admin_style/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/plugins.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/kaiadmin.min.css}" rel="stylesheet" />
+    <link th:href="@{/admin_style/css/demo.css}" rel="stylesheet" />
 </head>
 <body>
+<script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
+<script>
+    WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+            families: [
+                "Font Awesome 5 Solid",
+                "Font Awesome 5 Regular",
+                "Font Awesome 5 Brands",
+                "simple-line-icons",
+            ],
+            urls: ["/admin_style/css/fonts.min.css"],
+        },
+        active: function () {
+            sessionStorage.fonts = true;
+        },
+    });
+</script>
 <div class="wrapper">
     <div th:replace="~{admin_fragments/sidebar :: sidebarFragment}"></div>
 
@@ -39,13 +37,24 @@
             <div class="main-header-logo">
                 <div class="logo-header" data-background-color="dark">
                     <a href="index.html" class="logo">
-                        <img src="/img/logo.png" alt="navbar brand" class="navbar-brand" height="20" />
+                        <img
+                                src="/img/logo.png"
+                                alt="navbar brand"
+                                class="navbar-brand"
+                                height="20"
+                        />
                     </a>
                     <div class="nav-toggle">
-                        <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
-                        <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
                     </div>
-                    <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
                 </div>
             </div>
             <div th:replace="~{admin_fragments/navbar :: navbarFragment}"></div>
@@ -56,7 +65,6 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                     <div>
                         <h3 class="fw-bold mb-3">Manage Product</h3>
-<!--                        <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>-->
                     </div>
                     <div class="ms-md-auto py-2 py-md-0">
                         <button class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openAddProductModal()">Add Product</button>
@@ -71,7 +79,7 @@
                                 <th>Product Name</th>
                                 <th>Price</th>
                                 <th>Description</th>
-                                <th>Status</th> <!-- Thêm cột trạng thái -->
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -81,13 +89,15 @@
                    : (product.status.name() == 'PreOrder' ? 'table-warning'
                    : 'table-secondary'))}">
                             <td>
-                                <img th:src="${product.image != null ? product.image : '/img/default_img.png'}" alt="Product Image" style="width: 100px; height: 100px;">
+                                <img th:src="@{ ${product.image} != null ?  ${product.image} : '/img/default_img.png'}"
+                                     alt="Product Image" style="width: 100px; height: 100px;">
                             </td>
                             <td th:text="${product.id}"></td>
                             <td th:text="${product.name != null ? product.name : 'N/A'}"></td>
                             <td th:text="${product.price != null ? product.price : 'N/A'}"></td>
                             <td th:text="${product.description != null ? product.description : 'N/A'}"></td>
                             <td th:text="${product.status}"></td>
+
                             <td>
                                 <button class="btn btn-warning btn-sm" th:data-product-id="${product.id}" onclick="openEditProductModal(this)"> <i class="fas fa-edit"></i></button>
                                 <button class="btn btn-danger btn-sm" th:data-product-id="${product.id}" onclick="deleteProduct(this)"><i class="fas fa-trash"></i></button>
@@ -136,6 +146,15 @@
                                             <option value="PreOrder">Pre Order</option>
                                         </select>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="productType" class="form-label">Product Type</label>
+                                        <select class="form-select" id="productType" name="productType" required>
+                                            <option value="" disabled selected>Select Type</option>
+                                            <option value="LATEST">Latest</option>
+                                            <option value="COMING">Coming</option>
+                                            <option value="EXCLUSIVE">Exclusive</option>
+                                        </select>
+                                    </div>
 
                                     <div id="imagePreviewContainer" class="mt-3"></div>
                                 </div>
@@ -151,9 +170,50 @@
         </div>
 
         <script>
-            const defaultImage = '/img/default_img.png';
+                // Hàm tìm kiếm sản phẩm
+                function searchProduct(query) {
+                    fetch(`/api/product/search?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // console.log('Product search results:', data);
 
-            // Mở modal để thêm sản phẩm
+                            const productRows = document.querySelectorAll('#productTableBody tr');
+
+                            productRows.forEach(row => {
+                                const productName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                                const productDescription = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+                                if (productName.includes(query.toLowerCase()) || productDescription.includes(query.toLowerCase())) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error searching products:', error));
+                }
+
+
+                // Đảm bảo sự kiện lắng nghe được thêm vào sau khi DOM đã sẵn sàng
+                document.addEventListener('DOMContentLoaded', function() {
+                    const searchInput = document.getElementById('searchInput');
+
+                    if (searchInput) {
+                        searchInput.addEventListener('keyup', function() {
+                            const query = searchInput.value.trim();
+                            if (query.length > 0) {
+                                searchProduct(query);
+                            } else {
+                                // Nếu không có từ khóa, hiển thị tất cả sản phẩm
+                                const productRows = document.querySelectorAll('#productTableBody tr');
+                                productRows.forEach(row => row.style.display = '');
+                            }
+                        });
+                    }
+                });
+
+
+                // Mở modal để thêm sản phẩm
             function openAddProductModal() {
                 document.getElementById("productModalLabel").innerText = "Add Product";
                 document.getElementById("productForm").reset();
@@ -172,14 +232,16 @@
                         // Kiểm tra xem sản phẩm có tồn tại không
                         if (product) {
                             document.getElementById("productModalLabel").innerText = "Update Product";
-                            document.getElementById("productId").value = product.id || ""; // Gán ID sản phẩm
-                            document.getElementById("productName").value = product.name || ""; // Gán tên sản phẩm
-                            document.getElementById("productPrice").value = product.price || ""; // Gán giá sản phẩm
-                            document.getElementById("productDescription").value = product.description || ""; // Gán mô tả sản phẩm
-                            document.getElementById("productImage").value = ""; // Reset file input
+                            document.getElementById("productId").value = product.id || "";
+                            document.getElementById("productName").value = product.name || "";
+                            document.getElementById("productPrice").value = product.price || "";
+                            document.getElementById("productDescription").value = product.description || "";
+                            document.getElementById("productImage").value = "";
+                            document.getElementById("productType").value = product.type || "";
+                            document.getElementById("productStatus").value = product.status || "";
 
                             // Hiển thị ảnh sản phẩm hoặc ảnh mặc định
-                            document.getElementById("imagePreviewContainer").innerHTML = product.image ?
+                            document.getElementById("imagePreviewContainer").innerHTML = product.image?
                                 `<img src="${product.image}" style="width: 100px; height: 100px;">` :
                                 `<img src="/img/default_img.png" style="width: 100px; height: 100px;">`;
 
@@ -197,13 +259,15 @@
             function saveProduct(event) {
                 event.preventDefault();
                 const productId = document.getElementById("productId").value;
+                const imageFile = document.getElementById("productImage").files[0];
+                const imageName = imageFile ? imageFile.name : null;
                 const productData = {
                     name: document.getElementById("productName").value,
                     price: parseFloat(document.getElementById("productPrice").value) || null,
                     description: document.getElementById("productDescription").value || null,
-                    image: document.getElementById("imagePreviewContainer").innerHTML.includes('src=') ?
-                        document.getElementById("imagePreviewContainer").querySelector('img').src : null,
-                    status: document.getElementById("productStatus").value // Lấy giá trị trạng thái
+                    image: imageName ? `/img/product/${imageName}` : null,
+                    status: document.getElementById("productStatus").value,
+                    type: document.getElementById("productType").value
                 };
 
                 const method = productId ? 'PUT' : 'POST';
@@ -252,7 +316,7 @@
                         .then(data => {
                             if (data.code === 200) {
                                 alert(data.message);
-                                location.reload(); // Tải lại trang
+                                location.reload();
                             } else {
                                 alert('Error: ' + data.message);
                             }
@@ -267,6 +331,17 @@
         <script src="/admin_style/js/core/popper.min.js"></script>
         <script src="/admin_style/js/core/bootstrap.min.js"></script>
         <script src="/admin_style/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+        <script src="/admin_style/js/plugin/chart.js/chart.min.js"></script>
+        <script src="/admin_style/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+        <script src="/admin_style/js/plugin/chart-circle/circles.min.js"></script>
+        <script src="/admin_style/js/plugin/datatables/datatables.min.js"></script>
+        <script src="/admin_style/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+        <script src="/admin_style/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+        <script src="/admin_style/js/plugin/jsvectormap/world.js"></script>
+        <script src="/admin_style/js/plugin/sweetalert/sweetalert.min.js"></script>
+        <script src="/admin_style/js/kaiadmin.min.js"></script>
+        <script src="/admin_style/js/setting-demo.js"></script>
+        <script src="/admin_style/js/demo.js"></script>
     </div>
 </div>
 </body>
