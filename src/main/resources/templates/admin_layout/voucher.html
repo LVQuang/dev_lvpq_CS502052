@@ -172,6 +172,42 @@
                         tableBody.innerHTML += row;
                     });
                 }
+                function searchAccount(query) {
+                    fetch(`/api/user/search?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const userRows = document.querySelectorAll('#accountTableBody tr'); // Cập nhật đúng ID bảng
+
+                            userRows.forEach(row => {
+                                const userEmail = row.querySelector('td:nth-child(3)').textContent.toLowerCase(); // Cột email
+                                const userUsername = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // Cột username
+                                const userPhone = row.querySelector('td:nth-child(5)').textContent.toLowerCase(); // Cột phone
+
+                                // Kiểm tra nếu tên, email, hoặc số điện thoại chứa từ khóa
+                                if (userEmail.includes(query.toLowerCase()) || userUsername.includes(query.toLowerCase()) || userPhone.includes(query.toLowerCase())) {
+                                    row.style.display = ''; // Hiển thị dòng
+                                } else {
+                                    row.style.display = 'none'; // Ẩn dòng
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error searching accounts:', error));
+                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    const searchInput = document.getElementById('searchInput');
+
+                    if (searchInput) {
+                        searchInput.addEventListener('keyup', function() {
+                            const query = searchInput.value.trim();
+                            if (query.length > 0) {
+                                searchAccount(query);
+                            } else {
+                                const userRows = document.querySelectorAll('#accountTableBody tr');
+                                userRows.forEach(row => row.style.display = '');
+                            }
+                        });
+                    }
+                });
 
                 function updateSendEmailButton() {
                     const selectedUsers = document.querySelectorAll('.userCheckbox:checked');
