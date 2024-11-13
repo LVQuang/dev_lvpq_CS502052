@@ -25,6 +25,15 @@ public class SecurityConfig {
 
     private final String[] POST_PUBLIC_ENDPOINTS = {
             "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/auth/logout"
+            , "/login"
+    };
+
+    private final String[] GET_PUBLIC_ENDPOINTS = {
+            "/home", "/login"
+    };
+
+    private final String[] STATIC_RESOURCE = {
+            "/css/**", "/js/**", "/img/**", "/admin_style/**", "/fonts/**", "Karma Shop-doc", "scss"
     };
 
     @Autowired
@@ -46,7 +55,9 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(STATIC_RESOURCE).permitAll()
                         .requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
 
                 )
