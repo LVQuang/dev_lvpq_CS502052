@@ -1,6 +1,7 @@
 package dev.lvpq.CS502052.Service;
 
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Entity.User;
@@ -59,5 +60,15 @@ public class UserService {
         var email =context.getAuthentication().getName();
         var user = userRepository.findByEmail(email).orElseThrow(null);
         return userMapper.toDetailResponse(user);
+    }
+    public List<UserDetailResponse> searchUsersByName(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllCustomer();
+        }
+        return userRepository.findAll().stream()
+                .filter(user -> user.getEmail().toLowerCase().contains(query.toLowerCase()))
+                .map(userMapper::toDetailResponse)
+                .collect(Collectors.toList());
+
     }
 }

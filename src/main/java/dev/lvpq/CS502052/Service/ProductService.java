@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Service;
-
+import java.nio.file.Paths;
+import org.springframework.util.StringUtils;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
@@ -35,16 +36,15 @@ public class ProductService {
                 .map(productMapper::toDetailResponse)
                 .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
     }
-
-
     public ProductDetailResponse addProduct(ProductRequest productRequest) {
         Product product = new Product();
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
-        product.setType(productRequest.getType());
+        product.setType(productRequest.getType() != null ? productRequest.getType() : ProductType.LATEST);
+
         product.setImage(productRequest.getImage());
-        product.setStatus(ProductStatus.valueOf("available"));
+        product.setStatus(ProductStatus.Available);
 
         // Thêm các thuộc tính khác nếu cần
         Product savedProduct = productRepository.save(product);
@@ -103,5 +103,16 @@ public class ProductService {
     public List<ProductDetailResponse> getExclusiveProducts() {
 
         return getProductsByType(ProductType.EXCLUSIVE);
+    }
+
+    public List<ProductDetailResponse> searchProductsByName(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllProducts();
+        }
+        return productRepository.findAll().stream()
+                .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
+                .map(productMapper::toDetailResponse)
+                .collect(Collectors.toList());
+
     }
 }

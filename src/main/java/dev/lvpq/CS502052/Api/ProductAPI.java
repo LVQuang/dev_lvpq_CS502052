@@ -32,9 +32,7 @@ public class ProductAPI {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ProductDetailResponse> addProduct(@RequestBody ProductRequest productRequest) {
         return ApiResponse.<ProductDetailResponse>builder()
-
                 .code(200)
-
                 .message("Product added successfully")
                 .result(productService.addProduct(productRequest))
                 .build();
@@ -85,5 +83,14 @@ public class ProductAPI {
     public List<ProductDetailResponse> getExclusiveProducts() {
 
         return productService.getExclusiveProducts();
+    }
+    @GetMapping({"/search","/search?query="})
+    public ApiResponse<List<ProductDetailResponse>> searchProductsByName(@RequestParam String query) {
+        List<ProductDetailResponse> products = productService.searchProductsByName(query);
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message("Search results for query: " + query)
+                .result(products)
+                .build();
     }
 }

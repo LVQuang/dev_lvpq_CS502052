@@ -1,6 +1,7 @@
 package dev.lvpq.CS502052.Api;
 
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Service.UserService;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -51,6 +53,15 @@ public class UserAPI {
         return  ApiResponse.<UserDetailResponse>builder().code(200)
                 .message("Find Current User Success")
                 .result(userService.getCurrentInformation())
+                .build();
+    }
+    @GetMapping({"/search","/search?query="})
+    public ApiResponse<List<UserDetailResponse>> searchUsersByName(@RequestParam String query) {
+        List<UserDetailResponse> users = userService.searchUsersByName(query);
+        return ApiResponse.<List<UserDetailResponse>>builder()
+                .code(200)
+                .message("Search results for query: " + query)
+                .result(users)
                 .build();
     }
 }
