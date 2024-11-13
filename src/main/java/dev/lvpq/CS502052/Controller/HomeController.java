@@ -33,9 +33,7 @@ public class HomeController {
     public String showIndexPage(HttpServletRequest request, Model model) {
         List<ProductDetailResponse> latest_products = productService.getLatestProducts();
         List<ProductDetailResponse> coming_products = productService.getComingProducts();
-        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();
-//        List<ProductView> latest_products = getLatestProducts();
-
+        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();;
 
         List<ProductView> related_productViews = getRelatedProducts();
 

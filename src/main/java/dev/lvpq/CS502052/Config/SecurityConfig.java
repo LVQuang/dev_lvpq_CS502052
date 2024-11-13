@@ -2,6 +2,7 @@ package dev.lvpq.CS502052.Config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,24 +13,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/user"
+    private final String[] POST_PUBLIC_ENDPOINTS = {
+            "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/auth/logout"
     };
+
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -42,15 +41,13 @@ public class SecurityConfig {
                         oauth
                                 .bearerTokenResolver(this::tokenResolve)
                                 .jwt(jwtConfigurer ->
-                                        jwtConfigurer.decoder(jwtDecoder())
+                                        jwtConfigurer.decoder(customJwtDecoder)
                                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
+                        .anyRequest().authenticated()
 
                 )
                 .build();
@@ -60,16 +57,6 @@ public class SecurityConfig {
         HttpSession session = request.getSession();
         String token = (String) session.getAttribute("myToken");
         return (token != null) ? token : new DefaultBearerTokenResolver().resolve(request);
-    }
-
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
     }
 
     @Bean

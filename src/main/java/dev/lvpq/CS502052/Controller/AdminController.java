@@ -49,7 +49,7 @@ public class AdminController {
     public String getUsers(Model model, HttpServletRequest request) {
         List<UserDetailResponse> users = userService.getAllCustomer();
         model.addAttribute("users", users);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/admin_layout/voucher";
     }
 

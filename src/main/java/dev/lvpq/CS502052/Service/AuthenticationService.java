@@ -1,22 +1,24 @@
 package dev.lvpq.CS502052.Service;
 
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import dev.lvpq.CS502052.Dto.Request.IntrospectRequest;
 import dev.lvpq.CS502052.Dto.Request.LoginRequest;
+import dev.lvpq.CS502052.Dto.Request.LogoutRequest;
 import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
+import dev.lvpq.CS502052.Entity.InvalidatedToken;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
+import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
+import dev.lvpq.CS502052.Utils.TokenUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,6 +36,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -42,6 +45,7 @@ import java.util.StringJoiner;
 public class AuthenticationService {
     UserRepository userRepository;
     RoleRepository roleRepository;
+    InvalidatedTokenRepository invalidatedTokenRepository;
     AuthenticationMapper authenticationMapper;
     PasswordEncoder passwordEncoder;
     @NonFinal
@@ -73,23 +77,38 @@ public class AuthenticationService {
                     .build();
     }
 
+    public boolean logout(LogoutRequest request) throws ParseException, JOSEException {
+        var signToken = new TokenUtil(invalidatedTokenRepository).verifyToken(request.getToken());
+
+        if (signToken == null) return false;
+
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        var invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+        return true;
+    }
+
     public IntrospectResponse introspect(IntrospectRequest request)
             throws JOSEException, ParseException {
         var token = request.getToken();
-
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verified = signedJWT.verify(verifier);
+        boolean isValid = true;
+        try {
+            new TokenUtil(invalidatedTokenRepository).verifyToken(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
 
         return IntrospectResponse.builder()
-                .valid(verified && expiryTime.after(new Date()))
+                .valid(isValid)
                 .build();
     }
 
-    // Defined Function
     User softAuthenticate(LoginRequest request) {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -110,6 +129,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
 
