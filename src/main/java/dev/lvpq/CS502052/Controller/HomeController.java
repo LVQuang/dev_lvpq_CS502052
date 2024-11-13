@@ -5,6 +5,7 @@ import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Entity.BrandView;
 import dev.lvpq.CS502052.Entity.CartItemView;
+import dev.lvpq.CS502052.Entity.Product;
 import dev.lvpq.CS502052.Entity.ProductView;
 import dev.lvpq.CS502052.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -111,8 +113,10 @@ public class HomeController {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/cart";
     }
-    @GetMapping({"/single-product", "/single-product.html"})
-    public String singleProduct(HttpServletRequest request, Model model) {
+    @GetMapping({"/single-product/{id}", "/single-product.html"})
+    public String singleProduct(HttpServletRequest request, Model model, @PathVariable String id) {
+        ProductDetailResponse product = productService.getProductById(id);  // Lấy thông tin sản phẩm từ database
+        model.addAttribute("product", product);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/single-product";
     }

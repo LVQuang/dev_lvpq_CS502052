@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findByNameContaining(String name);
+    List<Product> findByPriceBetween(double minPrice, double maxPrice);
 
     List<Product> findByStatus(ProductStatus status);
 }
+

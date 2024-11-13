@@ -2,7 +2,6 @@ package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
 import dev.lvpq.CS502052.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,13 +83,76 @@ public class ProductAPI {
 
         return productService.getExclusiveProducts();
     }
-    @GetMapping({"/search","/search?query="})
-    public ApiResponse<List<ProductDetailResponse>> searchProductsByName(@RequestParam String query) {
-        List<ProductDetailResponse> products = productService.searchProductsByName(query);
+    @GetMapping("/search")
+    public ApiResponse<List<ProductDetailResponse>> findProducts(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice){
+        List<ProductDetailResponse> products;
+
+        if (query == null || query.isEmpty()) {
+            products = productService.getAllProducts();
+        } else {
+            if(minPrice != null && maxPrice != null){
+                products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
+            }
+            else{
+                products = productService.findProductsByName(query);
+            }
+        }
+        String message = query == null || query.isEmpty()
+                ? "Showing all products"
+                : "Search results for query: " + query;
         return ApiResponse.<List<ProductDetailResponse>>builder()
                 .code(200)
-                .message("Search results for query: " + query)
+                .message(message)
                 .result(products)
+                .build();
+    }
+    @GetMapping("/searchByPrice")
+    public ApiResponse<List<ProductDetailResponse>> findProductsByPrice(
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice) {
+        if (minPrice == null) minPrice = 0.0; // Giá trị tối thiểu mặc định
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE; // Giá trị tối đa mặc định
+        List<ProductDetailResponse> products = productService.findProductsByPrice(minPrice, maxPrice);
+        String message = "Search results for products with price from " + minPrice + " to " + maxPrice;
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message(message)
+                .result(products)
+                .build();
+    }
+    @GetMapping("/sort/name_asc")
+    public ApiResponse<List<ProductDetailResponse>> sortByNameAsc(){
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message("Sort Completely")
+                .result(productService.sortProductByNameASC())
+                .build();
+    }
+    @GetMapping("/sort/name_desc")
+    public ApiResponse<List<ProductDetailResponse>> sortByNameDesc(){
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message("Sort Completely")
+                .result(productService.sortProductByNameDESC())
+                .build();
+    }
+    @GetMapping("/sort/price_asc")
+    public ApiResponse<List<ProductDetailResponse>> sortByPriceAsc(){
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message("Sort Completely")
+                .result(productService.sortProductByPriceASC())
+                .build();
+    }
+    @GetMapping("/sort/price_desc")
+    public ApiResponse<List<ProductDetailResponse>> sortByPriceDesc(){
+        return ApiResponse.<List<ProductDetailResponse>>builder()
+                .code(200)
+                .message("Sort Completely")
+                .result(productService.sortProductByPriceDESC())
                 .build();
     }
 }
