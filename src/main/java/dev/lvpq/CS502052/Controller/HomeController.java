@@ -1,8 +1,6 @@
 package dev.lvpq.CS502052.Controller;
 
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
-import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Entity.BrandView;
 import dev.lvpq.CS502052.Entity.CartItemView;
 import dev.lvpq.CS502052.Entity.ProductView;
@@ -33,9 +31,7 @@ public class HomeController {
     public String showIndexPage(HttpServletRequest request, Model model) {
         List<ProductDetailResponse> latest_products = productService.getLatestProducts();
         List<ProductDetailResponse> coming_products = productService.getComingProducts();
-        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();
-//        List<ProductView> latest_products = getLatestProducts();
-
+        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();;
 
         List<ProductView> related_productViews = getRelatedProducts();
 
@@ -84,12 +80,6 @@ public class HomeController {
     String blog(HttpServletRequest request, Model model) {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/blog";
-    }
-    @GetMapping({"/login","/login.html"})
-    String login(HttpServletRequest request, Model model)
-    {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/login";
     }
 
     @GetMapping({"/category","/category.html"})

@@ -5,6 +5,7 @@ import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +32,8 @@ public class UserAPI {
                 .build();
     }
     @GetMapping()
-    public  ApiResponse<ArrayList<UserListResponse>> getAll() {
+    public  ApiResponse<ArrayList<UserListResponse>> getAll(HttpServletRequest httpRequest) {
+        log.info("user: " + httpRequest.getSession().getAttribute("myToken"));
         return ApiResponse.<ArrayList<UserListResponse>>builder()
                 .code(200)
                 .message("Find All Users Success")
