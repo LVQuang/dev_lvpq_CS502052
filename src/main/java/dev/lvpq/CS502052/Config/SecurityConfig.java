@@ -29,7 +29,7 @@ public class SecurityConfig {
     };
 
     private final String[] GET_PUBLIC_ENDPOINTS = {
-            "/home", "/login"
+            "/home", "/login", "/logout"
     };
 
     private final String[] STATIC_RESOURCE = {

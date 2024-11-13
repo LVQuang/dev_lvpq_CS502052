@@ -3,10 +3,10 @@ package dev.lvpq.CS502052.Controller;
 import com.nimbusds.jose.JOSEException;
 import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Dto.Request.LogoutRequest;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -51,6 +51,23 @@ public class AuthenticationController {
         var response = authenticationService.login(login);
         request.getSession().setAttribute("myToken", response.getToken());
         log.info("Token: {}", response.getToken());
+        return "redirect:/home";
+    }
+
+    @GetMapping("/logout")
+    String Logout(HttpServletRequest httpRequest)
+            throws ParseException, JOSEException {
+        var token = httpRequest.getSession().getAttribute("myToken").toString();
+        log.info("Logout Token: {}", token);
+        var request = LogoutRequest.builder()
+                .token(token)
+                .build();
+
+        if (!authenticationService.logout(request))
+            throw new AppException();
+
+        httpRequest.getSession().removeAttribute("myToken");
+
         return "redirect:/home";
     }
 }
