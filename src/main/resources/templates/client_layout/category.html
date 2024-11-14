@@ -181,10 +181,11 @@
 	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {
-			//Find product by price (MinPrice and MaxPrice)
 			const priceRange = document.getElementById("price-range");
 			let lowerValue = 10;
 			let upperValue = 500;
+			let currentSort = 'name_asc'; // Biến lưu lựa chọn sắp xếp hiện tại
+
 			noUiSlider.create(priceRange, {
 				start: [lowerValue, upperValue],
 				connect: true,
@@ -193,52 +194,30 @@
 					'max': 500
 				}
 			});
-			const sortOptions = document.querySelectorAll('input[name="sort-option"]');
-			sortOptions.forEach(function(option) {
-				option.addEventListener("change", function() {
-					console.log(option.value); // Thực hiện xử lý sắp xếp ở đây
-					// Gọi hàm sắp xếp sản phẩm tùy theo giá trị option.value
-					fetch(`/api/product/sort/${option.value}`)
-							.then(response => response.json())
-							.then(data => {
-								if (data.code === 200) {
-									displayProducts(data.result);
-								}
-							})
-							.catch(error => console.error('Error:', error));
-				});
-			});
-			//
-			// // Lắng nghe sự kiện thay đổi khi chọn số lượng sản phẩm hiển thị
-			// const showOptions = document.querySelectorAll('input[name="show-option"]');
-			// showOptions.forEach(function(option) {
-			// 	option.addEventListener("change", function() {
-			// 		console.log(option.value); // Thực hiện xử lý thay đổi số lượng sản phẩm hiển thị ở đây
-			// 		// Gọi hàm thay đổi số lượng sản phẩm hiển thị
-			// 	});
-			// });
-			// Xử lý khi nhập tìm kiếm
-			const searchInput = document.getElementById("search_input");
-			searchInput.addEventListener("input", function() {
-				const query = searchInput.value.trim();
-				fetchProducts(query);
-			});
-
-			// Hiển thị tất cả sản phẩm ban đầu
-			fetchProducts("");
-
-			// Cập nhật danh sách sản phẩm khi thả slider giá trị
 			priceRange.noUiSlider.on('change', function(values) {
 				const lower = Math.round(values[0]);
 				const upper = Math.round(values[1]);
 				document.getElementById("lower-value").innerText = lower;
 				document.getElementById("upper-value").innerText = upper;
-				updateProductList(lower, upper);
+				fetchProducts("", lower, upper, currentSort);
+			});
+			const searchInput = document.getElementById("search_input");
+			searchInput.addEventListener("input", function() {
+				const query = searchInput.value.trim();
+				fetchProducts(query, lowerValue, upperValue ,currentSort);
+			});
+			const sortOptions = document.querySelectorAll('input[name="sort-option"]');
+			sortOptions.forEach(function(option) {
+				option.addEventListener("change", function() {
+					currentSort = option.value; // Cập nhật giá trị sắp xếp hiện tại
+						fetchProducts(searchInput.value.trim(), lowerValue, upperValue, currentSort); // Refresh products list
+				});
 			});
 
-			// Hàm lấy và hiển thị sản phẩm dựa trên query
-			function fetchProducts(query) {
-				fetch(`/api/product/search?query=${encodeURIComponent(query)}`)
+			// Hiển thị tất cả sản phẩm ban đầu
+			fetchProducts("", lowerValue, upperValue,currentSort);
+			function fetchProducts(query, lower, upper, sort) {
+				fetch(`/api/product/search?query=${encodeURIComponent(query)}&sort=${sort}&minPrice=${lower}&maxPrice=${upper}`)
 						.then(response => response.json())
 						.then(data => {
 							if (data.code === 200) {
@@ -248,60 +227,47 @@
 						.catch(error => console.error('Error:', error));
 			}
 
-			// Hàm lấy và hiển thị sản phẩm theo khoảng giá
-			function updateProductList(lower, upper) {
-				fetch(`/api/product/searchByPrice?minPrice=${lower}&maxPrice=${upper}`)
-						.then(response => response.json())
-						.then(data => {
-							if (data.code === 200) {
-								displayProducts(data.result);
-							}
-						})
-						.catch(error => console.error('Error:', error));
-			}
 
-			// Hàm hiển thị sản phẩm trong danh sách
 			function displayProducts(products) {
 				const productList = document.getElementById('product-list');
-				productList.innerHTML = ''; // Xóa danh sách hiện tại
-
+				productList.innerHTML = '';
 				products.forEach(product => {
 					const productHTML = `
-					<div class="col-lg-4 col-md-6">
-						<div class="single-product">
-							<img class="img-fluid" src="${product.image}" alt="">
-							<div class="product-details">
-								<h6>${product.name}</h6>
-								<div class="price">
-									<h6>$${product.price}</h6>
-								</div>
-								<div class="prd-bottom">
-									<a href="#" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">add to bag</p>
-									</a>
-									<a href="#" class="social-info">
-										<span class="lnr lnr-heart"></span>
-										<p class="hover-text">Wishlist</p>
-									</a>
-									<a href="#" class="social-info">
-										<span class="lnr lnr-sync"></span>
-										<p class="hover-text">compare</p>
-									</a>
-									<a href="/single-product/${product.id}" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>`;
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-product">
+                            <img class="img-fluid" src="${product.image}" alt="">
+                            <div class="product-details">
+                                <h6>${product.name}</h6>
+                                <div class="price">
+                                    <h6>$${product.price}</h6>
+                                </div>
+                                <div class="prd-bottom">
+                                    <a href="#" class="social-info">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">add to bag</p>
+                                    </a>
+                                    <a href="#" class="social-info">
+                                        <span class="lnr lnr-heart"></span>
+                                        <p class="hover-text">Wishlist</p>
+                                    </a>
+                                    <a href="#" class="social-info">
+                                        <span class="lnr lnr-sync"></span>
+                                        <p class="hover-text">compare</p>
+                                    </a>
+                                    <a href="/single-product/${product.id}" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">view more</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
 					productList.insertAdjacentHTML('beforeend', productHTML);
 				});
 			}
-			// fetchSortedProducts("/api/product/sort/name_asc");
 		});
 	</script>
+
 
 	<!-- start footer Area -->
 	<footer th:insert="client_fragments/footer :: footer" class="footer-area section_gap"></footer>

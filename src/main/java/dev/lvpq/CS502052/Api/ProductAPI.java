@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -87,72 +88,43 @@ public class ProductAPI {
     public ApiResponse<List<ProductDetailResponse>> findProducts(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
-            @RequestParam(value = "maxPrice", required = false) Double maxPrice){
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "sort", required = false) String sort) {
         List<ProductDetailResponse> products;
 
-        if (query == null || query.isEmpty()) {
-            products = productService.getAllProducts();
-        } else {
-            if(minPrice != null && maxPrice != null){
-                products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
-            }
-            else{
-                products = productService.findProductsByName(query);
-            }
+   if(query != null && minPrice != null && maxPrice != null){
+       products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
+   }
+   else if(query == null && minPrice != null && maxPrice != null){
+       products = productService.findProductsByPrice(minPrice, maxPrice);
+   }
+   else if(query != null && minPrice == null && maxPrice == null){
+       products = productService.findProductsByName(query);
+   }
+   else{
+       products = productService.getAllProducts();
+   }
+        if ("name_asc".equalsIgnoreCase(sort) || sort.isEmpty()) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getName));
+        } else if ("name_desc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getName).reversed());
+        } else if ("price_asc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getPrice));
+        } else if ("price_desc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getPrice).reversed());
         }
         String message = query == null || query.isEmpty()
                 ? "Showing all products"
                 : "Search results for query: " + query;
         return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message(message)
-                .result(products)
+            .code(200)
+            .message(message)
+            .result(products)
                 .build();
     }
-    @GetMapping("/searchByPrice")
-    public ApiResponse<List<ProductDetailResponse>> findProductsByPrice(
-            @RequestParam(value = "minPrice", required = false) Double minPrice,
-            @RequestParam(value = "maxPrice", required = false) Double maxPrice) {
-        if (minPrice == null) minPrice = 0.0; // Giá trị tối thiểu mặc định
-        if (maxPrice == null) maxPrice = Double.MAX_VALUE; // Giá trị tối đa mặc định
-        List<ProductDetailResponse> products = productService.findProductsByPrice(minPrice, maxPrice);
-        String message = "Search results for products with price from " + minPrice + " to " + maxPrice;
-        return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message(message)
-                .result(products)
-                .build();
-    }
-    @GetMapping("/sort/name_asc")
-    public ApiResponse<List<ProductDetailResponse>> sortByNameAsc(){
-        return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message("Sort Completely")
-                .result(productService.sortProductByNameASC())
-                .build();
-    }
-    @GetMapping("/sort/name_desc")
-    public ApiResponse<List<ProductDetailResponse>> sortByNameDesc(){
-        return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message("Sort Completely")
-                .result(productService.sortProductByNameDESC())
-                .build();
-    }
-    @GetMapping("/sort/price_asc")
-    public ApiResponse<List<ProductDetailResponse>> sortByPriceAsc(){
-        return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message("Sort Completely")
-                .result(productService.sortProductByPriceASC())
-                .build();
-    }
-    @GetMapping("/sort/price_desc")
-    public ApiResponse<List<ProductDetailResponse>> sortByPriceDesc(){
-        return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message("Sort Completely")
-                .result(productService.sortProductByPriceDESC())
-                .build();
+    @PostMapping
+    public List<ProductDetailResponse> putProductToBag() {
+        return productService.getExclusiveProducts();
     }
 }
+

@@ -118,38 +118,12 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
     public List<ProductDetailResponse> findProductsByNameAndPrice(String query, Double minPrice, Double maxPrice) {
-        if (query == null  || minPrice == null && maxPrice == null || query.trim().isEmpty()) {
-            return getAllProducts();
-        }
+//        if (query == null  || minPrice == null && maxPrice == null || query.trim().isEmpty()) {
+//            return getAllProducts();
+//        }
         return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
                 .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
                 .map(productMapper::toDetailResponse)
                 .collect(Collectors.toList());
     }
-    
-    public List<ProductDetailResponse> sortProductByNameASC() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDetailResponse)
-                .sorted(Comparator.comparing(ProductDetailResponse::getName)) // Sắp xếp theo tên từ A-Z
-                .collect(Collectors.toList());
-    }
-    public List<ProductDetailResponse> sortProductByNameDESC() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDetailResponse)
-                .sorted(Comparator.comparing(ProductDetailResponse::getName).reversed())
-                .collect(Collectors.toList());
-    }
-    public List<ProductDetailResponse> sortProductByPriceASC() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDetailResponse)
-                .sorted(Comparator.comparing(ProductDetailResponse::getPrice)) // Sắp xếp theo giá từ rẻ đến đắt
-                .collect(Collectors.toList());
-    }
-    public List<ProductDetailResponse> sortProductByPriceDESC() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDetailResponse)
-                .sorted(Comparator.comparing(ProductDetailResponse::getPrice).reversed())
-                .collect(Collectors.toList());
-    }
-
 }
