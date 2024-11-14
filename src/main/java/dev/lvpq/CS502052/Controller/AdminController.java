@@ -1,6 +1,5 @@
 package dev.lvpq.CS502052.Controller;
 
-import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Service.ProductService;
@@ -10,8 +9,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +33,8 @@ public class AdminController {
 
     @GetMapping({"product.html", "product"})
     public String manageProduct(Model model, HttpServletRequest request,@RequestParam(required = false) String query) {
-        List<ProductDetailResponse> allProducts = productService.searchProductsByName(query);
+        List<ProductDetailResponse> allProducts = productService.findProductsByName(query);
         model.addAttribute("all_products", allProducts);
-
         model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
         return "/admin_layout/product";
     }
@@ -47,7 +43,7 @@ public class AdminController {
     public String manageUsers(Model model, HttpServletRequest request) {
         List<UserDetailResponse> users = userService.getAllCustomer();
         model.addAttribute("users", users);
-        model.addAttribute("request", request);
+        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
         return "/admin_layout/voucher";
     }
 

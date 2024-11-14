@@ -172,7 +172,6 @@
                         tableBody.innerHTML += row;
                     });
                 }
-
                 function searchAccount(query) {
                     fetch(`/api/user/search?query=${encodeURIComponent(query)}`)
                         .then(response => response.json())

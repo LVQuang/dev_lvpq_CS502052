@@ -62,7 +62,7 @@ public class UserService {
         return userMapper.toDetailResponse(user);
     }
     public List<UserDetailResponse> searchUsersByName(String query) {
-        if (query == null || query.trim().isEmpty()) {
+        if (query == null || query.trim().isEmpty()){
             return getAllCustomer();
         }
         return userRepository.findAll().stream()

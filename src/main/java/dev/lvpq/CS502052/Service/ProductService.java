@@ -1,9 +1,6 @@
 package dev.lvpq.CS502052.Service;
-import java.nio.file.Paths;
-import org.springframework.util.StringUtils;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
 import dev.lvpq.CS502052.Entity.Product;
 import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
@@ -17,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import java.util.NoSuchElementException;
@@ -54,7 +52,6 @@ public class ProductService {
     public ProductDetailResponse updateProduct(String id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
@@ -105,7 +102,7 @@ public class ProductService {
         return getProductsByType(ProductType.EXCLUSIVE);
     }
 
-    public List<ProductDetailResponse> searchProductsByName(String query) {
+    public List<ProductDetailResponse> findProductsByName(String query) {
         if (query == null || query.trim().isEmpty()) {
             return getAllProducts();
         }
@@ -113,6 +110,20 @@ public class ProductService {
                 .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
                 .map(productMapper::toDetailResponse)
                 .collect(Collectors.toList());
+    }
 
+    public List<ProductDetailResponse> findProductsByPrice(double minPrice, double maxPrice) {
+        return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
+                .map(productMapper::toDetailResponse)
+                .collect(Collectors.toList());
+    }
+    public List<ProductDetailResponse> findProductsByNameAndPrice(String query, Double minPrice, Double maxPrice) {
+//        if (query == null  || minPrice == null && maxPrice == null || query.trim().isEmpty()) {
+//            return getAllProducts();
+//        }
+        return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
+                .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
+                .map(productMapper::toDetailResponse)
+                .collect(Collectors.toList());
     }
 }

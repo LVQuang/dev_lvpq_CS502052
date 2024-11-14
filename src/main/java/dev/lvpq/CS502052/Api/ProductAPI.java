@@ -2,12 +2,12 @@ package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductListResponse;
 import dev.lvpq.CS502052.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -84,13 +84,47 @@ public class ProductAPI {
 
         return productService.getExclusiveProducts();
     }
-    @GetMapping({"/search","/search?query="})
-    public ApiResponse<List<ProductDetailResponse>> searchProductsByName(@RequestParam String query) {
-        List<ProductDetailResponse> products = productService.searchProductsByName(query);
+    @GetMapping("/search")
+    public ApiResponse<List<ProductDetailResponse>> findProducts(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "sort", required = false) String sort) {
+        List<ProductDetailResponse> products;
+
+   if(query != null && minPrice != null && maxPrice != null){
+       products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
+   }
+   else if(query == null && minPrice != null && maxPrice != null){
+       products = productService.findProductsByPrice(minPrice, maxPrice);
+   }
+   else if(query != null && minPrice == null && maxPrice == null){
+       products = productService.findProductsByName(query);
+   }
+   else{
+       products = productService.getAllProducts();
+   }
+        if ("name_asc".equalsIgnoreCase(sort) || sort.isEmpty()) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getName));
+        } else if ("name_desc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getName).reversed());
+        } else if ("price_asc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getPrice));
+        } else if ("price_desc".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(ProductDetailResponse::getPrice).reversed());
+        }
+        String message = query == null || query.isEmpty()
+                ? "Showing all products"
+                : "Search results for query: " + query;
         return ApiResponse.<List<ProductDetailResponse>>builder()
-                .code(200)
-                .message("Search results for query: " + query)
-                .result(products)
+            .code(200)
+            .message(message)
+            .result(products)
                 .build();
     }
+    @PostMapping
+    public List<ProductDetailResponse> putProductToBag() {
+        return productService.getExclusiveProducts();
+    }
 }
+
