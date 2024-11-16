@@ -78,15 +78,15 @@
 								<input type="text" class="form-control" placeholder="Email"
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"
 									   th:field="*{email}"
-									   required
 								>
+								<div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 							</div>
 							<div class="col-md-12 form-group">
 								<input type="password" class="form-control" placeholder="Password"
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'"
 									   th:field="*{password}"
-									   required
 								>
+								<div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 							</div>
 							<div class="col-md-12 form-group">
 								<button type="submit" class="primary-btn">Log In</button>

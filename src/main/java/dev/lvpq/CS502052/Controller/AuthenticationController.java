@@ -8,12 +8,14 @@ import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,13 +49,31 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    String Login(@ModelAttribute("login") LoginRequest login
-            , HttpServletRequest request)
+    String Login(HttpServletRequest request,
+                 @Valid @ModelAttribute("login") LoginRequest login,
+                 BindingResult binding)
     {
+        if (binding.hasErrors()) return "/client_layout/login";
         var response = authenticationService.login(login);
         request.getSession().setAttribute("myToken", response.getToken());
         log.info("Login Token: {}", response.getToken());
         return "redirect:/home";
+    }
+
+    @GetMapping("/register")
+    String Register(HttpServletRequest request, Model model) {
+        model.addAttribute("register", new RegisterRequest());
+        return "/client_layout/register";
+    }
+
+    @PostMapping("/register")
+    String Register(HttpServletRequest request,
+                    @Valid @ModelAttribute("register") RegisterRequest register,
+                    BindingResult binding) {
+        if (binding.hasErrors()) return "/client_layout/register";
+        log.info("Register: {}", register.getEmail());
+        authenticationService.register(register);
+        return "/client_layout/register";
     }
 
     @GetMapping("/logout")
@@ -71,19 +91,5 @@ public class AuthenticationController {
         httpRequest.getSession().removeAttribute("myToken");
 
         return "redirect:/home";
-    }
-
-    @GetMapping("/register")
-    String Register(HttpServletRequest request, Model model) {
-        model.addAttribute("register", new RegisterRequest());
-        return "/client_layout/register";
-    }
-
-    @PostMapping("/register")
-    String Register(HttpServletRequest request,
-                    @ModelAttribute("register") RegisterRequest register) {
-        log.info("Register: {}", register.getEmail());
-        authenticationService.register(register);
-        return "/client_layout/register";
     }
 }
