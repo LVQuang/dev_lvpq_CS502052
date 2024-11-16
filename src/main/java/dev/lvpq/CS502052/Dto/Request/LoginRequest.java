@@ -12,10 +12,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class LoginRequest {
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "EMAIL_BLANK")
+    @Email(message = "EMAIL_FORMAT")
     String email;
-    @NotBlank(message = "Password cannot be empty")
-    @Size(min = 8, message = "Password must be at least 8 characters")
+    @NotBlank(message = "PASSWORD_BLANK")
+    @Size(min = 8, message = "PASSWORD_LENGTH")
     String password;
 }

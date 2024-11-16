@@ -15,12 +15,16 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class RegisterRequest {
+    @NotBlank(message = "USERNAME_BLANK")
     String username;
-    @Size(min = 8, message = "Password must be at least 8 characters")
+    @NotBlank(message = "PASSWORD_BLANK")
+    @Size(min = 8, message = "PASSWORD_LENGTH")
     String password;
-    @Size(min = 8, message = "Repassword must be at least 8 characters")
+    @NotBlank(message = "REPASSWORD_BLANK")
+    @Size(min = 8, message = "REPASSWORD_LENGTH")
     String repassword;
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "EMAIL_BLANK")
+    @Email(message = "EMAIL_FORMAT")
     String email;
     String phone;
     String address;

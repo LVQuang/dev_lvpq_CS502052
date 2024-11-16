@@ -1,7 +1,12 @@
 package dev.lvpq.CS502052.Exception;
 
+import dev.lvpq.CS502052.Dto.Request.LoginRequest;
+import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
+import dev.lvpq.CS502052.Exception.Error.ArgExceptionCode;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 import java.util.Objects;
@@ -27,34 +33,6 @@ public class GlobalExceptionHandler {
                 .body(packageApiResponse(errorCode));
     }
 
-    @SuppressWarnings("unchecked")
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse<ErrorCode>> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        var enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.KEY_INVALID;
-        Map<String, Object> attributes = null;
-
-        try {
-            errorCode = ErrorCode.valueOf(enumKey);
-
-            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
-            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
-            log.info(attributes.toString());
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-        }
-
-        var apiResponse = ApiResponse.<ErrorCode>builder()
-                .code(errorCode.getCode())
-                .message(Objects.nonNull(attributes) ?
-                        mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
-                .build();
-
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(apiResponse);
-    }
-
     @ExceptionHandler(AppException.class)
     ResponseEntity<ApiResponse<ErrorCode>> handlingAppException(AppException exception) {
         var errorCode = exception.getErrorCode();
@@ -71,6 +49,39 @@ public class GlobalExceptionHandler {
                 .body(packageApiResponse(errorCode));
     }
 
+    @ExceptionHandler(AuthException.class)
+    ModelAndView handlingAuthException(AuthException exception) {
+        var code = exception.getAuthExceptionCode();
+        var model = new ModelAndView("/client_layout/login");
+        model.addObject("login", new LoginRequest());
+        model.addObject("register", new RegisterRequest());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    ModelAndView handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception,
+                                                         HttpServletRequest request) {
+        var enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
+        var errorCode = ArgExceptionCode.KEY_INVALID;
+        Map<String, Object> attributes = null;
+
+        try {
+            errorCode = ArgExceptionCode.valueOf(enumKey);
+
+            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+            log.info(attributes.toString());
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+        }
+        var model = authRoute(request);
+        model.addObject("error", Objects.nonNull(attributes) ?
+                mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage());
+        return model;
+    }
+
     //    Define Utils Function To Handle Exception
     ApiResponse<ErrorCode> packageApiResponse(ErrorCode errorCode) {
         return ApiResponse.<ErrorCode>builder()
@@ -82,5 +93,23 @@ public class GlobalExceptionHandler {
     private String mapAttribute(String message, Map<String, Object> attributes) {
         String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
+    }
+
+    private ModelAndView authRoute(HttpServletRequest request) {
+
+        var currentEndpoint = request.getRequestURI();
+        log.info("Current endpoint: {}", currentEndpoint);
+
+        var model = new ModelAndView();
+        if (currentEndpoint.equals("/login")) {
+            model.setViewName("/client_layout/login");
+            model.addObject("login", new LoginRequest());
+        } else if (currentEndpoint.equals("/register")) {
+            model.setViewName("/client_layout/register");
+            model.addObject("register", new RegisterRequest());
+        }
+
+
+        return model;
     }
 }
