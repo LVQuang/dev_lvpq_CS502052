@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,6 +16,7 @@ public class RegisterRequest {
     String username;
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
+    String repassword;
     String email;
     String phone;
     String address;

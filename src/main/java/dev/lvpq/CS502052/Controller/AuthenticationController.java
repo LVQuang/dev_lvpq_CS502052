@@ -3,6 +3,7 @@ package dev.lvpq.CS502052.Controller;
 import com.nimbusds.jose.JOSEException;
 import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Dto.Request.LogoutRequest;
+import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,5 +71,19 @@ public class AuthenticationController {
         httpRequest.getSession().removeAttribute("myToken");
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/register")
+    String Register(HttpServletRequest request, Model model) {
+        model.addAttribute("register", new RegisterRequest());
+        return "/client_layout/register";
+    }
+
+    @PostMapping("/register")
+    String Register(HttpServletRequest request,
+                    @ModelAttribute("register") RegisterRequest register) {
+        log.info("Register: {}", register.getEmail());
+        authenticationService.register(register);
+        return "/client_layout/register";
     }
 }

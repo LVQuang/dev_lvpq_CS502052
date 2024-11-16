@@ -4766,8 +4766,7 @@ label {
 .login_form_inner {
   box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.07);
   height: 100%;
-  text-align: center;
-  padding-top: 115px; }
+  text-align: center; }
   .login_form_inner h3 {
     color: #222222;
     text-transform: uppercase;
