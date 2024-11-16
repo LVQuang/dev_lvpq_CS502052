@@ -26,6 +26,7 @@ import java.text.ParseException;
 @RequestMapping("")
 @Controller
 public class AuthenticationController {
+
     AuthenticationService authenticationService;
 
     @GetMapping({"/login","/login.html"})
@@ -50,7 +51,7 @@ public class AuthenticationController {
     {
         var response = authenticationService.login(login);
         request.getSession().setAttribute("myToken", response.getToken());
-        log.info("Token: {}", response.getToken());
+        log.info("Login Token: {}", response.getToken());
         return "redirect:/home";
     }
 
