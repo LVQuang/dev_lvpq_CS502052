@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Slf4j
@@ -32,7 +31,7 @@ public class StartUp {
         return args -> {
             InitializeRole(roleRepository);
             InitializeManager(userRepository, roleRepository);
-            cleanOTP(otpRepository);
+            otpRepository.deleteAll();
         };
     }
 
@@ -62,13 +61,5 @@ public class StartUp {
             user.addRole(role);
             userRepository.save(user);
         }
-    }
-
-    void cleanOTP(OTPRepository otpRepository) {
-        var otps = otpRepository.findAll();
-        otps.forEach(otp -> {
-            if (!otp.isValid())
-                otpRepository.delete(otp);
-        });
     }
 }

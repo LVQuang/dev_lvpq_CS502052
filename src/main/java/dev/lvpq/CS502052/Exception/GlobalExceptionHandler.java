@@ -1,9 +1,6 @@
 package dev.lvpq.CS502052.Exception;
 
-import dev.lvpq.CS502052.Dto.Request.ForgotPasswordOTP;
-import dev.lvpq.CS502052.Dto.Request.ForgotPasswordRequest;
-import dev.lvpq.CS502052.Dto.Request.LoginRequest;
-import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
+import dev.lvpq.CS502052.Dto.Request.*;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Exception.DefineExceptions.*;
 import dev.lvpq.CS502052.Exception.Error.ForgotPasswordExceptionCode;
@@ -70,6 +67,16 @@ public class GlobalExceptionHandler {
         var code = exception.getCode();
         var model = new ModelAndView("/client_layout/forgotPasswordOTP");
         model.addObject("forgotPasswordOTP", new ForgotPasswordOTP());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
+    @ExceptionHandler(ResetPasswordException.class)
+    ModelAndView handlingResetPasswordException(ResetPasswordException exception) {
+        var code = exception.getCode();
+        var otp = exception.getOtp();
+        var model = new ModelAndView("/client_layout/resetPassword");
+        model.addObject("resetPassword", ResetPassword.builder().otp(otp).build());
         model.addObject("error", code.getMessage());
         return model;
     }

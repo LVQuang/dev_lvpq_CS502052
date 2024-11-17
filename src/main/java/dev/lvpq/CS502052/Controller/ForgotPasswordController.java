@@ -85,6 +85,7 @@ public class ForgotPasswordController {
             model.addAttribute("globalErrors", bindingResult.getGlobalErrors());
             return "/client_layout/resetPassword";
         }
+        forgotPasswordService.ResetPassword(resetPassword);
         return "redirect:/home";
     }
 }

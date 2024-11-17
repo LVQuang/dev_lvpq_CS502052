@@ -53,8 +53,6 @@ public class User {
     Set<VoucherDetail> voucherDetails = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<OTP> otps = new HashSet<>();
-
-
     public void addRole(Role role) {
         roles.add(role);
     }
