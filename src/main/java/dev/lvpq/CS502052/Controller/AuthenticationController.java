@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,11 +67,15 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     String Register(HttpServletRequest request,
-                    @Valid @ModelAttribute("register") RegisterRequest register) {
+                    @Valid @ModelAttribute("register") RegisterRequest register,
+                    BindingResult bindingResult, Model model) {
         log.info("Register: {}", register.getEmail());
         authenticationService.register(register);
-
-        return "redirect:/home";
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("validation", bindingResult.getAllErrors());
+            return "/client_layout/register";
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/logout")

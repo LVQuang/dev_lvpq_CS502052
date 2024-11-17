@@ -102,6 +102,7 @@
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Repassword'"
 									   th:field="*{repassword}"
 								>
+								<div class="text-danger" th:if="${#fields.hasErrors('repassword')}" th:errors="*{repassword}"></div>
 							</div>
 							<div class="text-danger col-md-12 form-group" th:if="${error}" th:text="${error}"></div>
 							<div class="col-md-12 form-group">

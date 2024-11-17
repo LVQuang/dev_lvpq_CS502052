@@ -1,28 +1,22 @@
 package dev.lvpq.CS502052.Exception;
 
+import dev.lvpq.CS502052.Dto.Request.ForgotPasswordOTP;
+import dev.lvpq.CS502052.Dto.Request.ForgotPasswordRequest;
 import dev.lvpq.CS502052.Dto.Request.LoginRequest;
 import dev.lvpq.CS502052.Dto.Request.RegisterRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
-import dev.lvpq.CS502052.Exception.Error.ArgExceptionCode;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolation;
+import dev.lvpq.CS502052.Exception.DefineExceptions.*;
+import dev.lvpq.CS502052.Exception.Error.ForgotPasswordExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
-import java.util.Objects;
-
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String MIN_ATTRIBUTE = "min";
 
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<ApiResponse<ErrorCode>> handlingRuntimeException(RuntimeException exception) {
@@ -49,12 +43,33 @@ public class GlobalExceptionHandler {
                 .body(packageApiResponse(errorCode));
     }
 
+    @ExceptionHandler(MessageException.class)
+    ModelAndView handlingMessageException(MessageException exception) {
+        var code = exception.getCode();
+        return handlingForgotExceptionCombination(code);
+    }
+
+    @ExceptionHandler(ForgotPasswordException.class)
+    ModelAndView handlingForgotPasswordException(ForgotPasswordException exception) {
+        var code = exception.getCode();
+        return handlingForgotExceptionCombination(code);
+    }
+
     @ExceptionHandler(AuthException.class)
     ModelAndView handlingAuthException(AuthException exception) {
         var code = exception.getAuthExceptionCode();
         var model = new ModelAndView("/client_layout/login");
         model.addObject("login", new LoginRequest());
         model.addObject("register", new RegisterRequest());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
+    @ExceptionHandler(OTPException.class)
+    ModelAndView handlingOTPException(OTPException exception) {
+        var code = exception.getCode();
+        var model = new ModelAndView("/client_layout/forgotPasswordOTP");
+        model.addObject("forgotPasswordOTP", new ForgotPasswordOTP());
         model.addObject("error", code.getMessage());
         return model;
     }
@@ -67,26 +82,10 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    private String mapAttribute(String message, Map<String, Object> attributes) {
-        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
-        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
-    }
-
-    private ModelAndView authRoute(HttpServletRequest request) {
-
-        var currentEndpoint = request.getRequestURI();
-        log.info("Current endpoint: {}", currentEndpoint);
-
-        var model = new ModelAndView();
-        if (currentEndpoint.equals("/login")) {
-            model.setViewName("/client_layout/login");
-            model.addObject("login", new LoginRequest());
-        } else if (currentEndpoint.equals("/register")) {
-            model.setViewName("/client_layout/register");
-            model.addObject("register", new RegisterRequest());
-        }
-
-
+    ModelAndView handlingForgotExceptionCombination(ForgotPasswordExceptionCode code) {
+        var model = new ModelAndView("/client_layout/forgotPassword");
+        model.addObject("forgotPassword", new ForgotPasswordRequest());
+        model.addObject("error", code.getMessage());
         return model;
     }
 }

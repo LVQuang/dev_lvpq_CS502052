@@ -3,6 +3,7 @@ package dev.lvpq.CS502052.Config;
 import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
+import dev.lvpq.CS502052.Repository.OTPRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import lombok.AccessLevel;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Slf4j
@@ -24,10 +26,13 @@ public class StartUp {
     PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner (UserRepository userRepository, RoleRepository roleRepository){
+    ApplicationRunner applicationRunner (UserRepository userRepository,
+                                         RoleRepository roleRepository,
+                                         OTPRepository otpRepository){
         return args -> {
             InitializeRole(roleRepository);
             InitializeManager(userRepository, roleRepository);
+            cleanOTP(otpRepository);
         };
     }
 
@@ -57,5 +62,13 @@ public class StartUp {
             user.addRole(role);
             userRepository.save(user);
         }
+    }
+
+    void cleanOTP(OTPRepository otpRepository) {
+        var otps = otpRepository.findAll();
+        otps.forEach(otp -> {
+            if (!otp.isValid())
+                otpRepository.delete(otp);
+        });
     }
 }
