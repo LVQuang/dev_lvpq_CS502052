@@ -25,7 +25,7 @@ public class MailAPI {
             @RequestParam("body") String body,
             @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments) {
 
-        List<String> failedEmails = new ArrayList<>();
+        List<String> failedEmails;
 
         try {
             failedEmails = mailService.sendMail(toEmails, subject, body, attachments);

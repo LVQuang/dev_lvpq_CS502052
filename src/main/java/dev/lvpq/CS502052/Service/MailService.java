@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MailService {
@@ -27,19 +28,17 @@ public class MailService {
                 MimeMessageHelper helper = new MimeMessageHelper(message, true); // true cho phép tệp đính kèm
                 helper.setTo(toEmail);
                 helper.setSubject(subject);
-                helper.setText(body, true); // true nếu bạn muốn sử dụng HTML
-
-                // Thêm các tệp đính kèm
+                helper.setText(body, true);
                 if (attachments != null) {
                     for (MultipartFile file : attachments) {
                         if (!file.isEmpty()) {
-                            helper.addAttachment(file.getOriginalFilename(), file);
+                            helper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
                         }
                     }
                 }
 
                 mailSender.send(message);
-            } catch (MailException e) { // Sử dụng MailException từ Spring
+            } catch (MailException e) {
                 failedEmails.add(toEmail);
                 throw new MailException("Error sending email to: " + toEmail, e);
             } catch (Exception e) {
@@ -48,6 +47,6 @@ public class MailService {
             }
         }
 
-        return failedEmails; // Trả về danh sách các email không gửi thành công
+        return failedEmails;
     }
 }

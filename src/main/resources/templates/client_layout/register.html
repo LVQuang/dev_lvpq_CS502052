@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx" class="no-js">
+<html lang="zxx" class="no-js" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<!-- Mobile Specific Meta -->
@@ -102,7 +102,6 @@
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Repassword'"
 									   th:field="*{repassword}"
 								>
-								<div class="text-danger" th:if="${#fields.hasErrors('repassword')}" th:errors="*{repassword}"></div>
 							</div>
 							<div class="text-danger col-md-12 form-group" th:if="${error}" th:text="${error}"></div>
 							<div class="col-md-12 form-group">
@@ -115,9 +114,9 @@
 					<div class="login_box_img">
 						<img class="img-fluid" src="/img/login.jpg" alt="">
 						<div class="hover">
-							<h4>New to our website?</h4>
-							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-							<a class="primary-btn" href="registration.html">Create an Account</a>
+							<h4>Are you a member of our website?</h4>
+							<p>There are advances vouchers, if you want to take privilege</p>
+							<a class="primary-btn" th:href="@{/login}">Login Existing Account</a>
 						</div>
 					</div>
 				</div>

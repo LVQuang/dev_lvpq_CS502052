@@ -59,29 +59,6 @@ public class GlobalExceptionHandler {
         return model;
     }
 
-    @SuppressWarnings("unchecked")
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ModelAndView handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception,
-                                                         HttpServletRequest request) {
-        var enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        var errorCode = ArgExceptionCode.KEY_INVALID;
-        Map<String, Object> attributes = null;
-
-        try {
-            errorCode = ArgExceptionCode.valueOf(enumKey);
-
-            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
-            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
-            log.info(attributes.toString());
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-        }
-        var model = authRoute(request);
-        model.addObject("error", Objects.nonNull(attributes) ?
-                mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage());
-        return model;
-    }
-
     //    Define Utils Function To Handle Exception
     ApiResponse<ErrorCode> packageApiResponse(ErrorCode errorCode) {
         return ApiResponse.<ErrorCode>builder()

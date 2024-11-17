@@ -10,12 +10,12 @@ import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Entity.InvalidatedToken;
+import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
 import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
-import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
@@ -39,6 +39,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -71,11 +72,13 @@ public class AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         var user = softAuthenticate(request);
         if (user == null) return null;
-        user.getRoles().forEach(role -> log.info(role.getName()));
+        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        roles.forEach(log::info);
         var token = genToken(user);
         return LoginResponse.builder()
                     .token(token)
                     .authenticated(true)
+                    .roles(roles)
                     .build();
     }
 
