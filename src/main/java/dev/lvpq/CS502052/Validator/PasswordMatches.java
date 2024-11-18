@@ -5,14 +5,12 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
-@Target({ElementType.FIELD})
+@Documented
+@Constraint(validatedBy = PasswordMatchesValidator.class)
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(
-        validatedBy = {DobValidator.class}
-)
-public @interface DobConstraint {
-    String message() default "At least 11 years to Create Account";
+public @interface PasswordMatches {
+    String message() default "Password does not match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    int min();
 }

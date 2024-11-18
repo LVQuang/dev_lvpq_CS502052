@@ -3,6 +3,7 @@ package dev.lvpq.CS502052.Config;
 import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
+import dev.lvpq.CS502052.Repository.OTPRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import lombok.AccessLevel;
@@ -24,10 +25,13 @@ public class StartUp {
     PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner (UserRepository userRepository, RoleRepository roleRepository){
+    ApplicationRunner applicationRunner (UserRepository userRepository,
+                                         RoleRepository roleRepository,
+                                         OTPRepository otpRepository){
         return args -> {
             InitializeRole(roleRepository);
             InitializeManager(userRepository, roleRepository);
+            otpRepository.deleteAll();
         };
     }
 

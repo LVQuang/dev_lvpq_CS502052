@@ -7,8 +7,6 @@ import com.nimbusds.jwt.SignedJWT;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.ErrorCode;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;

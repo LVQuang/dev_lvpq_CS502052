@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Entity;
 
+import dev.lvpq.CS502052.Enums.Activity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +20,7 @@ public class ActivityLog {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String activity;
+    Activity activity;
     @Builder.Default
     LocalDate createdAt = LocalDate.now();
     String meta;

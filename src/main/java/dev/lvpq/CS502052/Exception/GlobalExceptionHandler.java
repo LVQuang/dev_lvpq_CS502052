@@ -1,22 +1,19 @@
 package dev.lvpq.CS502052.Exception;
 
+import dev.lvpq.CS502052.Dto.Request.*;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import jakarta.validation.ConstraintViolation;
+import dev.lvpq.CS502052.Exception.DefineExceptions.*;
+import dev.lvpq.CS502052.Exception.Error.ForgotPasswordExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String MIN_ATTRIBUTE = "min";
 
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<ApiResponse<ErrorCode>> handlingRuntimeException(RuntimeException exception) {
@@ -25,34 +22,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(packageApiResponse(errorCode));
-    }
-
-    @SuppressWarnings("unchecked")
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse<ErrorCode>> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        var enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.KEY_INVALID;
-        Map<String, Object> attributes = null;
-
-        try {
-            errorCode = ErrorCode.valueOf(enumKey);
-
-            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
-            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
-            log.info(attributes.toString());
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-        }
-
-        var apiResponse = ApiResponse.<ErrorCode>builder()
-                .code(errorCode.getCode())
-                .message(Objects.nonNull(attributes) ?
-                        mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
-                .build();
-
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(apiResponse);
     }
 
     @ExceptionHandler(AppException.class)
@@ -71,6 +40,47 @@ public class GlobalExceptionHandler {
                 .body(packageApiResponse(errorCode));
     }
 
+    @ExceptionHandler(MessageException.class)
+    ModelAndView handlingMessageException(MessageException exception) {
+        var code = exception.getCode();
+        return handlingForgotExceptionCombination(code);
+    }
+
+    @ExceptionHandler(ForgotPasswordException.class)
+    ModelAndView handlingForgotPasswordException(ForgotPasswordException exception) {
+        var code = exception.getCode();
+        return handlingForgotExceptionCombination(code);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    ModelAndView handlingAuthException(AuthException exception) {
+        log.debug("Authentication Exception Handler");
+        var code = exception.getAuthExceptionCode();
+        var model = new ModelAndView("/client_layout/login");
+        model.addObject("login", new LoginRequest());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
+    @ExceptionHandler(OTPException.class)
+    ModelAndView handlingOTPException(OTPException exception) {
+        var code = exception.getCode();
+        var model = new ModelAndView("/client_layout/forgotPasswordOTP");
+        model.addObject("forgotPasswordOTP", new ForgotPasswordOTP());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
+    @ExceptionHandler(ResetPasswordException.class)
+    ModelAndView handlingResetPasswordException(ResetPasswordException exception) {
+        var code = exception.getCode();
+        var otp = exception.getOtp();
+        var model = new ModelAndView("/client_layout/resetPassword");
+        model.addObject("resetPassword", ResetPassword.builder().otp(otp).build());
+        model.addObject("error", code.getMessage());
+        return model;
+    }
+
     //    Define Utils Function To Handle Exception
     ApiResponse<ErrorCode> packageApiResponse(ErrorCode errorCode) {
         return ApiResponse.<ErrorCode>builder()
@@ -79,8 +89,10 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    private String mapAttribute(String message, Map<String, Object> attributes) {
-        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
-        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
+    ModelAndView handlingForgotExceptionCombination(ForgotPasswordExceptionCode code) {
+        var model = new ModelAndView("/client_layout/forgotPassword");
+        model.addObject("forgotPassword", new ForgotPasswordRequest());
+        model.addObject("error", code.getMessage());
+        return model;
     }
 }

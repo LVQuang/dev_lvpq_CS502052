@@ -1,0 +1,10 @@
+.date-picker-container {
+    max-width: 400px;
+}
+.form-label {
+    font-weight: bold;
+}
+input[type="date"] {
+    border-radius: 0.375rem; /* bo tròn góc */
+    padding: 0.5rem;
+}
