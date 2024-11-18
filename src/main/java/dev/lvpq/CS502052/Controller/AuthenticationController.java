@@ -76,7 +76,8 @@ public class AuthenticationController {
                     BindingResult bindingResult, Model model) {
         log.info("Register: {}", register.getEmail());
         if (bindingResult.hasErrors()) {
-            model.addAttribute("validation", bindingResult.getAllErrors());
+            model.addAttribute("fieldErrors", bindingResult.getFieldErrors());
+            model.addAttribute("globalErrors", bindingResult.getGlobalErrors());
             return "/client_layout/register";
         }
         authenticationService.register(register);

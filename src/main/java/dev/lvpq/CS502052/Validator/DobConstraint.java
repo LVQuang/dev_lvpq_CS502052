@@ -11,7 +11,7 @@ import java.lang.annotation.*;
         validatedBy = {DobValidator.class}
 )
 public @interface DobConstraint {
-    String message() default "{jakarta.validation.constraints.Size.message}";
+    String message() default "At least 11 years to Create Account";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     int min();

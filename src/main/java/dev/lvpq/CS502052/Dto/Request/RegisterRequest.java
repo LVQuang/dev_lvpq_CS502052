@@ -1,6 +1,7 @@
 package dev.lvpq.CS502052.Dto.Request;
 
 import dev.lvpq.CS502052.Validator.DobConstraint;
+import dev.lvpq.CS502052.Validator.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@PasswordMatches
 @Builder
 public class RegisterRequest {
     @NotBlank(message = "Username is not empty")
@@ -28,6 +30,6 @@ public class RegisterRequest {
     String email;
     String phone;
     String address;
-    @DobConstraint(min = 16, message = "DOB_INVALID")
+    @DobConstraint(min = 11, message = "At least 11 years to Create Account")
     LocalDate dateOfBirth;
 }
