@@ -79,12 +79,14 @@
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"
 									   th:field="*{email}"
 								>
+								<div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 							</div>
 							<div class="col-md-12 form-group">
 								<input type="password" class="form-control" placeholder="Password"
 									   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'"
 									   th:field="*{password}"
 								>
+								<div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 							</div>
 							<div class="text-danger col-md-12 form-group" th:if="${error}" th:text="${error}"></div>
 							<div class="col-md-12 form-group">

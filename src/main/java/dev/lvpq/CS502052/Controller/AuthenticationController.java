@@ -48,8 +48,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     String Login(HttpServletRequest request,
-                 @Valid @ModelAttribute("login") LoginRequest login)
+                 @Valid @ModelAttribute("login") LoginRequest login,
+                 BindingResult bindingResult, Model model)
     {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("validation", bindingResult.getAllErrors());
+            return "/client_layout/login";
+        }
         var response = authenticationService.login(login);
         request.getSession().setAttribute("myToken", response.getToken());
         log.info("Login: {}", response.getToken());
@@ -70,11 +75,11 @@ public class AuthenticationController {
                     @Valid @ModelAttribute("register") RegisterRequest register,
                     BindingResult bindingResult, Model model) {
         log.info("Register: {}", register.getEmail());
-        authenticationService.register(register);
         if (bindingResult.hasErrors()) {
             model.addAttribute("validation", bindingResult.getAllErrors());
             return "/client_layout/register";
         }
+        authenticationService.register(register);
         return "redirect:/login";
     }
 

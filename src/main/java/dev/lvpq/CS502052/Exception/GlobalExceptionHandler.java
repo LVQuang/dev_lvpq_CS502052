@@ -54,10 +54,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     ModelAndView handlingAuthException(AuthException exception) {
+        log.debug("Authentication Exception Handler");
         var code = exception.getAuthExceptionCode();
         var model = new ModelAndView("/client_layout/login");
         model.addObject("login", new LoginRequest());
-        model.addObject("register", new RegisterRequest());
         model.addObject("error", code.getMessage());
         return model;
     }
