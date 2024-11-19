@@ -1,7 +1,5 @@
 package dev.lvpq.CS502052.Service;
 
-import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Entity.User;
@@ -13,11 +11,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +57,12 @@ public class UserService {
         var user = userRepository.findByEmail(email).orElseThrow(null);
         return userMapper.toDetailResponse(user);
     }
-    public List<UserDetailResponse> searchUsersByName(String query) {
+    public User getCurrentUser() {
+        var context = SecurityContextHolder.getContext();
+        var email =context.getAuthentication().getName();
+        return userRepository.findByEmail(email).orElseThrow(null);
+    }
+    public List<UserDetailResponse> findUsersByName(String query) {
         if (query == null || query.trim().isEmpty()){
             return getAllCustomer();
         }

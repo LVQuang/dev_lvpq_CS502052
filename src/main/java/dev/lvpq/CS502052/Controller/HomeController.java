@@ -1,9 +1,8 @@
 package dev.lvpq.CS502052.Controller;
 
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Entity.BrandView;
 import dev.lvpq.CS502052.Entity.CartItemView;
-import dev.lvpq.CS502052.Entity.Product;
 import dev.lvpq.CS502052.Entity.ProductView;
 import dev.lvpq.CS502052.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,9 +30,9 @@ public class HomeController {
     private final ProductService productService;
     @GetMapping({"/home","/home.html", "/index.html"})
     public String showIndexPage(HttpServletRequest request, Model model) {
-        List<ProductDetailResponse> latest_products = productService.getLatestProducts();
-        List<ProductDetailResponse> coming_products = productService.getComingProducts();
-        List<ProductDetailResponse> exclusive_products = productService.getExclusiveProducts();;
+        List<ProductResponse> latest_products = productService.getLatestProducts();
+        List<ProductResponse> coming_products = productService.getComingProducts();
+        List<ProductResponse> exclusive_products = productService.getExclusiveProducts();;
 
         List<ProductView> related_productViews = getRelatedProducts();
 
@@ -87,7 +86,7 @@ public class HomeController {
     @GetMapping({"/category","/category.html"})
     String shop(HttpServletRequest request, Model model) {
         List<ProductView> related_products = getRelatedProducts();
-        List<ProductDetailResponse> latest_products = productService.getLatestProducts();
+        List<ProductResponse> latest_products = productService.getLatestProducts();
 //        List<ProductView> latest_products = getLatestProducts();
 
         model.addAttribute("latest_products", latest_products);
@@ -105,7 +104,7 @@ public class HomeController {
     }
     @GetMapping({"/single-product/{id}", "/single-product.html"})
     public String singleProduct(HttpServletRequest request, Model model, @PathVariable String id) {
-        ProductDetailResponse product = productService.getProductById(id);  // Lấy thông tin sản phẩm từ database
+        ProductResponse product = productService.getProductById(id);  // Lấy thông tin sản phẩm từ database
         model.addAttribute("product", product);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/single-product";

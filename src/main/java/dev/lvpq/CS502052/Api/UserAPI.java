@@ -1,7 +1,6 @@
 package dev.lvpq.CS502052.Api;
 
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Service.UserService;
@@ -55,12 +54,12 @@ public class UserAPI {
                 .result(userService.getCurrentInformation())
                 .build();
     }
-    @GetMapping({"/search","/search?query="})
-    public ApiResponse<List<UserDetailResponse>> searchUsersByName(@RequestParam String query) {
-        List<UserDetailResponse> users = userService.searchUsersByName(query);
+    @GetMapping({"/find","/find?query="})
+    public ApiResponse<List<UserDetailResponse>> findUserByName(@RequestParam String query) {
+        List<UserDetailResponse> users = userService.findUsersByName(query);
         return ApiResponse.<List<UserDetailResponse>>builder()
                 .code(200)
-                .message("Search results for query: " + query)
+                .message("Find results for query: " + query)
                 .result(users)
                 .build();
     }

@@ -164,17 +164,15 @@
                     <div class="col-lg-4">
                         <div class="order_box">
                             <h2>Your Order</h2>
-                            <ul class="list">
-                                <li><a href="#">Product <span>Total</span></a></li>
-                                <li><a href="#">Fresh Blackberry <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-                                <li><a href="#">Fresh Tomatoes <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-                                <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
+                            <ul class="list" id="order-list">
+
                             </ul>
                             <ul class="list list_2">
-                                <li><a href="#">Subtotal <span>$2160.00</span></a></li>
+                                <li><a href="#">Subtotal <span id="subtotal"></span></a></li>
                                 <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
-                                <li><a href="#">Total <span>$2210.00</span></a></li>
+                                <li><a href="#">Total <span id="total">x</span></a></li>
                             </ul>
+
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option5" name="selector">
@@ -206,6 +204,54 @@
             </div>
         </div>
     </section>
+    <script>
+        // Hàm fetch dữ liệu từ server
+        async function fetchOrderList() {
+            try {
+                const response = await fetch('/api/invoice');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                displayOrder(data.result);
+                calculateTotals(data.result);
+            } catch (error) {
+                console.error('Error fetching order list:', error);
+            }
+        }
+        function displayOrder(items) {
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = '<li><a href="#">Product <span>Total</span></a></li>';
+
+            items.forEach(item => {
+                const product = item.product;
+                const quantity = item.quantity;
+
+                const productHTML = `
+                 <li><a>${product.name} <span class="middle">x ${quantity}</span> <span class="last">$${(product.price * quantity).toFixed(2)}</span></a></li>
+            `;
+
+                orderList.insertAdjacentHTML('beforeend', productHTML);
+            });
+        }
+
+        function calculateTotals(items) {
+            const shippingFee = 50.00;
+            let subtotal = 0;
+
+            items.forEach(item => {
+                const product = item.product;
+                const quantity = item.quantity;
+                subtotal += product.price * quantity;
+            });
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${(subtotal + shippingFee).toFixed(2)}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchOrderList);
+    </script>
+
     <!--================End Checkout Area =================-->
 
     <!-- start footer Area -->

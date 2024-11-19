@@ -6,8 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -17,6 +16,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Invoice {
+//    public Invoice(User user){
+//        buyer = user;
+//    }
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -34,4 +36,13 @@ public class Invoice {
     User buyer;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<InvoiceDetail> invoiceDetails = new HashSet<>();
+
+    public Map<Product, Integer> getProduct() {
+        Map<Product, Integer> result = new HashMap<>();
+        for (InvoiceDetail detail : this.getInvoiceDetails()) {
+            result.put(detail.getProduct(), detail.getQuantity());
+        }
+        return result;
+    }
+
 }

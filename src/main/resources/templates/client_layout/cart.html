@@ -71,73 +71,183 @@
                             <th scope="col">Total</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="product-list">
                         <!-- Existing items -->
-                        <tr th:each="item, iterStat : ${cartItems}">
-                            <td>
-                                <div class="media">
-                                    <div class="d-flex">
-                                        <img th:src="${item.getImageUrl()}" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <p th:text="${item.description}">Product Name</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <h5 th:text="'$' + ${item.unitPrice}">360.00</h5>
-                            </td>
-                            <td>
-                                <div class="product_count">
-                                    <input type="text" name="qty" th:id="'sst' + ${iterStat.index}" maxlength="12" th:value="${item.quantity}" title="Quantity:" class="input-text qty">
-                                    <button th:onclick="'increaseQty(' + ${iterStat.index} + ', ' + ${item.unitPrice} + ')'" class="increase items-count" type="button">
-                                        <i class="lnr lnr-chevron-up"></i>
-                                    </button>
-
-                                    <button th:onclick="'decreaseQty(' + ${iterStat.index} + ', ' + ${item.unitPrice} + ')'" class="reduced items-count" type="button">
-                                        <i class="lnr lnr-chevron-down"></i>
-                                    </button>
-                                </div>
-                            </td>
-                            <td>
-                                <h5 th:id="'total-price' + ${iterStat.index}" th:text="'$' + (${item.unitPrice} * ${item.quantity})">720.00</h5>
-                            </td>
-                        </tr>
 
                         <!-- Another item here -->
                         </tbody>
                     </table>
-                    <button  class="primary-btn">Purchase</button>
+                    <button  class="primary-btn" > <a th:href="@{/checkout}">Purchase</a></button>
                 </div>
             </div>
         </div>
     </section>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Remove Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Do you want to remove this product from your cart?
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelDelete" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button id="confirmDelete" type="button" class="btn btn-danger">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+
+        function fetchProductFromUser() {
+            fetch(`/api/invoice`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && Array.isArray(data.result)) {
+                        displayProducts(data.result);
+
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        function displayProducts(items) {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Xóa nội dung cũ
+
+            items.forEach(item => {
+                const product = item.product; // Lấy thông tin sản phẩm
+                const quantity = item.quantity; // Lấy số lượng sản phẩm
+
+                const productHTML = `
+            <tr>
+                <td>
+                    <div class="media">
+                        <div class="d-flex">
+                            <img src="${product.image}" alt="" style="width: 70px; height: 70px; object-fit: cover;">
+                        </div>
+                        <div class="media-body">
+                            <p>${product.description}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <h5>$${product.price.toFixed(2)}</h5>
+                </td>
+                <td>
+                    <div class="product_count">
+                        <input type="text" id="sst${product.id}" maxlength="12" value="${quantity}" title="Quantity:" class="input-text qty">
+                        <button onclick="increaseQty('${product.id}', ${product.price})" class="increase items-count" type="button">
+                            <i class="lnr lnr-chevron-up"></i>
+                        </button>
+                        <button onclick="decreaseQty('${product.id}', ${product.price})" class="reduced items-count" type="button">
+                            <i class="lnr lnr-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    <h5 id="total-price${product.id}">$${(product.price * quantity).toFixed(2)}</h5>
+                </td>
+            </tr>`;
+                productList.insertAdjacentHTML('beforeend', productHTML);
+            });
+        }
+
         function increaseQty(id, unitPrice) {
-            var qtyInput = document.getElementById('sst' + id);
-            var qty = parseInt(qtyInput.value);
+            const qtyInput = document.getElementById('sst' + id);
+            let qty = parseInt(qtyInput.value);
             qty = isNaN(qty) ? 1 : qty + 1;
             qtyInput.value = qty;
 
-            // Cập nhật tổng giá trị
             updateTotalPrice(id, unitPrice, qty);
+            updateInvoice(id, qty);
+
         }
 
+        let currentProductId = null;
+        function updateInvoice(productId, quantity){
+            fetch(`/api/invoice/update/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId, quantity }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // Optional: Hiển thị thông báo thành công
+                        console.log('Quantity updated successfully');
+                    } else {
+                        alert('Failed to update quantity: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred while updating quantity');
+                    console.error('Error:', error);
+                });
+        }
         function decreaseQty(id, unitPrice) {
-            var qtyInput = document.getElementById('sst' + id);
-            var qty = parseInt(qtyInput.value);
-            qty = isNaN(qty) || qty <= 1 ? 1 : qty - 1;
-            qtyInput.value = qty;
+            const qtyInput = document.getElementById('sst' + id);
+            let qty = parseInt(qtyInput.value);
+            qty = isNaN(qty) || qty <= 1 ? 0 : qty - 1;
 
-            // Cập nhật tổng giá trị
-            updateTotalPrice(id, unitPrice, qty);
+            if (qty === 0) {
+                currentProductId = id;
+                $('#confirmDeleteModal').modal('show');
+            } else {
+                qtyInput.value = qty;
+                updateTotalPrice(id, unitPrice, qty);
+            }
+            updateInvoice(id, qty);
+
+        }
+        // Khi nhấn "Yes" trong modal
+        document.getElementById('confirmDelete').addEventListener('click', () => {
+            if (currentProductId) {
+                removeProductFromCart(currentProductId);
+                currentProductId = null;
+                $('#confirmDeleteModal').modal('hide'); // Ẩn modal
+            }
+        });
+        // Khi nhấn "No" trong modal
+        document.getElementById('cancelDelete').addEventListener('click', () => {
+            currentProductId = null;
+            // Reset số lượng về 1 nếu không xóa
+            const qtyInput = document.getElementById('sst' + currentProductId);
+            qtyInput.value = 1;
+        });
+
+        // Xóa sản phẩm khỏi giỏ hàng
+        function removeProductFromCart(productId) {
+            fetch(`/api/invoice/delete/${productId}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // Xóa sản phẩm khỏi bảng
+                        document.getElementById('sst' + productId).closest('tr').remove();
+                    } else {
+                        console.error('Failed to remove product:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
 
         function updateTotalPrice(id, unitPrice, qty) {
-            var totalPriceElement = document.getElementById('total-price' + id);
-            var totalPrice = unitPrice * qty;
-            totalPriceElement.innerHTML = '$' + totalPrice.toFixed(2); // Cập nhật nội dung HTML với tổng giá
+            const totalPriceElement = document.getElementById('total-price' + id);
+            const totalPrice = unitPrice * qty;
+            totalPriceElement.innerText = `$${totalPrice.toFixed(2)}`;
         }
+
+        // Gọi hàm fetch sản phẩm
+        fetchProductFromUser();
 
     </script>
     <!--================End Cart Area =================-->

@@ -1,6 +1,6 @@
 package dev.lvpq.CS502052.Controller;
 
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Service.ProductService;
 import dev.lvpq.CS502052.Service.UserService;
@@ -33,7 +33,7 @@ public class AdminController {
 
     @GetMapping({"product.html", "product"})
     public String manageProduct(Model model, HttpServletRequest request,@RequestParam(required = false) String query) {
-        List<ProductDetailResponse> allProducts = productService.findProductsByName(query);
+        List<ProductResponse> allProducts = productService.findProductsByName(query);
         model.addAttribute("all_products", allProducts);
         model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
         return "/admin_layout/product";
