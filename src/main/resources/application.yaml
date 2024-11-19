@@ -21,6 +21,5 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.ssl.protocols: TLSv1.2
-
 jwt:
   signerKey: "3yrdhh+tGeku/H0Lscu6Dgfq4k+m6a5GEgP5c8SEZeq4GL7evfYjhraygtfxKHU+"

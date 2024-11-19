@@ -27,7 +27,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/admin_layout/index";
     }
 
@@ -35,7 +35,7 @@ public class AdminController {
     public String manageProduct(Model model, HttpServletRequest request,@RequestParam(required = false) String query) {
         List<ProductDetailResponse> allProducts = productService.findProductsByName(query);
         model.addAttribute("all_products", allProducts);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/admin_layout/product";
     }
 
@@ -43,7 +43,7 @@ public class AdminController {
     public String manageUsers(Model model, HttpServletRequest request) {
         List<UserDetailResponse> users = userService.getAllCustomer();
         model.addAttribute("users", users);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/admin_layout/voucher";
     }
 

@@ -1,4 +1,4 @@
-package dev.lvpq.CS502052.Exception;
+package dev.lvpq.CS502052.Exception.Error;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,8 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized Exception", HttpStatus.INTERNAL_SERVER_ERROR),
-    USER_NOT_EXISTED(1002, "User does not existed", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATED(1005, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNCATEGORIZED_EXCEPTION(9999, "Sorry we need more time to repair this error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNAUTHENTICATED(1005, "You need to login or create an account to access this website", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You don't have permissions", HttpStatus.FORBIDDEN),
     PRODUCT_NOT_EXISTED(1010, "Product is not exited", HttpStatus.NOT_FOUND ),
     TOKEN_TIME(1011 , "Token is expiry time", HttpStatus.BAD_REQUEST),

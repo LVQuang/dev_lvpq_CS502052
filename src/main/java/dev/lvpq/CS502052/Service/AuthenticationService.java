@@ -20,6 +20,7 @@ import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
+import dev.lvpq.CS502052.Specification.UserSpec;
 import dev.lvpq.CS502052.Utils.TokenUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import com.nimbusds.jose.*;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,7 +58,16 @@ public class AuthenticationService {
     protected String SIGNER_KEY;
 
     public RegisterResponse register(RegisterRequest request) {
-        if(userRepository.existsByEmail(request.getEmail()))
+        log.debug("Test 0");
+
+        Specification<User> spec = Specification.where(null);
+        spec = spec.and(UserSpec.hasEmail(request.getEmail(),true));
+
+        var users = userRepository.findAll(spec);
+
+        log.debug("test empty: {}", users.isEmpty());
+        users.forEach(user -> log.debug("test user: {}", user.getEmail()));
+        if (!users.isEmpty())
             throw new AuthException(AuthExceptionCode.USER_EXISTED);
         var user = authenticationMapper.converRegistertUser(request);
 
@@ -115,9 +126,15 @@ public class AuthenticationService {
     }
 
     User softAuthenticate(LoginRequest request) {
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        log.debug("test 0");
+        Specification<User> spec = Specification.where(UserSpec.hasEmail(request.getEmail(), true));
+
+        var users = userRepository.findAll(spec);
+        if (users.isEmpty())
+            throw new AuthException(AuthExceptionCode.USER_NOT_EXISTED);
+        var passwordEncoder = new BCryptPasswordEncoder(10);
+        users.forEach(user -> log.debug("User id: {}", user.getId()));
+        var user = users.get(0);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
             throw new AuthException(AuthExceptionCode.PASSWORD_NOT_MATCHES);

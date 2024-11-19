@@ -1,6 +1,6 @@
 package dev.lvpq.CS502052.Exception.DefineExceptions;
 
-import dev.lvpq.CS502052.Exception.ErrorCode;
+import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

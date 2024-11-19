@@ -1,0 +1,16 @@
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/exception.css">
+</head>
+<body>
+<div class="mainbox">
+    <div class="err">4</div>
+    <i class="far fa-question-circle fa-spin"></i>
+    <div class="err2">4</div>
+    <div class="msg">
+        <p th:text="${message}">Default error message if no message provided.</p>
+        <p>Let's go <a href="/home">home</a> and try from there</p>
+    </div>
+</div>
