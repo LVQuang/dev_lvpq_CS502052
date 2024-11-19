@@ -1,43 +1,51 @@
 package dev.lvpq.CS502052.Exception;
 
 import dev.lvpq.CS502052.Dto.Request.*;
-import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Exception.DefineExceptions.*;
+import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Exception.Error.ForgotPasswordExceptionCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    private static final String EXCEPTION_URL = "/exception";
 
     @ExceptionHandler(value = RuntimeException.class)
-    ResponseEntity<ApiResponse<ErrorCode>> handlingRuntimeException(RuntimeException exception) {
+    void handlingRuntimeException(RuntimeException exception,
+                                  HttpServletResponse response)
+            throws IOException {
         log.error("Exception: {}", String.valueOf(exception));
-        var errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION;
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(packageApiResponse(errorCode));
+        var message = ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage();
+        response.sendRedirect(EXCEPTION_URL+ "?message="
+                + URLEncoder.encode(String.valueOf(message), StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(AppException.class)
-    ResponseEntity<ApiResponse<ErrorCode>> handlingAppException(AppException exception) {
-        var errorCode = exception.getErrorCode();
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(packageApiResponse(errorCode));
+    void handlingAppException(AppException exception,
+                                      HttpServletResponse response)
+            throws IOException {
+        var message = exception.getErrorCode().getMessage();
+        response.sendRedirect(EXCEPTION_URL+ "?message="
+                + URLEncoder.encode(String.valueOf(message), StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    ResponseEntity<ApiResponse<ErrorCode>> handlingAccessDeniedException(AccessDeniedException exception) {
-        var errorCode = ErrorCode.UNAUTHORIZED;
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(packageApiResponse(errorCode));
+    void handlingAccessDeniedException(AccessDeniedException exception,
+                                       HttpServletResponse response) throws IOException {
+        var message = ErrorCode.UNAUTHORIZED.getMessage();
+        response.sendRedirect(EXCEPTION_URL+ "?message="
+                + URLEncoder.encode(String.valueOf(message), StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(MessageException.class)
@@ -53,11 +61,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthException.class)
-    ModelAndView handlingAuthException(AuthException exception) {
+    ModelAndView handlingAuthException(AuthException exception, HttpServletRequest request) {
         log.debug("Authentication Exception Handler");
+        var endpoint = request.getRequestURL().toString();
         var code = exception.getAuthExceptionCode();
-        var model = new ModelAndView("/client_layout/login");
-        model.addObject("login", new LoginRequest());
+        ModelAndView model;
+
+        if (endpoint.contains("/login")) {
+            model = new ModelAndView("/client_layout/login");
+            model.addObject("login", new LoginRequest());
+        } else {
+            model = new ModelAndView("/client_layout/register");
+            model.addObject("register", new RegisterRequest());
+        }
         model.addObject("error", code.getMessage());
         return model;
     }
@@ -79,14 +95,6 @@ public class GlobalExceptionHandler {
         model.addObject("resetPassword", ResetPassword.builder().otp(otp).build());
         model.addObject("error", code.getMessage());
         return model;
-    }
-
-    //    Define Utils Function To Handle Exception
-    ApiResponse<ErrorCode> packageApiResponse(ErrorCode errorCode) {
-        return ApiResponse.<ErrorCode>builder()
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .build();
     }
 
     ModelAndView handlingForgotExceptionCombination(ForgotPasswordExceptionCode code) {

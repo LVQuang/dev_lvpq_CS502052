@@ -1,7 +1,7 @@
 package dev.lvpq.CS502052.Api;
 
+import dev.lvpq.CS502052.Dto.Request.QueryUser;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Service.UserService;
@@ -33,7 +33,7 @@ public class UserAPI {
     }
     @GetMapping()
     public  ApiResponse<ArrayList<UserListResponse>> getAll(HttpServletRequest httpRequest) {
-        log.info("user: " + httpRequest.getSession().getAttribute("myToken"));
+        log.info("user: {}", httpRequest.getSession().getAttribute("myToken"));
         return ApiResponse.<ArrayList<UserListResponse>>builder()
                 .code(200)
                 .message("Find All Users Success")
@@ -55,6 +55,16 @@ public class UserAPI {
                 .result(userService.getCurrentInformation())
                 .build();
     }
+
+    @PostMapping("/query")
+    public  ApiResponse<List<UserDetailResponse>> queryUser(@RequestBody QueryUser query) {
+        var users = userService.queryUser(query);
+        return ApiResponse.<List<UserDetailResponse>>builder()
+                .code(200)
+                .result(users)
+                .build();
+    }
+
     @GetMapping({"/search","/search?query="})
     public ApiResponse<List<UserDetailResponse>> searchUsersByName(@RequestParam String query) {
         List<UserDetailResponse> users = userService.searchUsersByName(query);

@@ -1,12 +1,8 @@
 package dev.lvpq.CS502052.Config;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.SignedJWT;
-import dev.lvpq.CS502052.Dto.Request.IntrospectRequest;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.ErrorCode;
+import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;

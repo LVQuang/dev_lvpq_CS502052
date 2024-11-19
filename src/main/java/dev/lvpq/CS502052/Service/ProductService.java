@@ -5,7 +5,7 @@ import dev.lvpq.CS502052.Entity.Product;
 import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.ErrorCode;
+import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Mapper.ProductMapper;
 import dev.lvpq.CS502052.Repository.ProductRepository;
 import lombok.AccessLevel;
@@ -14,7 +14,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 import java.util.NoSuchElementException;

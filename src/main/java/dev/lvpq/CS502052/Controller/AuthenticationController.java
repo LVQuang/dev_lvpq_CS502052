@@ -57,9 +57,7 @@ public class AuthenticationController {
         }
         var response = authenticationService.login(login);
         request.getSession().setAttribute("myToken", response.getToken());
-        log.info("Login: {}", response.getToken());
         var roles = response.getRoles();
-        log.info("Checked: {}", roles.contains("Manager"));
         if (roles.contains("Manager")) return "redirect:/admin";
         return "redirect:/home";
     }
