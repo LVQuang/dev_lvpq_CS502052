@@ -40,7 +40,7 @@ public class UserSpec {
                     criteriaBuilder.like(root.get("address"),"%" + address + "%"));
     }
 
-    public static Specification<User> searchByKeyword(String keyword, boolean exactMatch) {
+    public static Specification<User> findByKeyword(String keyword, boolean exactMatch) {
         if (keyword == null || keyword.isEmpty()) return null;
 
         return Specification.where(hasEmail(keyword, exactMatch))

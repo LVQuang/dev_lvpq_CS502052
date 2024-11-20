@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,11 +27,12 @@ public class PaymentController {
 
     @GetMapping()
     public String checkout(Model model) {
+        model.addAttribute("amount", 2000L);
         return "Payment/payment";
     }
 
     @PostMapping()
-    public String payment(Model model) {
+    public String payment(Model model, @ModelAttribute("amount") Long amount ) {
         try {
             List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
             lineItems.add(
@@ -38,7 +40,7 @@ public class PaymentController {
                             .setPriceData(
                                     SessionCreateParams.LineItem.PriceData.builder()
                                             .setCurrency("usd")
-                                            .setUnitAmount(2000L)
+                                            .setUnitAmount(amount)
                                             .setProductData(
                                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                             .setName("Shoe")
@@ -53,8 +55,8 @@ public class PaymentController {
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl("http://localhost:8080/success")
-                    .setCancelUrl("http://localhost:8080/cancel")
+                    .setSuccessUrl("http://localhost:8081/payment/success")
+                    .setCancelUrl("http://localhost:8081/payment/cancel")
                     .addAllLineItem(lineItems)
                     .build();
 

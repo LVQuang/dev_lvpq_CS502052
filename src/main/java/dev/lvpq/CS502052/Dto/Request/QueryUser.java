@@ -12,5 +12,5 @@ public class QueryUser {
     String keyword;
     int page;
     @Builder.Default
-    int size = 2;
+    int size = 12;
 }
