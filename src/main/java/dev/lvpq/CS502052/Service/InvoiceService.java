@@ -18,7 +18,6 @@ import dev.lvpq.CS502052.Repository.ProductRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
@@ -88,6 +87,7 @@ public class InvoiceService {
         User currentUser = userService.getCurrentUser();
         Invoice invoice = invoiceRepository.findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
                 .orElseThrow(() -> new AppException(AuthExceptionCode.INVOICE_NOT_FOUND));
+
         Optional<InvoiceDetail> existingDetail = invoice.getInvoiceDetails().stream()
                 .filter(detail -> detail.getProduct().getId().equals(productId))
                 .findFirst();
@@ -111,6 +111,7 @@ public class InvoiceService {
         User currentUser = userService.getCurrentUser();
         Invoice invoice = invoiceRepository.findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
                 .orElseThrow(() -> new AppException(AuthExceptionCode.INVOICE_NOT_FOUND));
+
         Optional<InvoiceDetail> existingDetail = invoice.getInvoiceDetails().stream()
                 .filter(detail -> detail.getProduct().getId().equals(productId))
                 .findFirst();
@@ -121,6 +122,7 @@ public class InvoiceService {
                 invoiceRepository.save(invoice);
         } else {
             throw new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED);
+
         }
     }
 

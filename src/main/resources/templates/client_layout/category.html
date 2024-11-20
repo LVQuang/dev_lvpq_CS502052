@@ -239,60 +239,44 @@
 				const currentProducts = products.slice(startIndex, endIndex);
 				currentProducts.forEach(product => {
 					const productHTML = `
-            <div class="col-lg-4 col-md-6">
-                <div class="single-product">
-                    <img class="img-fluid" src="${product.image || '/img/placeholder.png'}" alt="Product Image">
-                    <div class="product-details">
-                        <h6>${product.name}</h6>
-                        <div class="price">
-                            <h6>$${product.price}</h6>
-                        </div>
-                        <div class="prd-bottom">
-                            <a href="#" class="social-info add-to-bag" data-id="${product.id}">
-                                <span class="ti-bag"></span>
-                                <p class="hover-text">add to bag</p>
-                            </a>
-                            <a href="#" class="social-info">
-                                <span class="lnr lnr-heart"></span>
-                                <p class="hover-text">Wishlist</p>
-                            </a>
-                            <a href="#" class="social-info">
-                                <span class="lnr lnr-sync"></span>
-                                <p class="hover-text">compare</p>
-                            </a>
-                            <a href="/single-product/${product.id}" class="social-info">
-                                <span class="lnr lnr-move"></span>
-                                <p class="hover-text">view more</p>
-                            </a>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-product">
+                            <img class="img-fluid" src="${product.image}" alt="">
+                            <div class="product-details">
+                                <h6>${product.name}</h6>
+                                <div class="price">
+                                    <h6>$${product.price}</h6>
+                                </div>
+                                <div class="prd-bottom">
+                                    <a href="#" class="social-info add-to-bag" data-id="${product.id}">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">add to bag</p>
+                                    </a>
+                                    <a href="#" class="social-info">
+                                        <span class="lnr lnr-heart"></span>
+                                        <p class="hover-text">Wishlist</p>
+                                    </a>
+                                    <a href="#" class="social-info">
+                                        <span class="lnr lnr-sync"></span>
+                                        <p class="hover-text">compare</p>
+                                    </a>
+                                    <a href="/single-product/${product.id}" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">view more</p>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`;
 					productList.insertAdjacentHTML('beforeend', productHTML);
 				});
-				// Render pagination
-				renderPagination(products.length, page, pageSize);
-			}
-			function renderPagination(totalItems, currentPage, pageSize) {
-				const totalPages = Math.ceil(totalItems / pageSize);
-				const pagination = document.querySelector('.pagination');
-				pagination.innerHTML = '';
-				if (totalPages > 1) {
-					if (currentPage > 1) {
-						pagination.innerHTML += `<a href="#" class="prev-arrow" data-page="${currentPage - 1}"><i class="fa fa-long-arrow-left"></i></a>`;
-					}
-					for (let i = 1; i <= totalPages; i++) {
-						pagination.innerHTML += `<a href="#" class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</a>`;
-					}
-					if (currentPage < totalPages) {
-						pagination.innerHTML += `<a href="#" class="next-arrow" data-page="${currentPage + 1}"><i class="fa fa-long-arrow-right"></i></a>`;
-					}
-				}
-				document.querySelectorAll('.pagination a').forEach(link => {
-					link.addEventListener('click', (event) => {
+				document.querySelectorAll('.add-to-bag').forEach(button => {
+					button.addEventListener('click', (event) => {
 						event.preventDefault();
-						const page = parseInt(event.target.getAttribute('data-page'), 10);
-						displayProducts(currentProducts, page, pageSize);
+						const productId = event.currentTarget.getAttribute('data-id');
+						addToBag(productId);
 					});
 				});
 			}
