@@ -65,13 +65,5 @@ public class UserAPI {
                 .build();
     }
 
-    @GetMapping({"/search","/search?query="})
-    public ApiResponse<List<UserDetailResponse>> searchUsersByName(@RequestParam String query) {
-        List<UserDetailResponse> users = userService.searchUsersByName(query);
-        return ApiResponse.<List<UserDetailResponse>>builder()
-                .code(200)
-                .message("Search results for query: " + query)
-                .result(users)
-                .build();
-    }
+
 }

@@ -66,7 +66,13 @@ public class UserService {
                 new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
         return userMapper.toDetailResponse(user);
     }
-    public List<UserDetailResponse> searchUsersByName(String query) {
+    public User getCurrentUser() {
+        var context = SecurityContextHolder.getContext();
+        var email =context.getAuthentication().getName();
+        return userRepository.findByEmail(email).orElseThrow(null);
+    }
+    public List<UserDetailResponse> findUsersByName(String query) {
+
         if (query == null || query.trim().isEmpty()){
             return getAllCustomer();
         }

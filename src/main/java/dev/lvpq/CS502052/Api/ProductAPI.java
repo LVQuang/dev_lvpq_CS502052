@@ -1,12 +1,11 @@
 package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductDetailResponse;
+import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class ProductAPI {
 
 
     @GetMapping("/{id}")
-    public ApiResponse<ProductDetailResponse> getProductById(@PathVariable String id) {
-        return ApiResponse.<ProductDetailResponse>builder()
+    public ApiResponse<ProductResponse> getProductById(@PathVariable String id) {
+        return ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Get product successfully")
                 .result(productService.getProductById(id))
@@ -30,8 +29,8 @@ public class ProductAPI {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<ProductDetailResponse> addProduct(@RequestBody ProductRequest productRequest) {
-        return ApiResponse.<ProductDetailResponse>builder()
+    public ApiResponse<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
+        return ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Product added successfully")
                 .result(productService.addProduct(productRequest))
@@ -39,10 +38,10 @@ public class ProductAPI {
     }
 
     @PutMapping("/update/{id}")
-    public ApiResponse<ProductDetailResponse> updateProduct(
+    public ApiResponse<ProductResponse> updateProduct(
             @PathVariable String id,
             @RequestBody ProductRequest productRequest) {
-        return ApiResponse.<ProductDetailResponse>builder()
+        return ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Product updated successfully")
                 .result(productService.updateProduct(id, productRequest))
@@ -59,38 +58,39 @@ public class ProductAPI {
     }
     @GetMapping("/latest")
 
-    public List<ProductDetailResponse> getLatestProducts() {
+    public List<ProductResponse> getLatestProducts() {
 
         return productService.getLatestProducts();
     }
 
     @GetMapping("/related")
 
-    public List<ProductDetailResponse> getRelatedProducts() {
+    public List<ProductResponse> getRelatedProducts() {
 
         return productService.getRelatedProducts();
     }
 
     @GetMapping("/coming")
 
-    public List<ProductDetailResponse> getComingProducts() {
+    public List<ProductResponse> getComingProducts() {
 
         return productService.getComingProducts();
     }
 
     @GetMapping("/exclusive")
 
-    public List<ProductDetailResponse> getExclusiveProducts() {
+    public List<ProductResponse> getExclusiveProducts() {
 
         return productService.getExclusiveProducts();
     }
     @GetMapping("/search")
-    public ApiResponse<List<ProductDetailResponse>> findProducts(
+
+    public ApiResponse<List<ProductResponse>> findProducts(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "sort", required = false) String sort) {
-        List<ProductDetailResponse> products;
+        List<ProductResponse> products;
 
    if(query != null && minPrice != null && maxPrice != null){
        products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
@@ -105,26 +105,22 @@ public class ProductAPI {
        products = productService.getAllProducts();
    }
         if ("name_asc".equalsIgnoreCase(sort) || sort.isEmpty()) {
-            products.sort(Comparator.comparing(ProductDetailResponse::getName));
+            products.sort(Comparator.comparing(ProductResponse::getName));
         } else if ("name_desc".equalsIgnoreCase(sort)) {
-            products.sort(Comparator.comparing(ProductDetailResponse::getName).reversed());
+            products.sort(Comparator.comparing(ProductResponse::getName).reversed());
         } else if ("price_asc".equalsIgnoreCase(sort)) {
-            products.sort(Comparator.comparing(ProductDetailResponse::getPrice));
+            products.sort(Comparator.comparing(ProductResponse::getPrice));
         } else if ("price_desc".equalsIgnoreCase(sort)) {
-            products.sort(Comparator.comparing(ProductDetailResponse::getPrice).reversed());
+            products.sort(Comparator.comparing(ProductResponse::getPrice).reversed());
         }
         String message = query == null || query.isEmpty()
                 ? "Showing all products"
                 : "Search results for query: " + query;
-        return ApiResponse.<List<ProductDetailResponse>>builder()
+        return ApiResponse.<List<ProductResponse>>builder()
             .code(200)
             .message(message)
             .result(products)
                 .build();
-    }
-    @PostMapping
-    public List<ProductDetailResponse> putProductToBag() {
-        return productService.getExclusiveProducts();
     }
 }
 

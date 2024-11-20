@@ -25,6 +25,7 @@ public class Product {
     String name;
     double price;
     String image;
+    int quantity;
     ProductStatus status;
     ProductType type;
     int totalSold;
