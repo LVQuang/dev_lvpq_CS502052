@@ -9,7 +9,7 @@ import dev.lvpq.CS502052.Dto.Response.ProductWithQuantityResponse;
 import dev.lvpq.CS502052.Entity.*;
 import dev.lvpq.CS502052.Enums.OrderStatus;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.ErrorCode;
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Mapper.InvoiceMapper;
 import dev.lvpq.CS502052.Mapper.ProductMapper;
 import dev.lvpq.CS502052.Repository.InvoiceDetailRepository;
@@ -87,7 +87,7 @@ public class InvoiceService {
         // Tìm hóa đơn theo ID
         User currentUser = userService.getCurrentUser();
         Invoice invoice = invoiceRepository.findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
-                .orElseThrow(() -> new AppException(ErrorCode.INVOICE_NOT_FOUND));
+                .orElseThrow(() -> new AppException(AuthExceptionCode.INVOICE_NOT_FOUND));
         Optional<InvoiceDetail> existingDetail = invoice.getInvoiceDetails().stream()
                 .filter(detail -> detail.getProduct().getId().equals(productId))
                 .findFirst();
@@ -98,7 +98,7 @@ public class InvoiceService {
             invoiceRepository.save(invoice);
 //            }
         } else {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED);
         }
 
         invoiceRepository.save(invoice);
@@ -110,7 +110,7 @@ public class InvoiceService {
     public void removeProductIfQuantityZero(String productId) {
         User currentUser = userService.getCurrentUser();
         Invoice invoice = invoiceRepository.findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
-                .orElseThrow(() -> new AppException(ErrorCode.INVOICE_NOT_FOUND));
+                .orElseThrow(() -> new AppException(AuthExceptionCode.INVOICE_NOT_FOUND));
         Optional<InvoiceDetail> existingDetail = invoice.getInvoiceDetails().stream()
                 .filter(detail -> detail.getProduct().getId().equals(productId))
                 .findFirst();
@@ -120,7 +120,7 @@ public class InvoiceService {
                 invoiceDetailRepository.delete(invoiceDetail);
                 invoiceRepository.save(invoice);
         } else {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED);
         }
     }
 

@@ -1,17 +1,25 @@
 package dev.lvpq.CS502052.Service;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
+import dev.lvpq.CS502052.Dto.Request.QueryProduct;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Entity.Product;
 import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Mapper.ProductMapper;
 import dev.lvpq.CS502052.Repository.ProductRepository;
+import dev.lvpq.CS502052.Specification.ProductSpec;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +59,7 @@ public class ProductService {
 
     public ProductResponse updateProduct(String id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED));
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
@@ -65,7 +73,7 @@ public class ProductService {
 
     public void deleteProduct(String id) {
         if (!productRepository.existsById(id)) {
-            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+            throw new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED);
         }
         productRepository.deleteById(id);
     }
@@ -123,4 +131,22 @@ public class ProductService {
                 .map(productMapper::toDetailResponse)
                 .collect(Collectors.toList());
     }
+    public Page<ProductResponse> queryProduct(QueryProduct query) {
+        Specification<Product> spec = ProductSpec.searchByKeyword(query.getKeyword(), false);
+
+        // Xây dựng đối tượng Sort dựa trên query
+        Sort sort = switch (query.getSort().toLowerCase()) {
+            case "name_asc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "name_desc" -> Sort.by(Sort.Direction.DESC, "name");
+            case "price_asc" -> Sort.by(Sort.Direction.ASC, "price");
+            case "price_desc" -> Sort.by(Sort.Direction.DESC, "price");
+            default -> Sort.unsorted();
+        };
+
+        Pageable page = PageRequest.of(query.getPage(), query.getSize(), sort);
+
+        var productsPage = productRepository.findAll(spec, page);
+        return productsPage.map(productMapper::toDetailResponse); // Chuyển đổi sang ProductResponse
+    }
+
 }

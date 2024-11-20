@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final String[] POST_PUBLIC_ENDPOINTS = {
             "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/auth/logout"
-            , "/login", "/register", "/admin", "/forgotPassword/**", "api/user/query"
+            , "/login", "/register", "/admin", "/forgotPassword/**", "api/user/query" , "api/product/query"
     };
 
     private final String[] GET_PUBLIC_ENDPOINTS = {
