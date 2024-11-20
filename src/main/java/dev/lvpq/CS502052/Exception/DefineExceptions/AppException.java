@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Exception.DefineExceptions;
 
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,5 +13,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 public class AppException extends RuntimeException{
-    ErrorCode errorCode;
+    AuthExceptionCode errorCode;
 }

@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 
@@ -31,10 +32,10 @@ public class TokenUtil {
         var verified = signedJWT.verify(verifier);
 
         if (!verified && expiryTime.after(new Date()))
-            throw new AppException(ErrorCode.TOKEN_TIME);
+            throw new AppException(AuthExceptionCode.TOKEN_TIME);
 
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(ErrorCode.TOKEN_CRASH);
+            throw new AppException(AuthExceptionCode.TOKEN_CRASH);
         return signedJWT;
     }
 }

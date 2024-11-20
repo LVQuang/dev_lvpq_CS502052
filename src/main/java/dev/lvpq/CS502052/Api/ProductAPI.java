@@ -1,9 +1,13 @@
 package dev.lvpq.CS502052.Api;
 import dev.lvpq.CS502052.Dto.Request.ProductRequest;
+import dev.lvpq.CS502052.Dto.Request.QueryProduct;
+import dev.lvpq.CS502052.Dto.Request.QueryUser;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
+import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.Comparator;
@@ -83,8 +87,45 @@ public class ProductAPI {
 
         return productService.getExclusiveProducts();
     }
+//    @GetMapping("/search")
+//    public ApiResponse<List<ProductResponse>> findProducts(
+//            @RequestParam(value = "query", required = false) String query,
+//            @RequestParam(value = "minPrice", required = false) Double minPrice,
+//            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+//            @RequestParam(value = "sort", required = false) String sort) {
+//        List<ProductResponse> products;
+//
+//   if(query != null && minPrice != null && maxPrice != null){
+//       products = productService.findProductsByNameAndPrice(query, minPrice, maxPrice);
+//   }
+//   else if(query == null && minPrice != null && maxPrice != null){
+//       products = productService.findProductsByPrice(minPrice, maxPrice);
+//   }
+//   else if(query != null && minPrice == null && maxPrice == null){
+//       products = productService.findProductsByName(query);
+//   }
+//   else{
+//       products = productService.getAllProducts();
+//   }
+//        if ("name_asc".equalsIgnoreCase(sort) || sort.isEmpty()) {
+//            products.sort(Comparator.comparing(ProductResponse::getName));
+//        } else if ("name_desc".equalsIgnoreCase(sort)) {
+//            products.sort(Comparator.comparing(ProductResponse::getName).reversed());
+//        } else if ("price_asc".equalsIgnoreCase(sort)) {
+//            products.sort(Comparator.comparing(ProductResponse::getPrice));
+//        } else if ("price_desc".equalsIgnoreCase(sort)) {
+//            products.sort(Comparator.comparing(ProductResponse::getPrice).reversed());
+//        }
+//        String message = query == null || query.isEmpty()
+//                ? "Showing all products"
+//                : "Search results for query: " + query;
+//        return ApiResponse.<List<ProductResponse>>builder()
+//            .code(200)
+//            .message(message)
+//            .result(products)
+//                .build();
+//    }
     @GetMapping("/search")
-
     public ApiResponse<List<ProductResponse>> findProducts(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
@@ -122,5 +163,6 @@ public class ProductAPI {
             .result(products)
                 .build();
     }
+
 }
 
