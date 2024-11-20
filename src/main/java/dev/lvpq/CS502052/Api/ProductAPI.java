@@ -6,7 +6,6 @@ import dev.lvpq.CS502052.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -85,6 +84,7 @@ public class ProductAPI {
         return productService.getExclusiveProducts();
     }
     @GetMapping("/search")
+
     public ApiResponse<List<ProductResponse>> findProducts(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
@@ -122,6 +122,5 @@ public class ProductAPI {
             .result(products)
                 .build();
     }
-
 }
 

@@ -29,4 +29,5 @@ public class InvoiceDetail {
     boolean hide = false;
     @Builder.Default
     LocalDate createdAt = LocalDate.now();
+
 }

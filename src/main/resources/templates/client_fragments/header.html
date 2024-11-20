@@ -34,11 +34,14 @@
                     </li>
                     <li class="nav-item submenu dropdown" th:classappend="${requestURI==('/login') or requestURI == ('/tracking') or requestURI == ('/elements') ? 'active' : ''}">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Pages</a>
+                           aria-expanded="false">
+                            <span sec:authorize="isAnonymous()">Account</span>
+                            <span sec:authorize="isAuthenticated()" th:text="${#authentication.name}"></span>
+                        </a>
                         <ul class="dropdown-menu">
-                            <li class="nav-item"><a class="nav-link" th:href="@{/login}">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/tracking}">Tracking</a></li>
-<!--                            <li class="nav-item"><a class="nav-link" href="elements">Elements</a></li>-->
+                            <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">Login/Register</a></li>
+                            <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/tracking}">Tracking</a></li>
+                            <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a></li>
                         </ul>
                     </li>
                     <li class="nav-item" th:classappend="${requestURI == ('/contact') ? 'active' : ''}">

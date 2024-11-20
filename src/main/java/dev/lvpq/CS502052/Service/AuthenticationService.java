@@ -10,14 +10,17 @@ import dev.lvpq.CS502052.Dto.Response.IntrospectResponse;
 import dev.lvpq.CS502052.Dto.Response.LoginResponse;
 import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Entity.InvalidatedToken;
+import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.ErrorCode;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Mapper.AuthenticationMapper;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
+import dev.lvpq.CS502052.Specification.UserSpec;
 import dev.lvpq.CS502052.Utils.TokenUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import com.nimbusds.jose.*;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -53,8 +58,17 @@ public class AuthenticationService {
     protected String SIGNER_KEY;
 
     public RegisterResponse register(RegisterRequest request) {
-        if(userRepository.existsByEmail(request.getEmail()))
-            throw new AppException(ErrorCode.USER_EXISTED);
+        log.debug("Test 0");
+
+        Specification<User> spec = Specification.where(null);
+        spec = spec.and(UserSpec.hasEmail(request.getEmail(),true));
+
+        var users = userRepository.findAll(spec);
+
+        log.debug("test empty: {}", users.isEmpty());
+        users.forEach(user -> log.debug("test user: {}", user.getEmail()));
+        if (!users.isEmpty())
+            throw new AuthException(AuthExceptionCode.USER_EXISTED);
         var user = authenticationMapper.converRegistertUser(request);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -69,11 +83,13 @@ public class AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         var user = softAuthenticate(request);
         if (user == null) return null;
-        user.getRoles().forEach(role -> log.info(role.getName()));
+        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        roles.forEach(log::info);
         var token = genToken(user);
         return LoginResponse.builder()
                     .token(token)
                     .authenticated(true)
+                    .roles(roles)
                     .build();
     }
 
@@ -110,12 +126,18 @@ public class AuthenticationService {
     }
 
     User softAuthenticate(LoginRequest request) {
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        log.debug("test 0");
+        Specification<User> spec = Specification.where(UserSpec.hasEmail(request.getEmail(), true));
+
+        var users = userRepository.findAll(spec);
+        if (users.isEmpty())
+            throw new AuthException(AuthExceptionCode.USER_NOT_EXISTED);
+        var passwordEncoder = new BCryptPasswordEncoder(10);
+        users.forEach(user -> log.debug("User id: {}", user.getId()));
+        var user = users.get(0);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new AppException(ErrorCode.PASSWORD_NOT_MATCHES);
+            throw new AuthException(AuthExceptionCode.PASSWORD_NOT_MATCHES);
         return user;
     }
 

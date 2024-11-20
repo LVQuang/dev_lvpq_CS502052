@@ -27,7 +27,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/admin_layout/index";
     }
 
