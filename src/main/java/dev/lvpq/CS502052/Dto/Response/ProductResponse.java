@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductDetailResponse {
+public class ProductResponse {
     String id;
     String name;
     String image;
