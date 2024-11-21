@@ -1,12 +1,18 @@
 package dev.lvpq.CS502052.Service;
 
 import dev.lvpq.CS502052.Dto.Request.SimpleMailRequest;
+import dev.lvpq.CS502052.Enums.OrderStatus;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
+import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Exception.MailException;
+import dev.lvpq.CS502052.Repository.InvoiceRepository;
+import dev.lvpq.CS502052.Specification.InvoiceSpec;
+import dev.lvpq.CS502052.Utils.MailUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,8 @@ import java.util.Objects;
 @Service
 public class MailService {
     JavaMailSender mailSender;
+    InvoiceRepository invoiceRepository;
+    MailUtil mailUtil;
 
     public List<String> sendMail(List<String> toEmails, String subject, String body, List<MultipartFile> attachments) {
         List<String> failedEmails = new ArrayList<>();
@@ -59,9 +67,18 @@ public class MailService {
         var helper = new MimeMessageHelper(mailSender.createMimeMessage(), false);
         helper.setTo(request.getReceiver());
         helper.setSubject(request.getSubject());
-        helper.setText(request.getText());
+        helper.setText(request.getText(), request.isHtml());
         helper.setFrom(request.getSender());
-
         mailSender.send(helper.getMimeMessage());
+    }
+
+    public void sendInvoice() throws MessagingException {
+        var spec = Specification.where(InvoiceSpec.findInvoiceByStatus(OrderStatus.PENDING));
+        var invoices = invoiceRepository.findAll(spec);
+        if (invoices.isEmpty())
+            throw new AppException(AuthExceptionCode.INVOICE_NOT_FOUND);
+        var invoice = invoices.get(0);
+        var request = mailUtil.buildSimpleMailToCurrentUser(invoice);
+        sendSimpleMail(request);
     }
 }

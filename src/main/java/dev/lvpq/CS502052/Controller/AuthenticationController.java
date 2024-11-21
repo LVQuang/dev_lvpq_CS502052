@@ -27,7 +27,6 @@ import java.text.ParseException;
 @RequestMapping("")
 @Controller
 public class AuthenticationController {
-
     AuthenticationService authenticationService;
 
     @GetMapping({"/login","/login.html"})

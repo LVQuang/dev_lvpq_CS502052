@@ -84,7 +84,7 @@ public class UserService {
     }
 
     public List<UserDetailResponse> queryUser(QueryUser query) {
-        Specification<User> spec = UserSpec.searchByKeyword(query.getKeyword(), false);
+        Specification<User> spec = UserSpec.findByKeyword(query.getKeyword(), false);
         var page = PageRequest.of(query.getPage(), query.getSize());
 
         var users = userRepository.findAll(spec, page);

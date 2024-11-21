@@ -7,6 +7,7 @@ import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductWithQuantityResponse;
 import dev.lvpq.CS502052.Entity.InvoiceDetail;
 import dev.lvpq.CS502052.Service.InvoiceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/invoice")
 public class InvoiceAPI {
@@ -23,9 +25,10 @@ public class InvoiceAPI {
     @PostMapping("/add-to-cart/{productId}")
     public ResponseEntity<String> addToCart(@PathVariable String productId) {
         try {
-            InvoiceDetail invoiceDetail = invoiceService.addProductToInvoice(productId);
-            return ResponseEntity.ok("Thêm sản phẩm vào giỏ hàng thành công");
+            invoiceService.addProduct(productId);
+            return ResponseEntity.ok("Add Product Success");
         } catch (RuntimeException e) {
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
