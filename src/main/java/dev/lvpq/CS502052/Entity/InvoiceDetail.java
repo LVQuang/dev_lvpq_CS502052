@@ -23,11 +23,15 @@ public class InvoiceDetail {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
-    int quantity;
+    @Builder.Default
+    int quantity = 1;
     String meta;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
     LocalDate createdAt = LocalDate.now();
 
+    public void increaseQuantity() {
+        quantity += 1;
+    }
 }

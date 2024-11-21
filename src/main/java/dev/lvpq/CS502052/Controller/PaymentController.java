@@ -1,6 +1,8 @@
 package dev.lvpq.CS502052.Controller;
 
 import com.stripe.exception.StripeException;
+import dev.lvpq.CS502052.Service.InvoiceService;
+import dev.lvpq.CS502052.Service.MailService;
 import dev.lvpq.CS502052.Service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.mail.MessagingException;
+
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -20,23 +24,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PaymentController {
     PaymentService paymentService;
-
-    @GetMapping()
-    public String checkout(Model model) {
-        model.addAttribute("amount", 2000L);
-        return "Payment/payment";
-    }
+    InvoiceService invoiceService;
+    MailService mailService;
 
     @PostMapping()
     public String payment(Model model, @ModelAttribute("amount") Long amount)
             throws StripeException {
+        log.error("Payment: {}", amount);
+        invoiceService.setTotalPrice(amount);
         var session = paymentService.payment(amount);
         model.addAttribute("sessionId", session.getId());
         return "redirect:" + session.getUrl();
     }
 
     @GetMapping("/success")
-    public String successPage() {
+    public String successPage() throws MessagingException {
+        mailService.sendInvoice();
+        invoiceService.confirmInvoice();
         return "Payment/success";
     }
 

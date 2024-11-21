@@ -212,7 +212,7 @@
             if (currentProductId) {
                 removeProductFromCart(currentProductId);
                 currentProductId = null;
-                $('#confirmDeleteModal').modal('hide'); // Ẩn modal
+                $('#confirmDeleteModal').modal('hide');
             }
         });
         // Khi nhấn "No" trong modal
@@ -231,7 +231,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
-                        // Xóa sản phẩm khỏi bảng
+
                         document.getElementById('sst' + productId).closest('tr').remove();
                     } else {
                         console.error('Failed to remove product:', data.message);
@@ -245,8 +245,6 @@
             const totalPrice = unitPrice * qty;
             totalPriceElement.innerText = `$${totalPrice.toFixed(2)}`;
         }
-
-        // Gọi hàm fetch sản phẩm
         fetchProductFromUser();
 
     </script>

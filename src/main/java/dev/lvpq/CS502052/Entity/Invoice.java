@@ -16,9 +16,6 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Invoice {
-//    public Invoice(User user){
-//        buyer = user;
-//    }
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -43,6 +40,23 @@ public class Invoice {
             result.put(detail.getProduct(), detail.getQuantity());
         }
         return result;
+    }
+
+    public void addProduct(Product product) {
+        if (invoiceDetails == null) {
+            invoiceDetails = new HashSet<>();
+        }
+        invoiceDetails.stream()
+            .filter(detail -> detail.getProduct().equals(product))
+            .findFirst()
+            .ifPresentOrElse(
+                    InvoiceDetail::increaseQuantity,
+                    () -> {
+                        invoiceDetails.add(InvoiceDetail.builder()
+                                .invoice(this)
+                                .product(product)
+                                .build());
+                    });
     }
 
 }

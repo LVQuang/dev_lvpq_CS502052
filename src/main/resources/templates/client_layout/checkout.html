@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx" class="no-js">
+<html lang="zxx" class="no-js" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <!-- Mobile Specific Meta -->
@@ -197,7 +197,10 @@
                                 <label for="f-option4">I’ve read and accept the </label>
                                 <a href="#">terms & conditions*</a>
                             </div>
-                            <a class="primary-btn" href="#">Proceed to Paypal</a>
+                            <form th:action="@{/payment}" method="post">
+                                <input type="hidden" id="amount" name="amount">
+                                <button type="submit" class="primary-btn">Proceed to Paypal</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -245,8 +248,11 @@
                 subtotal += product.price * quantity;
             });
 
+            let total = subtotal + shippingFee;
+
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('total').textContent = `$${(subtotal + shippingFee).toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('amount').value = total;
         }
 
         document.addEventListener('DOMContentLoaded', fetchOrderList);
