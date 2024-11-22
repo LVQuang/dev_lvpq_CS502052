@@ -9,17 +9,12 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class QueryProduct {
-//    String keyword;
-//    String sort;
-//    int page;
-//    @Builder.Default
-//    int size = 2;
     String keyword;
     Double minPrice;
     Double maxPrice;
-    String sort;
+    boolean isExactMatch;
     int page;
-//    @Builder.Default
-
-    int size;
+    Integer size;
+    String sortBy = "name";
+    String sortOrder = "asc";
 }

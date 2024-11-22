@@ -7,7 +7,6 @@ import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
-import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Mapper.ProductMapper;
 import dev.lvpq.CS502052.Repository.ProductRepository;
 import dev.lvpq.CS502052.Specification.ProductSpec;
@@ -120,33 +119,18 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProductResponse> findProductsByPrice(double minPrice, double maxPrice) {
-        return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
+    public List<ProductResponse> queryProduct(QueryProduct query, Pageable pageable) {
+        Specification<Product> spec = ProductSpec.searchByKeyword(query.getKeyword(), query.getMinPrice(), query.getMaxPrice(), query.isExactMatch());
+        Sort sort = Sort.by(Sort.Order.asc(query.getSortBy()));
+        if ("desc".equalsIgnoreCase(query.getSortOrder())) {
+            sort = Sort.by(Sort.Order.desc(query.getSortBy()));
+        }
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Product> productPage = productRepository.findAll(spec, sortedPageable);
+        return productPage.stream()
                 .map(productMapper::toDetailResponse)
                 .collect(Collectors.toList());
-    }
-    public List<ProductResponse> findProductsByNameAndPrice(String query, Double minPrice, Double maxPrice) {
-        return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
-                .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
-                .map(productMapper::toDetailResponse)
-                .collect(Collectors.toList());
-    }
-    public Page<ProductResponse> queryProduct(QueryProduct query) {
-        Specification<Product> spec = ProductSpec.searchByKeyword(query.getKeyword(), false);
-
-        // Xây dựng đối tượng Sort dựa trên query
-        Sort sort = switch (query.getSort().toLowerCase()) {
-            case "name_asc" -> Sort.by(Sort.Direction.ASC, "name");
-            case "name_desc" -> Sort.by(Sort.Direction.DESC, "name");
-            case "price_asc" -> Sort.by(Sort.Direction.ASC, "price");
-            case "price_desc" -> Sort.by(Sort.Direction.DESC, "price");
-            default -> Sort.unsorted();
-        };
-
-        Pageable page = PageRequest.of(query.getPage(), query.getSize(), sort);
-
-        var productsPage = productRepository.findAll(spec, page);
-        return productsPage.map(productMapper::toDetailResponse); // Chuyển đổi sang ProductResponse
     }
 
 }

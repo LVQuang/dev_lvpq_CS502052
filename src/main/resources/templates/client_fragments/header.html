@@ -13,23 +13,26 @@
                     <li class="nav-item" th:classappend="${requestURI == ('/home') ? 'active' : ''}">
                         <a class="nav-link" th:href="@{/home}">Home</a>
                     </li>
-                    <li class="nav-item submenu dropdown" th:classappend="${requestURI == ('/category') or requestURI == ('/single-product/{id}') or requestURI == ('/checkout') or requestURI == ('/cart') or requestURI == ('/confirmation') ? 'active' : ''}">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item"><a class="nav-link" th:href="@{/category}">Shop Category</a></li>
-<!--                            <li class="nav-item"><a class="nav-link" href="single-product">Product Details</a></li>-->
-                            <li class="nav-item"><a class="nav-link" th:href="@{/checkout}">Product Checkout</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Shopping Cart</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/confirmation}">Confirmation</a></li>
-                        </ul>
+<!--                    <li class="nav-item" th:classappend="${requestURI == ('/category') or requestURI == ('/single-product/{id}') or requestURI == ('/checkout') or requestURI == ('/cart') or requestURI == ('/confirmation') ? 'active' : ''}">-->
+<!--                        <a th:href="@{/category}" class="nav-link dropdown-toggle"  role="button" aria-haspopup="true"-->
+<!--                           aria-expanded="false">Shop</a>-->
+<!--&lt;!&ndash;                        <ul class="dropdown-menu">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li class="nav-item"><a class="nav-link" th:href="@{/category}">Shop Category</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li class="nav-item"><a class="nav-link" href="single-product">Product Details</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li class="nav-item"><a class="nav-link" th:href="@{/checkout}">Product Checkout</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Shopping Cart</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <li class="nav-item"><a class="nav-link" th:href="@{/confirmation}">Confirmation</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </ul>&ndash;&gt;-->
+<!--                    </li>-->
+                    <li class="nav-item" th:classappend="${requestURI == ('/category') or requestURI == ('/single-product/{id}') or requestURI == ('/checkout') or requestURI == ('/cart') or requestURI == ('/confirmation') ? 'active' : ''}">
+                       <a class="nav-link" th:href="@{/category}">Shop</a>
                     </li>
                     <li class="nav-item submenu dropdown" th:classappend="${requestURI==('/blog') ? 'active' : ''}">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">Blog</a>
                         <ul class="dropdown-menu">
                             <li class="nav-item"><a class="nav-link" th:href="@{/blog}">Blog</a></li>
-                            <li class="nav-item"><a class="nav-link" href="single-blog">Blog Details</a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/single-blog}">Blog Details</a></li>
                         </ul>
                     </li>
                     <li class="nav-item submenu dropdown" th:classappend="${requestURI==('/login') or requestURI == ('/tracking') or requestURI == ('/elements') ? 'active' : ''}">

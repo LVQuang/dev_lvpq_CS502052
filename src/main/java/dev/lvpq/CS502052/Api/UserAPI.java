@@ -52,7 +52,7 @@ public class UserAPI {
     public  ApiResponse<UserDetailResponse> getCurrentUser() {
         return  ApiResponse.<UserDetailResponse>builder().code(200)
                 .message("Find Current User Success")
-                .result(userService.getCurrentInformation())
+                .result(userService.getCurrentUserInformation())
                 .build();
     }
 
