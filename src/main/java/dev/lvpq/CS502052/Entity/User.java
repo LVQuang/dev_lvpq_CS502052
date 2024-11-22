@@ -36,9 +36,6 @@ public class User {
     Set<Role> roles = new HashSet<>();
     @Builder.Default
     @ManyToMany(cascade = CascadeType.PERSIST)
-    Set<ActivityLog> activityLogs = new HashSet<>();
-    @Builder.Default
-    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "favourite",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -53,6 +50,8 @@ public class User {
     Set<VoucherDetail> voucherDetails = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<OTP> otps = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<ActivityLog> activityLogs = new HashSet<>();
     public void addRole(Role role) {
         roles.add(role);
     }

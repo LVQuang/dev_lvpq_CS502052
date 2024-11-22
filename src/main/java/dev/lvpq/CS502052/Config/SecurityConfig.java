@@ -1,6 +1,5 @@
 package dev.lvpq.CS502052.Config;
 
-import dev.lvpq.CS502052.Filter.UserTrackingFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -64,7 +62,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
-                .addFilterAfter(new UserTrackingFilter(), BearerTokenAuthenticationFilter.class)
                 .build();
     }
 

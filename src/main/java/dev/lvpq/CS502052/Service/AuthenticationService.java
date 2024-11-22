@@ -12,6 +12,7 @@ import dev.lvpq.CS502052.Dto.Response.RegisterResponse;
 import dev.lvpq.CS502052.Entity.InvalidatedToken;
 import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
+import dev.lvpq.CS502052.Enums.Activity;
 import dev.lvpq.CS502052.Enums.RoleFeature;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
@@ -48,6 +49,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class AuthenticationService {
+    UserService userService;
+    ActivityLogService activityLogService;
     UserRepository userRepository;
     RoleRepository roleRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
@@ -58,15 +61,11 @@ public class AuthenticationService {
     protected String SIGNER_KEY;
 
     public RegisterResponse register(RegisterRequest request) {
-        log.debug("Test 0");
-
         Specification<User> spec = Specification.where(null);
         spec = spec.and(UserSpec.hasEmail(request.getEmail(),true));
 
         var users = userRepository.findAll(spec);
 
-        log.debug("test empty: {}", users.isEmpty());
-        users.forEach(user -> log.debug("test user: {}", user.getEmail()));
         if (!users.isEmpty())
             throw new AuthException(AuthExceptionCode.USER_EXISTED);
         var user = authenticationMapper.converRegistertUser(request);
@@ -75,13 +74,15 @@ public class AuthenticationService {
 
         var role = roleRepository.findByName(RoleFeature.CUSTOMER.getName()).orElse(null);
         user.addRole(role);
-
+        var currentUser = userService.getCurrentUser();
+        activityLogService.create(Activity.REGISTER, null, currentUser);
         var userResponse = userRepository.save(user);
         return authenticationMapper.convertRegisterResponse(userResponse);
     }
 
     public LoginResponse login(LoginRequest request) {
         var user = softAuthenticate(request);
+        activityLogService.create(Activity.LOGIN, null, user);
         if (user == null) return null;
         var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
         roles.forEach(log::info);
@@ -105,7 +106,8 @@ public class AuthenticationService {
                 .id(jit)
                 .expiryTime(expiryTime)
                 .build();
-
+        var currentUser = userService.getCurrentUser();
+        activityLogService.create(Activity.LOGOUT, null, currentUser);
         invalidatedTokenRepository.save(invalidatedToken);
         return true;
     }
