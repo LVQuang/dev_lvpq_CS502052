@@ -16,6 +16,9 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Invoice {
+//    public Invoice(User user){
+//        buyer = user;
+//    }
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;

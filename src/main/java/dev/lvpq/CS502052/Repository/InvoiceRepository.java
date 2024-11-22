@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, String>, JpaSpecificationExecutor<Invoice> {
     Optional<Invoice> findByBuyerIdAndStatus(String buyerId, OrderStatus status);
+
 }

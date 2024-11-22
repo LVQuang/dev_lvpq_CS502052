@@ -56,32 +56,39 @@ public class UserService {
     }
 
 
-    public UserDetailResponse getCurrentInformation() {
-        var context = SecurityContextHolder.getContext();
-        var email =context.getAuthentication().getName();
-
-        Specification<User> spec = Specification.where(null);
-        spec.and(UserSpec.hasEmail(email, true));
-        var user = userRepository.findOne(spec).orElseThrow(() ->
-                new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
-        return userMapper.toDetailResponse(user);
-    }
+//    public UserDetailResponse getCurrentInformation() {
+//        var context = SecurityContextHolder.getContext();
+//        var email =context.getAuthentication().getName();
+//
+//        Specification<User> spec = Specification.where(null);
+//        spec.and(UserSpec.hasEmail(email, true));
+//        var user = userRepository.findOne(spec).orElseThrow(() ->
+//                new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
+//        return userMapper.toDetailResponse(user);
+//    }
     public User getCurrentUser() {
         var context = SecurityContextHolder.getContext();
         var email =context.getAuthentication().getName();
         return userRepository.findByEmail(email).orElseThrow(null);
     }
-    public List<UserDetailResponse> findUsersByName(String query) {
-
-        if (query == null || query.trim().isEmpty()){
-            return getAllCustomer();
-        }
-        return userRepository.findAll().stream()
-                .filter(user -> user.getEmail().toLowerCase().contains(query.toLowerCase()))
-                .map(userMapper::toDetailResponse)
-                .collect(Collectors.toList());
+    public UserDetailResponse getCurrentUserInformation() {
+        var context = SecurityContextHolder.getContext();
+        var email =context.getAuthentication().getName();
+        var user = userRepository.findByEmail(email).orElseThrow(null);
+        return userMapper.toDetailResponse(user);
 
     }
+//    public List<UserDetailResponse> findUsersByName(String query) {
+//
+//        if (query == null || query.trim().isEmpty()){
+//            return getAllCustomer();
+//        }
+//        return userRepository.findAll().stream()
+//                .filter(user -> user.getEmail().toLowerCase().contains(query.toLowerCase()))
+//                .map(userMapper::toDetailResponse)
+//                .collect(Collectors.toList());
+//
+//    }
 
     public List<UserDetailResponse> queryUser(QueryUser query) {
         Specification<User> spec = UserSpec.findByKeyword(query.getKeyword(), false);

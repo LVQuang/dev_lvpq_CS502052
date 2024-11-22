@@ -1,5 +1,6 @@
 package dev.lvpq.CS502052.Controller;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
+
 import dev.lvpq.CS502052.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -12,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +28,8 @@ public class HomeController {
     public String showIndexPage(HttpServletRequest request, Model model) {
         List<ProductResponse> latest_products = productService.getLatestProducts();
         List<ProductResponse> coming_products = productService.getComingProducts();
-        List<ProductResponse> exclusive_products = productService.getExclusiveProducts();
+        List<ProductResponse> exclusive_products = productService.getExclusiveProducts();;
+
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("coming_products", coming_products);
         model.addAttribute("exclusive_products", exclusive_products);
