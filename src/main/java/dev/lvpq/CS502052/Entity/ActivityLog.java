@@ -22,11 +22,13 @@ public class ActivityLog {
     String id;
     Activity activity;
     @Builder.Default
+    String keyword = null;
+    @Builder.Default
     LocalDate createdAt = LocalDate.now();
     String meta;
     @Builder.Default
     boolean hide = false;
-    @Builder.Default
-    @ManyToMany(mappedBy = "activityLogs")
-    Set<User> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 }

@@ -4,6 +4,7 @@ import dev.lvpq.CS502052.Dto.Request.ResetPassword;
 import dev.lvpq.CS502052.Dto.Request.SimpleMailRequest;
 import dev.lvpq.CS502052.Entity.OTP;
 import dev.lvpq.CS502052.Entity.User;
+import dev.lvpq.CS502052.Enums.Activity;
 import dev.lvpq.CS502052.Exception.DefineExceptions.ForgotPasswordException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.OTPException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.ResetPasswordException;
@@ -34,6 +35,7 @@ public class ForgotPasswordService {
     OTPRepository otpRepository;
     MailService mailService;
     PasswordEncoder passwordEncoder;
+    ActivityLogService activityLogService;
 
     public void sendOTP(String email) throws MessagingException {
         Specification<User> spec = Specification.where(UserSpec.hasEmail(email, true));
@@ -80,6 +82,7 @@ public class ForgotPasswordService {
         var user = otp.getUser();
         user.setPassword(passwordEncoder
                 .encode(resetPassword.getPassword()));
+        activityLogService.create(Activity.RESET_PASSWORD, null, user);
         userRepository.save(user);
     }
 }

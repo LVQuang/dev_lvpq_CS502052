@@ -9,8 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum Activity {
-    LOGIN("Login", "user login system"),
-    LOGOUT("Logout", "user logout system"),
+    VIEW("View", "Anonymous access to the website"),
+    LOGIN("Login", "user login website"),
+    LOGOUT("Logout", "user logout website"),
     REGISTER("Register", "user create a new account"),
     RESET_PASSWORD("Reset Password", "user change password");
 
