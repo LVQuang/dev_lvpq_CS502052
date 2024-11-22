@@ -25,11 +25,13 @@ public class SecurityConfig {
 
     private final String[] POST_PUBLIC_ENDPOINTS = {
             "/api/auth/register", "/api/auth/login", "/api/auth/introspect", "/api/auth/logout"
-            , "/login", "/register", "/admin", "/forgotPassword/**", "api/user/query" , "api/product/query"
+
+            , "/login", "/register", "/admin", "/forgotPassword/**", "api/user/query", "/payment/**", "api/product/query"
     };
 
     private final String[] GET_PUBLIC_ENDPOINTS = {
-            "/home", "/login", "/logout", "/register", "/forgotPassword/**", "/exception", "/category"
+            "/home", "/login", "/logout", "/register", "/forgotPassword/**", "/exception", "/payment/**",
+            "/category", "/api/product/**", "/api/invoice/**"
     };
 
     private final String[] STATIC_RESOURCE = {

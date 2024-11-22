@@ -85,7 +85,7 @@
             <artifactId>spring-context-support</artifactId>
             <version>6.1.5</version>
         </dependency>
-<!--	Java Mail	-->
+		<!--	Java Mail	-->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -104,6 +104,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!--	Stripe Method	-->
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>28.0.1</version>
 		</dependency>
 	</dependencies>
 

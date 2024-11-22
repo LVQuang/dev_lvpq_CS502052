@@ -23,3 +23,6 @@ spring:
       mail.smtp.ssl.protocols: TLSv1.2
 jwt:
   signerKey: "3yrdhh+tGeku/H0Lscu6Dgfq4k+m6a5GEgP5c8SEZeq4GL7evfYjhraygtfxKHU+"
+stripe:
+  publishable-key: "pk_test_51QMppXDWtM2SHM2vyNnQUUCmo32VyeH7EuV6OSpfAlfrBDyZAoaynDlNEyMMhHjfHSTecv6TfdUl3NZKhblGWXiW00oJmzxJBQ"
+  secret-key: "sk_test_51QMppXDWtM2SHM2vZUlnzKw5BovRmTmYt1gELrEjNsgai0SiHcXnTKoafCdumLSVYTvIeUOyRtl3MjcUXMfmedM100ImEuSvRH"

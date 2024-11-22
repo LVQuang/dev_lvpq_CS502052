@@ -45,4 +45,21 @@ public class Invoice {
         return result;
     }
 
+    public void addProduct(Product product) {
+        if (invoiceDetails == null) {
+            invoiceDetails = new HashSet<>();
+        }
+        invoiceDetails.stream()
+            .filter(detail -> detail.getProduct().equals(product))
+            .findFirst()
+            .ifPresentOrElse(
+                    InvoiceDetail::increaseQuantity,
+                    () -> {
+                        invoiceDetails.add(InvoiceDetail.builder()
+                                .invoice(this)
+                                .product(product)
+                                .build());
+                    });
+    }
+
 }

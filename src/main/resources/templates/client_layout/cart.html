@@ -196,7 +196,6 @@
             const qtyInput = document.getElementById('sst' + id);
             let qty = parseInt(qtyInput.value);
             qty = isNaN(qty) || qty <= 1 ? 0 : qty - 1;
-
             if (qty === 0) {
                 currentProductId = id;
                 $('#confirmDeleteModal').modal('show');
@@ -205,14 +204,13 @@
                 updateTotalPrice(id, unitPrice, qty);
             }
             updateInvoice(id, qty);
-
         }
         // Khi nhấn "Yes" trong modal
         document.getElementById('confirmDelete').addEventListener('click', () => {
             if (currentProductId) {
                 removeProductFromCart(currentProductId);
                 currentProductId = null;
-                $('#confirmDeleteModal').modal('hide'); // Ẩn modal
+                $('#confirmDeleteModal').modal('hide');
             }
         });
         // Khi nhấn "No" trong modal
@@ -231,7 +229,6 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
-                        // Xóa sản phẩm khỏi bảng
                         document.getElementById('sst' + productId).closest('tr').remove();
                     } else {
                         console.error('Failed to remove product:', data.message);
@@ -245,6 +242,7 @@
             const totalPrice = unitPrice * qty;
             totalPriceElement.innerText = `$${totalPrice.toFixed(2)}`;
         }
+        fetchProductFromUser();
 
         // Gọi hàm fetch sản phẩm
         fetchProductFromUser();

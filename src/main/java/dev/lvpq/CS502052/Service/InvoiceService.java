@@ -4,7 +4,6 @@ import dev.lvpq.CS502052.Dto.Request.InvoiceDetailRequest;
 import dev.lvpq.CS502052.Dto.Request.InvoiceRequest;
 import dev.lvpq.CS502052.Dto.Response.InvoiceResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
-
 import dev.lvpq.CS502052.Dto.Response.ProductWithQuantityResponse;
 import dev.lvpq.CS502052.Entity.*;
 import dev.lvpq.CS502052.Enums.OrderStatus;
@@ -17,9 +16,12 @@ import dev.lvpq.CS502052.Repository.InvoiceRepository;
 import dev.lvpq.CS502052.Repository.ProductRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
+import dev.lvpq.CS502052.Utils.InvoiceUtil;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -96,7 +98,6 @@ public class InvoiceService {
             invoiceDetail.setQuantity(invoiceRequest.getQuantity());
 
             invoiceRepository.save(invoice);
-//            }
         } else {
             throw new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED);
         }
@@ -108,9 +109,10 @@ public class InvoiceService {
 
 
     public void removeProductIfQuantityZero(String productId) {
-        User currentUser = userService.getCurrentUser();
-        Invoice invoice = invoiceRepository.findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
-                .orElseThrow(() -> new AppException(AuthExceptionCode.INVOICE_NOT_FOUND));
+        var invoice = invoiceUtil.getInvoiceCurrentUser();
+        if (invoice == null)
+            throw new AppException(AuthExceptionCode.INVOICE_NOT_FOUND);
+
         Optional<InvoiceDetail> existingDetail = invoice.getInvoiceDetails().stream()
                 .filter(detail -> detail.getProduct().getId().equals(productId))
                 .findFirst();
@@ -125,11 +127,7 @@ public class InvoiceService {
     }
 
     public List<ProductWithQuantityResponse> getUserCartProducts() {
-        User currentUser = userService.getCurrentUser();
-        var userInvoices = invoiceRepository
-                .findByBuyerIdAndStatus(currentUser.getId(), OrderStatus.PENDING)
-                .orElse(null);
-
+        var userInvoices = invoiceUtil.getInvoiceCurrentUser();
         if (userInvoices == null) return new ArrayList<>();
 
         var productQuantityMap = userInvoices.getProduct();
@@ -139,6 +137,21 @@ public class InvoiceService {
                         entry.getValue()
                 ))
                 .collect(Collectors.toList());
+    }
+    public void confirmInvoice() {
+        var invoice = invoiceUtil.getInvoiceCurrentUser();
+        if (invoice == null)
+            throw new AppException(AuthExceptionCode.INVOICE_NOT_FOUND);
+        invoice.setStatus(OrderStatus.DELIVERED);
+        invoiceRepository.save(invoice);
+    }
+
+    public void setTotalPrice(Long amount) {
+        var invoice = invoiceUtil.getInvoiceCurrentUser();
+        if (invoice == null)
+            throw new AppException(AuthExceptionCode.INVOICE_NOT_FOUND);
+        invoice.setTotalPrice(amount);
+        invoiceRepository.save(invoice);
     }
 
 }

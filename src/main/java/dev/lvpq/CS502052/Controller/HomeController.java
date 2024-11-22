@@ -1,9 +1,6 @@
 package dev.lvpq.CS502052.Controller;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
-import dev.lvpq.CS502052.Entity.BrandView;
-import dev.lvpq.CS502052.Entity.CartItemView;
-import dev.lvpq.CS502052.Entity.Product;
-import dev.lvpq.CS502052.Entity.ProductView;
+
 import dev.lvpq.CS502052.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -32,6 +29,7 @@ public class HomeController {
         List<ProductResponse> latest_products = productService.getLatestProducts();
         List<ProductResponse> coming_products = productService.getComingProducts();
         List<ProductResponse> exclusive_products = productService.getExclusiveProducts();;
+
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("coming_products", coming_products);
         model.addAttribute("exclusive_products", exclusive_products);
@@ -46,9 +44,7 @@ public class HomeController {
 
     @GetMapping({"/category","/category.html"})
     String shop(HttpServletRequest request, Model model) {
-        List<ProductResponse> latest_products = productService.getLatestProducts();
-//        List<ProductView> latest_products = getLatestProducts();
-
+        var latest_products = productService.getLatestProducts();
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/category";
@@ -60,8 +56,9 @@ public class HomeController {
         return "/client_layout/cart";
     }
     @GetMapping({"/single-product/{id}", "/single-product.html"})
-    public String singleProduct(HttpServletRequest request, Model model, @PathVariable String id) {
-        ProductResponse product = productService.getProductById(id);  // Lấy thông tin sản phẩm từ database
+    public String singleProduct(HttpServletRequest request,
+                                Model model, @PathVariable String id) {
+        var product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/single-product";

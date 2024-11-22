@@ -13,4 +13,6 @@ public class SimpleMailRequest {
     String subject;
     String text;
     String sender;
+    @Builder.Default
+    boolean html = false;
 }

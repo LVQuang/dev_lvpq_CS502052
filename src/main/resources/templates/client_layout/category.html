@@ -111,7 +111,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="col-xl-9 col-lg-8 col-md-7">
 				<!-- Start Filter Bar -->
 				<div class="filter-bar d-flex flex-wrap align-items-center">
@@ -127,6 +126,7 @@
 				<div id="successMessage" class="notification" style="display: none;">
 					<p>Thêm sản phẩm vào giỏ hàng thành công!</p>
 				</div>
+
 			</div>
 		</div>
 	</div>
@@ -225,12 +225,12 @@
 
 			// Hiển thị sản phẩm
 			function displayProducts(products, page, pageSize ) {
+
 				const productList = document.getElementById('product-list');
 				productList.innerHTML = '';
 				const startIndex = (page - 1) * pageSize;
 				const endIndex = Math.min(startIndex + pageSize, products.length);
 				const currentProducts = products.slice(startIndex, endIndex);
-
 				currentProducts.forEach(product => {
 					const productHTML = `
             <div class="col-lg-4 col-md-6">

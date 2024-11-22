@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thanh toán</title>
+</head>
+<body>
+<h1>Trang Thanh Toán</h1>
+<form th:action="@{/payment}" method="post">
+    <input type="hidden" name="amount" th:value="${amount}" />
+    <button type="submit">Pay ${amount / 100} USD</button>
+</form>
+</body>
+</html>
