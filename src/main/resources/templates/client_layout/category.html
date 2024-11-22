@@ -59,6 +59,7 @@
 					<div class="top-filter-head">Product Filters</div>
 					<div class="common-filter">
 						<div class="sorting">
+							<div class="head">Sort</div>
 							<div class="filter-list">
 								<input class="pixel-radio" type="radio" id="name_asc" name="sort-option" value="name_asc">
 								<label for="name_asc">Name (A-Z)</label>
@@ -78,31 +79,22 @@
 						</div>
 					</div>
 					<div class="common-filter">
-						<div class="head">Brands</div>
-						<form action="#">
-							<ul>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Nike<span>(29)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Jordan<span>(29)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Adidas<span>(19)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">AllStars<span>(19)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Converse<span>(19)</span></label></li>
-							</ul>
-						</form>
+						<div class="head">Show </div>
+							<div class="filter-list">
+								<input class="pixel-radio" type="radio" id="show6" name="show-option" value="6">
+								<label for="show6">Show 6</label>
+							</div>
+							<div class="filter-list">
+								<input class="pixel-radio" type="radio" id="show12" name="show-option" value="12">
+								<label for="show12">Show 12</label>
+							</div>
+							<div class="filter-list">
+								<input class="pixel-radio" type="radio" id="show18" name="show-option" value="18">
+								<label for="show18">Show 18</label>
+							</div>
+
 					</div>
-					<div class="common-filter">
-						<div class="head">Sort</div>
-						<form action="#">
-							<ul>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color"><label for="black">Black<span>(29)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="balckleather" name="color"><label for="balckleather">Black
-										Leather<span>(29)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="blackred" name="color"><label for="blackred">Black
-										with red<span>(19)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="gold" name="color"><label for="gold">Gold<span>(19)</span></label></li>
-								<li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey" name="color"><label for="spacegrey">Spacegrey<span>(19)</span></label></li>
-							</ul>
-						</form>
-					</div>
+
 					<div class="common-filter">
 						<div class="head">Price</div>
 						<div class="price-range-area">
@@ -122,21 +114,7 @@
 			<div class="col-xl-9 col-lg-8 col-md-7">
 				<!-- Start Filter Bar -->
 				<div class="filter-bar d-flex flex-wrap align-items-center">
-					<div class="sorting mr-auto">
-						<select>
-							<option value="1">Show 12</option>
-							<option value="1">Show 12</option>
-							<option value="1">Show 12</option>
-						</select>
-					</div>
 					<div class="pagination">
-						<a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
-						<a href="#" class="active">1</a>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-						<a href="#">6</a>
-						<a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
 					</div>
 				</div>
 				<!-- End Filter Bar -->
@@ -145,33 +123,38 @@
 					<div id="product-list" class="row">
 					</div>
 				</section>
-				<!-- End Best Seller -->
-				<!-- Start Filter Bar -->
-				<div class="filter-bar d-flex flex-wrap align-items-center">
-					<div class="sorting mr-auto">
-						<select>
-							<option value="1">Show 12</option>
-							<option value="1">Show 12</option>
-							<option value="1">Show 12</option>
-						</select>
-					</div>
-					<div class="pagination">
-					</div>
-				</div>
-				<!-- End Filter Bar -->
-				<!-- Success Notification -->
 				<div id="successMessage" class="notification" style="display: none;">
 					<p>Thêm sản phẩm vào giỏ hàng thành công!</p>
 				</div>
+
 			</div>
 		</div>
 	</div>
 	<script>
-		document.addEventListener("DOMContentLoaded", function() {
+		let fetchProductsFunction;
+		let createPaginationFunction;
+		let currentPage = 1;
+		const searchInput = document.getElementById("search_input");
+		let quantityItems = fetch("/api/product/quantity");
+		let sizePage = 6;
+		fetch(`/api/product/quantity`)
+				.then(response => response.json())
+				.then(data => {
+					if (data.code === 200) {
+						quantityItems = result
+					} else {
+						console.error("Failed to get quantity products:", data.message);
+					}
+				})
+		let currentSort = "name_asc";
+
+		document.addEventListener("DOMContentLoaded", function () {
+			document.getElementById("name_asc").checked = true;
+			document.getElementById("show6").checked = true;
+
 			const priceRange = document.getElementById("price-range");
 			let lowerValue = 10;
 			let upperValue = 500;
-			let currentSort = 'name_asc';
 
 			noUiSlider.create(priceRange, {
 				start: [lowerValue, upperValue],
@@ -181,39 +164,68 @@
 					'max': 500
 				}
 			});
-			priceRange.noUiSlider.on('change', function(values) {
+
+			// Xử lý sự kiện thay đổi giá trị của giá
+			priceRange.noUiSlider.on('change', function (values) {
 				const lower = Math.round(values[0]);
 				const upper = Math.round(values[1]);
 				document.getElementById("lower-value").innerText = lower;
 				document.getElementById("upper-value").innerText = upper;
-				fetchProducts("", lower, upper, currentSort);
-			});
-			const searchInput = document.getElementById("search_input");
-			searchInput.addEventListener("input", function() {
-				const query = searchInput.value.trim();
-				fetchProducts(query, lowerValue, upperValue ,currentSort);
-			});
-			const sortOptions = document.querySelectorAll('input[name="sort-option"]');
-			sortOptions.forEach(function(option) {
-				option.addEventListener("change", function() {
-					currentSort = option.value;
-						fetchProducts(searchInput.value.trim(), lowerValue, upperValue, currentSort);
-				});
+				fetchProductsFunction("", lower, upper, currentSort);
 			});
 
-			fetchProducts("", lowerValue, upperValue,currentSort);
-			function fetchProducts(query, lower, upper, sort) {
-				fetch(`/api/product/search?query=${encodeURIComponent(query)}&sort=${sort}&minPrice=${lower}&maxPrice=${upper}`)
+			// Xử lý sự kiện tìm kiếm
+			searchInput.addEventListener("input", function () {
+				const query = searchInput.value.trim();
+				fetchProductsFunction(query, lowerValue, upperValue, currentSort);
+			});
+
+			// Xử lý sự kiện khi thay đổi lựa chọn sắp xếp
+			const sortOptions = document.querySelectorAll('input[name="sort-option"]');
+			sortOptions.forEach(function (option) {
+				option.addEventListener("change", function () {
+					currentSort = option.value; // Cập nhật giá trị sắp xếp hiện tại
+					fetchProductsFunction("", document.getElementById("lower-value").innerText, document.getElementById("upper-value").innerText, currentSort);
+				});
+			});
+			const showOptions = document.querySelectorAll('input[name="show-option"]');
+			showOptions.forEach(function (option) {
+				option.addEventListener("change", function () {
+					sizePage = option.value; // Cập nhật giá trị sắp xếp hiện tại
+					fetchProductsFunction("", document.getElementById("lower-value").innerText, document.getElementById("upper-value").innerText, currentSort, currentPage, sizePage);
+				});
+			});
+			fetchProductsFunction = function fetchProducts(query = "", lower, upper, currentSort = "name_asc", page = currentPage, sizePage = 6) {
+				const [sortBy, sortOrder] = currentSort.split("_");
+
+				let queryData = {
+					keyword: query,
+					size: 100,
+					maxPrice: upper,
+					minPrice: lower,
+					sortBy: sortBy, // Sử dụng tên trường
+					sortOrder: sortOrder, // Sử dụng thứ tự
+				};
+
+				fetch(`/api/product/query`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(queryData)
+				})
 						.then(response => response.json())
 						.then(data => {
 							if (data.code === 200) {
-								displayProducts(data.result);
+								displayProducts(data.result, page, sizePage);
+								createPaginationFunction(data.result.length, sizePage, page);
+							} else {
+								console.error("Failed to fetch products:", data.message);
 							}
 						})
-						.catch(error => console.error('Error:', error));
-			}
+			};
 
-			function displayProducts(products, page = 1, pageSize = 6) {
+			// Hiển thị sản phẩm
+			function displayProducts(products, page, pageSize ) {
+
 				const productList = document.getElementById('product-list');
 				productList.innerHTML = '';
 				const startIndex = (page - 1) * pageSize;
@@ -221,67 +233,112 @@
 				const currentProducts = products.slice(startIndex, endIndex);
 				currentProducts.forEach(product => {
 					const productHTML = `
-					<div class="col-lg-4 col-md-6">
-						<div class="single-product">
-							<img class="img-fluid" src="${product.image}" alt="">
-							<div class="product-details">
-								<h6>${product.name}</h6>
-								<div class="price">
-									<h6>$${product.price}</h6>
-								</div>
-								<div class="prd-bottom">
-									<a href="#" class="social-info add-to-bag" data-id="${product.id}">
-										<span class="ti-bag"></span>
-										<p class="hover-text">add to bag</p>
-									</a>
-									<a href="#" class="social-info">
-										<span class="lnr lnr-heart"></span>
-										<p class="hover-text">Wishlist</p>
-									</a>
-									<a href="#" class="social-info">
-										<span class="lnr lnr-sync"></span>
-										<p class="hover-text">compare</p>
-									</a>
-									<a href="/single-product/${product.id}" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>`;
+            <div class="col-lg-4 col-md-6">
+                <div class="single-product">
+                    <img class="img-fluid" src="${product.image || '/img/placeholder.png'}" alt="Product Image">
+                    <div class="product-details">
+                        <h6>${product.name}</h6>
+                        <div class="price">
+                            <h6>$${product.price}</h6>
+                        </div>
+                        <div class="prd-bottom">
+                            <a href="#" class="social-info add-to-bag" data-id="${product.id}">
+                                <span class="ti-bag"></span>
+                                <p class="hover-text">Add to bag</p>
+                            </a>
+                             <a href="#" class="social-info">
+                                <span class="lnr lnr-heart"></span>
+                                <p class="hover-text">Wishlist</p>
+                            </a>
+                            <a href="#" class="social-info">
+                                <span class="lnr lnr-sync"></span>
+                                <p class="hover-text">Compare</p>
+                            </a>
+                            <a href="/single-product/${product.id}" class="social-info">
+                                <span class="lnr lnr-move"></span>
+                                <p class="hover-text">View more</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
 					productList.insertAdjacentHTML('beforeend', productHTML);
 				});
-				document.querySelectorAll('.add-to-bag').forEach(button => {
-					button.addEventListener('click', (event) => {
+				document.querySelectorAll('.add-to-bag').forEach(item => {
+					item.addEventListener('click', function (event) {
 						event.preventDefault();
-						const productId = event.currentTarget.getAttribute('data-id');
+						const productId = item.getAttribute('data-id');
 						addToBag(productId);
 					});
 				});
+				// Add Product to Cart
+				function addToBag(productId) {
+					fetch('/api/user/currentUser', {
+						method: 'GET',
+						headers: { 'Content-Type': 'application/json' },
+					})
+							.then(response => {
+								if (response.code !== 200) { // Nếu chưa đăng nhập
+									alert("Vui lòng đăng nhập để mua hàng!");
+									return null;
+								}
+								return response.json();
+							})
+							.then(user => {
+								if (!user) return;
+								fetch(`/api/invoice/add-to-cart/${productId}`, {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+								})
+										.then(response => response.text())
+										.then(message => {
+											alert(message); // Hiển thị thông báo thành công
+										})
+										.catch(error => console.error('Error adding to cart:', error));
+							})
+							.catch(error => console.error('Error checking user login status:', error));
+				}
+
 			}
-			function addToBag(productId) {
-				fetch(`/api/invoice/add-to-cart/${productId}`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-				})
-						.then(response => response.text())
-						.then(message => {
-							alert(message); // Show success message
-						})
-						.catch(error => console.error('Error adding to cart:', error));
-			}}
-			)
+
+			// Tạo phân trang
+			createPaginationFunction = function createPagination(totalProducts, pageSize, currentPage = 1) {
+				const totalPages = Math.ceil(totalProducts / pageSize);
+				const paginationContainer = document.querySelector('.pagination');
+				paginationContainer.innerHTML = ''; // Xóa nội dung cũ
+				for (let i = 1; i <= totalPages; i++) {
+					const pageLink = document.createElement('a');
+					pageLink.className = i === currentPage ? 'active' : ''; // Đánh dấu trang hiện tại là 'active'
+					pageLink.textContent = i;
+					pageLink.dataset.page = i;
+					pageLink.addEventListener('click', () => changePage(i));
+					paginationContainer.appendChild(pageLink);
+				}
+			}
+
+			// Khởi tạo phân trang
+			fetchProductsFunction("", lowerValue, upperValue, currentSort, 1);
+
+		});
+
+		// Hàm thay đổi trang
+		function changePage(selectedPage) {
+			currentPage = selectedPage;
+			fetchProductsFunction(searchInput.value, document.getElementById("lower-value").innerText, document.getElementById("upper-value").innerText, currentSort, selectedPage);
+			createPaginationFunction(quantityItems, sizePage, selectedPage);
+
+		}
+
+
 	</script>
+
 	<!-- start footer Area -->
 	<footer th:insert="client_fragments/footer :: footer" class="footer-area section_gap"></footer>
 	<!-- End footer Area -->
 
 	<script src="/js/vendor/jquery-2.2.4.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-	 crossorigin="anonymous"></script>
+	<script integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+			crossorigin="anonymous"></script>
 	<script src="/js/vendor/bootstrap.min.js"></script>
 	<script src="/js/jquery.ajaxchimp.min.js"></script>
 	<script src="/js/jquery.nice-select.min.js"></script>
