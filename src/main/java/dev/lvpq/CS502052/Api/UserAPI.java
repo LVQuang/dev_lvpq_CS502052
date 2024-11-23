@@ -51,7 +51,8 @@ public class UserAPI {
     @GetMapping("/currentUser")
     public  ApiResponse<UserDetailResponse> getCurrentUser() {
         try {
-            UserDetailResponse currentUser = userService.getCurrentUserInformation();
+            UserDetailResponse currentUser = userService.getCurrentInformation();
+
             return ApiResponse.<UserDetailResponse>builder()
                     .code(200)
                     .message("Find Current User Success")
