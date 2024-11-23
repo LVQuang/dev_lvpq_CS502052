@@ -21,17 +21,12 @@ public class HomeController {
     ProductService productService;
     ViewService viewService;
 
-    @GetMapping({"/home","/home.html", "/index.html"})
+    @GetMapping()
     public String showIndexPage(HttpServletRequest request, Model model) {
         viewService.buildIndexPage(model, request.getRequestURI());
-        return "/client_layout/index";
+        return "/Client/index";
     }
-    @GetMapping({"/blog" ,"/blog.html"})
-    String blog(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/blog";
-    }
-
+    
     @GetMapping({"/category","/category.html"})
     String shop(HttpServletRequest request, Model model) {
         var latest_products = productService.getLatestProducts();
@@ -45,6 +40,7 @@ public class HomeController {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/cart";
     }
+    
     @GetMapping({"/single-product/{id}", "/single-product.html"})
     public String singleProduct(HttpServletRequest request,
                                 Model model, @PathVariable String id) {
@@ -53,34 +49,16 @@ public class HomeController {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/single-product";
     }
+    
     @GetMapping({"/checkout", "/checkout.html"})
     public String checkout(HttpServletRequest request, Model model) {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/checkout";
     }
+    
     @GetMapping({"/confirmation", "/confirmation.html"})
     public String confirmation(HttpServletRequest request, Model model) {
         model.addAttribute("requestURI", request.getRequestURI());
         return "/client_layout/confirmation";
-    }
-    @GetMapping({"/single-blog", "/single-blog.html"})
-    public String singleBlog(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/single-blog";
-    }
-    @GetMapping({"/tracking", "/tracking.html"})
-    public String tracking(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/tracking";
-    }
-    @GetMapping({"/elements", "/elements.html"})
-    public String elements(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/elements";
-    }
-    @GetMapping({"/contact", "/contact.html"})
-    public String contact(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "/client_layout/contact";
     }
 }
