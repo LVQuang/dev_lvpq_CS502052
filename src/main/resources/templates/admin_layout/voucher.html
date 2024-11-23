@@ -71,6 +71,7 @@
                             <h3 class="fw-bold mb-3">Account</h3>
                             <h6 class="op-7 mb-2">Manage Voucher</h6>
                         </div>
+                        <button id="createVoucherBtn" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#createVoucherModal">Create Voucher</button>
                         <button id="sendEmailBtn" class="btn btn-primary ms-auto" onclick="sendEmail()" disabled>Send Email</button>
                     </div>
 
@@ -92,6 +93,39 @@
                         </table>
                     </div>
                 </div>
+                <!-- Create Voucher Modal -->
+                <div class="modal fade" id="createVoucherModal" tabindex="-1" aria-labelledby="createVoucherModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="createVoucherModalLabel">Create Voucher</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="voucherForm">
+                                    <div class="mb-3">
+                                        <label for="voucherName" class="form-label">Voucher Code</label>
+                                        <input type="text" class="form-control" id="voucherName" name="voucherCode" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="discount" class="form-label">Discount (%)</label>
+                                        <input type="number" class="form-control" id="discount" name="discount" min="1" max="100" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                                        <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+                                    </div>
+<!--                                    <div class="mb-3">-->
+<!--                                        <label for="eligibleUsers" class="form-label">Eligible Users</label>-->
+<!--                                        <select multiple class="form-control" id="eligibleUsers" name="eligibleUsers"></select>-->
+<!--                                    </div>-->
+                                    <button type="button" class="btn btn-primary" onclick="submitVoucher()">Create</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Send Email Modal -->
                 <div class="modal fade" id="sendEmailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -113,6 +147,12 @@
                                     <div class="mb-3">
                                         <label for="body" class="form-label">Body</label>
                                         <textarea class="form-control" id="body" name="body" rows="4" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="voucherList" class="form-label">Available Vouchers</label>
+                                        <select class="form-select" id="voucherList" name="voucherCode">
+                                            <option value="" disabled selected>Select a Voucher</option>
+                                        </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="attachment" class="form-label">Attachment</label>
@@ -141,8 +181,11 @@
 
 
             <script>
+                var users;
                 document.addEventListener('DOMContentLoaded', () => {
                     fetchUsers();
+                    // populateEligibleUsers();
+
                 });
 
                 function fetchUsers() {
@@ -194,6 +237,7 @@
                         .catch(error => console.error('Error searching accounts:', error));
                 }
                 document.addEventListener('DOMContentLoaded', function() {
+
                     const searchInput = document.getElementById('searchInput');
 
                     if (searchInput) {
@@ -234,35 +278,28 @@
                     }
                 }
                 function submitEmail() {
-                    // Hiển thị modal chờ
                     const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
                     loadingModal.show(); // Hiển thị spinner
 
                     const emailForm = document.getElementById("emailForm");
                     const formData = new FormData(emailForm); // Lấy tất cả dữ liệu từ form (bao gồm các tệp đính kèm)
-
                     fetch('/api/mail/send', {
                         method: 'POST',
-                        body: formData // Gửi dữ liệu form bao gồm các tệp đính kèm
+                        body: formData
                     })
                         .then(response => {
-                            // Kiểm tra xem phản hồi có phải là JSON hay không
                             const contentType = response.headers.get("content-type");
                             if (contentType && contentType.includes("application/json")) {
-                                return response.json();  // Trả về đối tượng JSON nếu phản hồi là JSON
+                                return response.json();
                             } else {
-                                return response.text();  // Nếu không phải JSON, trả về văn bản
+                                return response.text();
                             }
                         })
                         .then(data => {
-                            // Ẩn modal chờ khi có phản hồi từ server
                             loadingModal.hide();
-
                             if (typeof data === "string") {
-                                // Nếu phản hồi là văn bản (không phải JSON)
                                 alert(data);
                             } else if (data.success === true) {
-                                // Kiểm tra nếu success là true
                                 alert(data.message || "Email sent successfully!");
                                 const sendEmailModal = bootstrap.Modal.getInstance(document.getElementById('sendEmailModal'));
                                 sendEmailModal.hide();
@@ -271,15 +308,88 @@
                             }
                         })
                         .catch(error => {
-                            // Ẩn modal chờ khi có lỗi
                             loadingModal.hide();
                             console.error('Error sending email:', error);
                             alert("An error occurred while sending the email. Please try again.");
                         });
                 }
+                function fetchVouchers() {
+                    fetch('/api/voucher/list')
+                        .then(response => response.json())
+                        .then(data => {
+                            // Kiểm tra nếu data.result là mảng chứa các voucher
+                            const vouchers = Array.isArray(data.result) ? data.result : [];
 
+                            const voucherList = document.getElementById("voucherList");
+                            voucherList.innerHTML = ""; // Clear existing options
 
+                            if (vouchers.length === 0) {
+                                const noVoucherOption = document.createElement("option");
+                                noVoucherOption.textContent = "No vouchers available";
+                                noVoucherOption.disabled = true;
+                                voucherList.appendChild(noVoucherOption);
+                                return;
+                            }
 
+                            const defaultOption = document.createElement("option");
+                            defaultOption.textContent = "Select a voucher";
+                            defaultOption.value = "";
+                            defaultOption.selected = true;
+                            voucherList.appendChild(defaultOption);
+
+                            vouchers.forEach(voucher => {
+                                const option = document.createElement("option");
+                                option.value = voucher.code;
+
+                                const isExpired = new Date(voucher.endDate) < new Date();
+
+                                option.textContent = `${voucher.code} - ${voucher.discount}% (Exp: ${voucher.endDate}) ${isExpired ? '[Expired]' : ''}`;
+
+                                if (isExpired) {
+                                    option.disabled = true;
+                                }
+
+                                voucherList.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching vouchers:', error));
+                }
+
+                // Trigger fetching vouchers when modal is shown
+                document.getElementById('sendEmailModal').addEventListener('show.bs.modal', fetchVouchers);
+                function submitVoucher() {
+                    const voucherForm = document.getElementById('voucherForm');
+                    const formData = new FormData(voucherForm);
+                    const today = new Date();
+                    const startDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+                    const voucherData = {
+                        code: formData.get('voucherCode'),
+                        discount: formData.get('discount'),
+                        startDate : startDate,
+                        endDate: formData.get('expiryDate'),
+                    };
+
+                    fetch('/api/voucher/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(voucherData)
+                    })
+                        .then(response => response.json())
+                        .then(code => {
+                            if (code === 200) {
+                                alert('Voucher created successfully!');
+                                const createVoucherModal = bootstrap.Modal.getInstance(document.getElementById('createVoucherModal'));
+                                createVoucherModal.hide();
+                            } else {
+                                alert('Failed to create voucher.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error creating voucher:', error);
+                            alert('An error occurred. Please try again.');
+                        });
+                }
                 function toggleSelectAll(source) {
                     const checkboxes = document.querySelectorAll('.userCheckbox');
                     checkboxes.forEach(checkbox => {

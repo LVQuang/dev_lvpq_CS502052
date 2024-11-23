@@ -61,5 +61,9 @@ public class InvoiceAPI {
                 .result(invoiceService.getUserCartProducts()) // Gọi phương thức từ Service
                 .build();
     }
+    @GetMapping("/currentInvoice")
+    public String idCurrent(){
+        return invoiceService.getInvoiceByStatus();
+    }
 
 }

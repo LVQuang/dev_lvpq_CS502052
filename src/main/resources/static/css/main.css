@@ -1517,12 +1517,14 @@ h1, h2, h3, h4, h5, h6 {
       .active-product-area .owl-nav .owl-next {
         margin-top: -20px;
         right: 28%; } }
-
 .single-product {
   margin-bottom: 50px; }
   .single-product img {
     margin-bottom: 20px;
-    width: 100%; }
+    width: 270px;
+    height: 270px;
+    object-fit: cover; /* Đảm bảo ảnh được cắt vừa khung */
+    border-radius: 5px; /* Thêm bo góc tùy chọn */}
   .single-product .product-details h6 {
     font-size: 16px;
     text-transform: uppercase; }
@@ -1665,6 +1667,8 @@ h1, h2, h3, h4, h5, h6 {
     .exclusive-deal-area .exclusive-left .primary-btn {
       margin-top: 40px; }
   .exclusive-deal-area .exclusive-right {
+    background: url(../img/exclusive.jpg) center no-repeat;
+    height: 200px;
     text-align: center; }
     .exclusive-deal-area .exclusive-right .active-exclusive-product-slider {
       padding: 0 230px; }
@@ -4594,7 +4598,7 @@ label {
       margin-left: 30px;
       color: #222222; }
   .order_box .list li:nth-child(4) a .middle {
-    margin-left: 48px; }
+    margin-left: 30px; }
   .order_box .list_2 li a {
     text-transform: uppercase;
     color: #222222;

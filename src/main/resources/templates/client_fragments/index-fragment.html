@@ -140,14 +140,15 @@
             <div class="col-lg-6 no-padding exclusive-right">
                 <div class="active-exclusive-product-slider">
                     <div th:each="product : ${exclusive_products}" class="single-exclusive-slider">
-                        <img class="img-fluid" th:src="@{${product.image}}" alt="Exclusive Product">
+<!--                        <img class="img-fluid" th:src="@{${product.image}}" alt="Exclusive Product">-->
+                        <img class="img-fluid"  background="../img/excluse.jpg" alt="Exclusive Product">
                         <div class="product-details">
                             <div class="price">
-                                <h6 th:text="'$' + ${product.price}"></h6>
+                                <h6 th:text="'$' + ${product.price}">$250</h6>
                                 <h6 class="l-through">$209</h6>
                             </div>
 
-                            <h4 th:text="${product.name}"></h4>
+                            <h4 th:text="${product.name}">Limited Nike</h4>
                             <div class="add-bag d-flex align-items-center justify-content-center">
                                 <a class="add-btn" href="#"><span class="ti-bag"></span></a>
                                 <span class="add-text text-uppercase">Add to Bag</span>
@@ -161,56 +162,5 @@
 </section>
 <!-- End exclusive deal Area -->
 
-<!-- Start brand Area -->
-<section class="brand-area section_gap">
-    <div class="container">
-        <div class="row" >
-            <a th:each="brand : ${brands}" class="col single-img" href="">
-                <img class="img-fluid d-block mx-auto" th:src="@{${brand.thumbnail_url}}" alt="">
-            </a>
-        </div>
-    </div>
-</section>
-<!-- End brand Area -->
-
 <!-- Start related-product Area -->
-<section class="related-product-area section_gap_bottom">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="section-title">
-                    <h1>Deals of the Week</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="row">
-                    <div th:each="product : ${related_products}" class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img th:src="@{${product.getImageUrl()}}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title" th:text="${product.name}"></a>
-                                <div class="price">
-                                    <h6 th:text="'$' + ${product.price}"></h6>
-                                    <h6 class="l-through">$209</h6>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="ctg-right">
-                    <a href="#" target="_blank">
-                        <img class="img-fluid d-block mx-auto" src="/img/category/c5.jpg" alt="">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 </div>

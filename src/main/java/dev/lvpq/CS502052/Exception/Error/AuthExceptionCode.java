@@ -22,7 +22,8 @@ public enum AuthExceptionCode {
     PRODUCT_NOT_EXISTED(1010, "Product is not exited", HttpStatus.NOT_FOUND ),
     TOKEN_TIME(1011 , "Token is expiry time", HttpStatus.BAD_REQUEST),
     TOKEN_CRASH(1012 , "Token is invalidated", HttpStatus.BAD_REQUEST),
-    INVOICE_NOT_FOUND(1013, "Invoice is not found", HttpStatus.BAD_REQUEST);
+    INVOICE_NOT_FOUND(1013, "Invoice is not found", HttpStatus.BAD_REQUEST),
+    VOUCHER_NOT_EXISTED(1014, "Voucher is not found", HttpStatus.BAD_REQUEST);
 
     int code;
     String message;
