@@ -4,6 +4,7 @@ import dev.lvpq.CS502052.Dto.Request.QueryUser;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
 import dev.lvpq.CS502052.Dto.Response.UserListResponse;
 import dev.lvpq.CS502052.Entity.User;
+import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AuthException;
 import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Mapper.UserMapper;
@@ -68,15 +69,25 @@ public class UserService {
     }
     public User getCurrentUser() {
         var context = SecurityContextHolder.getContext();
-        var email =context.getAuthentication().getName();
-        return userRepository.findByEmail(email).orElseThrow(null);
-    }
-    public UserDetailResponse getCurrentUserInformation() {
-        var context = SecurityContextHolder.getContext();
-        var email =context.getAuthentication().getName();
-        var user = userRepository.findByEmail(email).orElseThrow(null);
-        return userMapper.toDetailResponse(user);
+        var authentication = context.getAuthentication();
 
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return null;
+        }
+
+        var email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(null);
+    }
+    public List<UserDetailResponse> findUsersByName(String query) {
+
+        if (query == null || query.trim().isEmpty()){
+            return getAllCustomer();
+        }
+        return userRepository.findAll().stream()
+                .filter(user -> user.getEmail().toLowerCase().contains(query.toLowerCase()))
+                .map(userMapper::toDetailResponse)
+                .collect(Collectors.toList());
     }
 //    public List<UserDetailResponse> findUsersByName(String query) {
 //

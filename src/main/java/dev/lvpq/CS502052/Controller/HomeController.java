@@ -1,13 +1,16 @@
 package dev.lvpq.CS502052.Controller;
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
-
+import dev.lvpq.CS502052.Entity.ActivityLog;
+import dev.lvpq.CS502052.Enums.Activity;
+import dev.lvpq.CS502052.Repository.ActivityLogRepository;
+import dev.lvpq.CS502052.Service.ActivityLogService;
 import dev.lvpq.CS502052.Service.ProductService;
+import dev.lvpq.CS502052.Service.ViewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,18 +25,12 @@ import java.util.List;
 @RequestMapping("")
 @Controller
 public class HomeController {
-    @Autowired
-    private final ProductService productService;
+    ProductService productService;
+    ViewService viewService;
+
     @GetMapping({"/home","/home.html", "/index.html"})
     public String showIndexPage(HttpServletRequest request, Model model) {
-        List<ProductResponse> latest_products = productService.getLatestProducts();
-        List<ProductResponse> coming_products = productService.getComingProducts();
-        List<ProductResponse> exclusive_products = productService.getExclusiveProducts();;
-
-        model.addAttribute("latest_products", latest_products);
-        model.addAttribute("coming_products", coming_products);
-        model.addAttribute("exclusive_products", exclusive_products);
-        model.addAttribute("requestURI", request.getRequestURI());
+        viewService.buildIndexPage(model, request.getRequestURI());
         return "/client_layout/index";
     }
     @GetMapping({"/blog" ,"/blog.html"})

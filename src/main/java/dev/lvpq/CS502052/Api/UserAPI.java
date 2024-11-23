@@ -52,6 +52,7 @@ public class UserAPI {
     public  ApiResponse<UserDetailResponse> getCurrentUser() {
         try {
             UserDetailResponse currentUser = userService.getCurrentInformation();
+
             return ApiResponse.<UserDetailResponse>builder()
                     .code(200)
                     .message("Find Current User Success")
