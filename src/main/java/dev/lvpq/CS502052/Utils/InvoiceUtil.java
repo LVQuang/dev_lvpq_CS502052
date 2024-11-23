@@ -2,10 +2,7 @@ package dev.lvpq.CS502052.Utils;
 
 import dev.lvpq.CS502052.Dto.Response.InvoiceProductResponse;
 import dev.lvpq.CS502052.Entity.Invoice;
-import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.OrderStatus;
-import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
-import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
 import dev.lvpq.CS502052.Repository.InvoiceRepository;
 import dev.lvpq.CS502052.Repository.ProductRepository;
 import dev.lvpq.CS502052.Service.UserService;

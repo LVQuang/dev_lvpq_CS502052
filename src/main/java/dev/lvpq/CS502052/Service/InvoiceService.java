@@ -1,9 +1,7 @@
 package dev.lvpq.CS502052.Service;
 
-import dev.lvpq.CS502052.Dto.Request.InvoiceDetailRequest;
 import dev.lvpq.CS502052.Dto.Request.InvoiceRequest;
 import dev.lvpq.CS502052.Dto.Response.InvoiceResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Dto.Response.ProductWithQuantityResponse;
 import dev.lvpq.CS502052.Entity.*;
 import dev.lvpq.CS502052.Enums.OrderStatus;
@@ -13,15 +11,8 @@ import dev.lvpq.CS502052.Mapper.InvoiceMapper;
 import dev.lvpq.CS502052.Mapper.ProductMapper;
 import dev.lvpq.CS502052.Repository.InvoiceDetailRepository;
 import dev.lvpq.CS502052.Repository.InvoiceRepository;
-import dev.lvpq.CS502052.Repository.ProductRepository;
-import dev.lvpq.CS502052.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.time.LocalDate;
 import dev.lvpq.CS502052.Utils.InvoiceUtil;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,8 +30,6 @@ public class InvoiceService {
     private InvoiceDetailRepository invoiceDetailRepository;
     @Autowired
     private InvoiceUtil invoiceUtil;
-    @Autowired
-    private ProductRepository productRepository;
     @Autowired
     private ProductMapper productMapper;
     @Autowired

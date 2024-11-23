@@ -27,5 +27,6 @@ public class Category {
     @Builder.Default
     LocalDate createAt = LocalDate.now();
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Product> products = new HashSet<>();
 }

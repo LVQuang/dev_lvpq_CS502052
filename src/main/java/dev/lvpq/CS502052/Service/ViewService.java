@@ -1,7 +1,6 @@
 package dev.lvpq.CS502052.Service;
 
 import dev.lvpq.CS502052.Dto.Response.ProductResponse;
-import dev.lvpq.CS502052.Entity.ActivityLog;
 import dev.lvpq.CS502052.Enums.Activity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

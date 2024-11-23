@@ -3,7 +3,6 @@ package dev.lvpq.CS502052.Config;
 import com.nimbusds.jose.JOSEException;
 import dev.lvpq.CS502052.Exception.DefineExceptions.AppException;
 import dev.lvpq.CS502052.Exception.Error.AuthExceptionCode;
-import dev.lvpq.CS502052.Exception.Error.ErrorCode;
 import dev.lvpq.CS502052.Repository.InvalidatedTokenRepository;
 import dev.lvpq.CS502052.Utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;

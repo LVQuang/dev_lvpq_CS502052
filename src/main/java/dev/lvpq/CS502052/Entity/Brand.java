@@ -27,5 +27,6 @@ public class Brand {
     @Builder.Default
     LocalDate createAt = LocalDate.now();
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Product> products = new HashSet<>();
 }

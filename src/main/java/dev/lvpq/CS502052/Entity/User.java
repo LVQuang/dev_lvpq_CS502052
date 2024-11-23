@@ -43,14 +43,19 @@ public class User {
     )
     Set<Product> products = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     Set<Review> reviews = new HashSet<>();
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     Set<Invoice> invoice = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     Set<VoucherDetail> voucherDetails = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     Set<OTP> otps = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     Set<ActivityLog> activityLogs = new HashSet<>();
     public void addRole(Role role) {
         roles.add(role);

@@ -1,9 +1,4 @@
 package dev.lvpq.CS502052.Controller;
-import dev.lvpq.CS502052.Dto.Response.ProductResponse;
-import dev.lvpq.CS502052.Entity.ActivityLog;
-import dev.lvpq.CS502052.Enums.Activity;
-import dev.lvpq.CS502052.Repository.ActivityLogRepository;
-import dev.lvpq.CS502052.Service.ActivityLogService;
 import dev.lvpq.CS502052.Service.ProductService;
 import dev.lvpq.CS502052.Service.ViewService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,8 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

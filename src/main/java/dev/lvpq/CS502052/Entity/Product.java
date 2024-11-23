@@ -44,11 +44,13 @@ public class Product {
     @ManyToMany(cascade = CascadeType.PERSIST)
     Set<Size> sizes = new HashSet<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Review> reviews = new HashSet<>();
     @Builder.Default
     @ManyToMany(mappedBy = "products")
     Set<User> users = new HashSet<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<InvoiceDetail> invoiceDetails = new HashSet<>();
 
     public void addSize(Size size) {

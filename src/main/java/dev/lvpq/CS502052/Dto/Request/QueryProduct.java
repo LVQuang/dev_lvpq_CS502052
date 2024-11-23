@@ -15,6 +15,8 @@ public class QueryProduct {
     boolean isExactMatch;
     int page;
     Integer size;
+    @Builder.Default
     String sortBy = "name";
+    @Builder.Default
     String sortOrder = "asc";
 }

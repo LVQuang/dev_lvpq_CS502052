@@ -5,7 +5,6 @@ import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.Activity;
 import dev.lvpq.CS502052.Repository.ActivityLogRepository;
 import lombok.AccessLevel;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;

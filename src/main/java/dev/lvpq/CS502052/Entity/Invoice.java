@@ -16,9 +16,6 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Invoice {
-//    public Invoice(User user){
-//        buyer = user;
-//    }
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
@@ -35,6 +32,7 @@ public class Invoice {
     @JoinColumn(name = "buyer_id")
     User buyer;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<InvoiceDetail> invoiceDetails = new HashSet<>();
 
     public Map<Product, Integer> getProduct() {

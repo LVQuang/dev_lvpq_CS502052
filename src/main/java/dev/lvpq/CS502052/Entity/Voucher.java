@@ -32,5 +32,6 @@ public class Voucher {
     @Builder.Default
     boolean hide = false;
     @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<VoucherDetail> voucherDetails = new HashSet<>();
 }

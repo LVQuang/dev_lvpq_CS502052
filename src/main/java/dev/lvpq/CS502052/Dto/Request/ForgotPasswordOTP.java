@@ -1,6 +1,5 @@
 package dev.lvpq.CS502052.Dto.Request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

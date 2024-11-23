@@ -1,19 +1,14 @@
 package dev.lvpq.CS502052.Api;
 
-import dev.lvpq.CS502052.Dto.Request.ProductRequest;
-import dev.lvpq.CS502052.Dto.Request.QueryProduct;
 import dev.lvpq.CS502052.Dto.Request.VoucherRequest;
 import dev.lvpq.CS502052.Dto.Response.ApiResponse;
 import dev.lvpq.CS502052.Dto.Response.InvoiceResponse;
-import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Dto.Response.VoucherDetailResponse;
 import dev.lvpq.CS502052.Entity.Invoice;
 import dev.lvpq.CS502052.Entity.Voucher;
 import dev.lvpq.CS502052.Service.InvoiceService;
 import dev.lvpq.CS502052.Service.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
