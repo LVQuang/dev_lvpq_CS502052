@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js" xmlns="">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{Fragments/Header :: client-header}">
+
+<body>
+	<div th:insert="~{Fragments/Navbar :: client-navbar}" class="header_area sticky-header"></div>
+	<div th:insert="~{Fragments/Search :: client-home-search}" class="search_input" id="search_input_box"></div>
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Home Page</h1>
+					<nav class="d-flex align-items-center">
+						<a th:href="@{/}">Home</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+		<section th:insert ="~{client_fragments/features :: features}" class="features-area section_gap"></section>
+		<section th:insert="~{client_fragments/category-fragment :: category-fragment}" class="category-area"></section>
+		
+		<section th:insert="~{client_fragments/index-fragment :: index-fragment}" ></section>
+	<footer th:insert="~{client_fragments/footer :: footer}" class="footer-area section_gap"></footer>
+
+	<div th:replace="~{Fragments/Scripts :: client-scripts}" class="header_area sticky-header"></div>
+</body>
+</html>

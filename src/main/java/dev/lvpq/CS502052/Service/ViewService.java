@@ -25,7 +25,7 @@ public class ViewService {
         List<ProductResponse> exclusive_products = productService.getExclusiveProducts();
         model.addAttribute("latest_products", latest_products);
         model.addAttribute("coming_products", coming_products);
-        model.addAttribute("exclusive_products", exclusive_products);
+        model.addAttribute("exclusive-products", exclusive_products);
         model.addAttribute("requestURI", uri);
 
         activityLogService.create(Activity.VIEW, null, null);

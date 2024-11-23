@@ -29,17 +29,6 @@ $(document).ready(function(){
         enabled:true
         }
     });
-
-    // Search Toggle
-    $("#search_input_box").hide();
-    $("#search").on("click", function () {
-        $("#search_input_box").slideToggle();
-        $("#search_input").focus();
-    });
-    $("#close_search").on("click", function () {
-        $('#search_input_box').slideUp(500);
-    });
-
     /*==========================
 		javaScript for sticky header
 		============================*/
@@ -576,6 +565,5 @@ $(document).ready(function(){
 // });
 
 function closeSearch() {
-  // Đóng hộp tìm kiếm (có thể là ẩn hộp tìm kiếm)
   document.getElementById('search_input_box').style.display = 'none';
 }
