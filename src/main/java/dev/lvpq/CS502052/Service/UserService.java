@@ -56,16 +56,16 @@ public class UserService {
     }
 
 
-//    public UserDetailResponse getCurrentInformation() {
-//        var context = SecurityContextHolder.getContext();
-//        var email =context.getAuthentication().getName();
-//
-//        Specification<User> spec = Specification.where(null);
-//        spec.and(UserSpec.hasEmail(email, true));
-//        var user = userRepository.findOne(spec).orElseThrow(() ->
-//                new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
-//        return userMapper.toDetailResponse(user);
-//    }
+    public UserDetailResponse getCurrentInformation() {
+        var context = SecurityContextHolder.getContext();
+        var email =context.getAuthentication().getName();
+
+        Specification<User> spec = Specification.where(null);
+        spec.and(UserSpec.hasEmail(email, true));
+        var user = userRepository.findOne(spec).orElseThrow(() ->
+                new AuthException(AuthExceptionCode.USER_NOT_EXISTED));
+        return userMapper.toDetailResponse(user);
+    }
     public User getCurrentUser() {
         var context = SecurityContextHolder.getContext();
         var email =context.getAuthentication().getName();
