@@ -10,7 +10,7 @@
         <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav ml-auto">
                 <li class="nav-item" th:classappend="${requestURI == ('/home') ? 'active' : ''}">
-                    <a class="nav-link" th:href="@{/home}">Home</a>
+                    <a class="nav-link" th:href="@{/}">Home</a>
                 </li>
 
                 <li class="nav-item" th:classappend="${requestURI == ('/category') or requestURI == ('/single-product/{id}') or requestURI == ('/checkout') or requestURI == ('/cart') or requestURI == ('/confirmation') ? 'active' : ''}">
@@ -38,15 +38,3 @@
         </div>
     </div>
 </nav>
-<div class="search_input" id="search_input_box">
-    <form id="searchForm" class="d-flex justify-content-between" onsubmit="handleSearch(event)">
-        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
-        <button type="submit" class="btn"></button>
-        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-    </form>
-</div>
-<script>
-    function handleSearch(event) {
-        event.preventDefault();
-    }
-</script>

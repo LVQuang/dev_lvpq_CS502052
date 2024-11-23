@@ -9,10 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public enum ProductType {
-    LATEST("Latest", "latest"),
-    RELATED("Related", "related"),
-    COMING("Coming", "coming"),
-    EXCLUSIVE("Exclusive", "exclusive");
+    LATEST("Latest"),
+    RELATED("Related"),
+    COMING("Coming"),
+    EXCLUSIVE("Exclusive");
     String name;
-    String meta;
 }
