@@ -60,37 +60,12 @@
     <!--================Checkout Area =================-->
     <section class="checkout_area section_gap">
         <div class="container">
-            <div class="returning_customer">
-                <div class="check_title">
-                    <h2>Returning Customer? <a href="#">Click here to login</a></h2>
-                </div>
-                <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new
-                    customer, please proceed to the Billing & Shipping section.</p>
-                <form class="row contact_form" action="#" method="post" novalidate="novalidate">
-                    <div class="col-md-6 form-group p_star">
-                        <input type="text" class="form-control" id="name" name="name">
-                        <span class="placeholder" data-placeholder="Username or Email"></span>
-                    </div>
-                    <div class="col-md-6 form-group p_star">
-                        <input type="password" class="form-control" id="password" name="password">
-                        <span class="placeholder" data-placeholder="Password"></span>
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <button type="submit" value="submit" class="primary-btn">login</button>
-                        <div class="creat_account">
-                            <input type="checkbox" id="f-option" name="selector">
-                            <label for="f-option">Remember me</label>
-                        </div>
-                        <a class="lost_pass" href="#">Lost your password?</a>
-                    </div>
-                </form>
-            </div>
             <div class="cupon_area">
                 <div class="check_title">
-                    <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
+                    <h2>Have a coupon? Enter it below to get discount</h2>
                 </div>
                 <input type="text" placeholder="Enter coupon code">
-                <a class="tp_btn" href="#">Apply Coupon</a>
+                <a class="tp_btn" href="#" id="applyCouponBtn">Apply Coupon</a>
             </div>
             <div class="billing_details">
                 <div class="row">
@@ -185,11 +160,11 @@
                             <div class="payment_item active">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option6" name="selector">
-                                    <label for="f-option6">Paypal </label>
+                                    <label for="f-option6">Stripe </label>
                                     <img src="/img/product/card.jpg" alt="">
                                     <div class="check"></div>
                                 </div>
-                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
+                                <p>Pay via Stripe; you can pay with your credit card if you don’t have a Stripe
                                     account.</p>
                             </div>
                             <div class="creat_account">
@@ -199,7 +174,7 @@
                             </div>
                             <form th:action="@{/payment}" method="post">
                                 <input type="hidden" id="amount" name="amount">
-                                <button type="submit" class="primary-btn">Proceed to Paypal</button>
+                                <button type="submit" class="primary-btn">Proceed to Stripe</button>
                             </form>
                         </div>
                     </div>
@@ -217,11 +192,13 @@
                 }
                 const data = await response.json();
                 displayOrder(data.result);
-                calculateTotals(data.result);
+                calculateTotals(data.result, 0);
             } catch (error) {
                 console.error('Error fetching order list:', error);
             }
         }
+
+        // Hàm hiển thị danh sách đơn hàng
         function displayOrder(items) {
             const orderList = document.getElementById('order-list');
             orderList.innerHTML = '<li><a href="#">Product <span>Total</span></a></li>';
@@ -231,14 +208,14 @@
                 const quantity = item.quantity;
 
                 const productHTML = `
-                 <li><a>${product.name} <span class="middle">x ${quantity}</span> <span class="last">$${(product.price * quantity).toFixed(2)}</span></a></li>
-            `;
+         <li><a>${product.name} <span class="middle">x ${quantity}</span> <span class="last">$${(product.price * quantity).toFixed(2)}</span></a></li>
+        `;
 
                 orderList.insertAdjacentHTML('beforeend', productHTML);
             });
         }
 
-        function calculateTotals(items) {
+        function calculateTotals(items, discount) {
             const shippingFee = 50.00;
             let subtotal = 0;
 
@@ -248,13 +225,58 @@
                 subtotal += product.price * quantity;
             });
 
-            let total = subtotal + shippingFee;
+            let total = subtotal + shippingFee - discount;
 
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
             document.getElementById('total').textContent = `$${total.toFixed(2)}`;
             document.getElementById('amount').value = total;
         }
 
+        // Hàm xử lý mã coupon
+        async function applyCoupon() {
+            const couponCode = document.getElementById('couponCode').value.trim();
+            if (!couponCode) {
+                alert('Please enter a coupon code');
+                return;
+            }
+            var invoiceId = fetch("/api/invoice/currentInvoice");
+            const requestPayload ={
+                invoiceId: invoiceId,
+                code: couponCode
+            }
+            try {
+                const response = await fetch('/api/voucher/use', {
+                    method: 'POST',               // Đổi phương thức thành POST
+                    headers: {
+                        'Content-Type': 'application/json'  // Đảm bảo là JSON
+                    },
+                    body: JSON.stringify(requestPayload)   // Chuyển payload thành JSON
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.result && data.result.discount) {
+                    const discount = data.result.discount; // Giảm giá nhận được từ coupon
+                    alert(`Coupon applied! Discount: $${discount}`);
+                    // Cập nhật lại tổng sau khi áp dụng coupon
+                    displayOrder(data.result);
+                    calculateTotals(data.result, 30);
+                } else {
+                    alert('Invalid coupon code');
+                }
+            } catch (error) {
+                console.error('Error applying coupon:', error);
+                alert('Failed to apply coupon');
+            }
+        }
+
+        // Gán sự kiện cho nút Apply Coupon
+        document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
+
+        // Lấy đơn hàng khi trang đã được tải
         document.addEventListener('DOMContentLoaded', fetchOrderList);
     </script>
 

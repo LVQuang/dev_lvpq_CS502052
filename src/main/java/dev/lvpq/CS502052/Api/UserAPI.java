@@ -50,10 +50,20 @@ public class UserAPI {
     }
     @GetMapping("/currentUser")
     public  ApiResponse<UserDetailResponse> getCurrentUser() {
-        return  ApiResponse.<UserDetailResponse>builder().code(200)
-                .message("Find Current User Success")
-                .result(userService.getCurrentUserInformation())
-                .build();
+        try {
+            UserDetailResponse currentUser = userService.getCurrentUserInformation();
+            return ApiResponse.<UserDetailResponse>builder()
+                    .code(200)
+                    .message("Find Current User Success")
+                    .result(currentUser)
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<UserDetailResponse>builder()
+                    .code(201)
+                    .message("Failed to find current user")
+                    .result(null)
+                    .build();
+        }
     }
 
     @PostMapping("/query")

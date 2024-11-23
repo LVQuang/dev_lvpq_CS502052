@@ -77,7 +77,7 @@
                         <!-- Another item here -->
                         </tbody>
                     </table>
-                    <button  class="primary-btn" > <a th:href="@{/checkout}">Purchase</a></button>
+                    <a th:href="@{/checkout}" > <button  class="primary-btn" > Purchase</button></a>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
                             <img src="${product.image}" alt="" style="width: 70px; height: 70px; object-fit: cover;">
                         </div>
                         <div class="media-body">
-                            <p>${product.description}</p>
+                            <p>${product.name}</p>
                         </div>
                     </div>
                 </td>
@@ -181,7 +181,6 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
-                        // Optional: Hiển thị thông báo thành công
                         console.log('Quantity updated successfully');
                     } else {
                         alert('Failed to update quantity: ' + data.message);
@@ -242,9 +241,6 @@
             const totalPrice = unitPrice * qty;
             totalPriceElement.innerText = `$${totalPrice.toFixed(2)}`;
         }
-        fetchProductFromUser();
-
-        // Gọi hàm fetch sản phẩm
         fetchProductFromUser();
 
     </script>

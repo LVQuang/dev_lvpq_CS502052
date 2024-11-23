@@ -171,20 +171,20 @@
 				const upper = Math.round(values[1]);
 				document.getElementById("lower-value").innerText = lower;
 				document.getElementById("upper-value").innerText = upper;
-				fetchProductsFunction("", lower, upper, currentSort);
+				fetchProductsFunction("", lower, upper, currentSort, 1);
 			});
 
 			// Xử lý sự kiện tìm kiếm
 			searchInput.addEventListener("input", function () {
 				const query = searchInput.value.trim();
-				fetchProductsFunction(query, lowerValue, upperValue, currentSort);
+				fetchProductsFunction(query, lowerValue, upperValue, currentSort, 1);
 			});
 
 			// Xử lý sự kiện khi thay đổi lựa chọn sắp xếp
 			const sortOptions = document.querySelectorAll('input[name="sort-option"]');
 			sortOptions.forEach(function (option) {
 				option.addEventListener("change", function () {
-					currentSort = option.value; // Cập nhật giá trị sắp xếp hiện tại
+					currentSort = option.value;
 					fetchProductsFunction("", document.getElementById("lower-value").innerText, document.getElementById("upper-value").innerText, currentSort);
 				});
 			});
@@ -192,6 +192,7 @@
 			showOptions.forEach(function (option) {
 				option.addEventListener("change", function () {
 					sizePage = option.value; // Cập nhật giá trị sắp xếp hiện tại
+					currentPage = 1;
 					fetchProductsFunction("", document.getElementById("lower-value").innerText, document.getElementById("upper-value").innerText, currentSort, currentPage, sizePage);
 				});
 			});
@@ -235,7 +236,7 @@
 					const productHTML = `
             <div class="col-lg-4 col-md-6">
                 <div class="single-product">
-                    <img class="img-fluid" src="${product.image || '/img/placeholder.png'}" alt="Product Image">
+                    <img class="img-fluid"  src="${product.image || '/img/placeholder.png'}" alt="Product Image">
                     <div class="product-details">
                         <h6>${product.name}</h6>
                         <div class="price">
@@ -250,7 +251,7 @@
                                 <span class="lnr lnr-heart"></span>
                                 <p class="hover-text">Wishlist</p>
                             </a>
-                            <a href="#" class="social-info">
+                            <a href="#" class="social-info compares" data-price="${product.price}">
                                 <span class="lnr lnr-sync"></span>
                                 <p class="hover-text">Compare</p>
                             </a>
@@ -273,31 +274,66 @@
 				});
 				// Add Product to Cart
 				function addToBag(productId) {
-					fetch('/api/user/currentUser', {
-						method: 'GET',
+					fetch(`/api/invoice/add-to-cart/${productId}`, {
+						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 					})
-							.then(response => {
-								if (response.code !== 200) { // Nếu chưa đăng nhập
-									alert("Vui lòng đăng nhập để mua hàng!");
-									return null;
-								}
-								return response.json();
+							.then(response => response.text())
+							.then(message => {
+								alert(message); // Hiển thị thông báo thành công
 							})
-							.then(user => {
-								if (!user) return;
-								fetch(`/api/invoice/add-to-cart/${productId}`, {
-									method: 'POST',
-									headers: { 'Content-Type': 'application/json' },
-								})
-										.then(response => response.text())
-										.then(message => {
-											alert(message); // Hiển thị thông báo thành công
-										})
-										.catch(error => console.error('Error adding to cart:', error));
-							})
-							.catch(error => console.error('Error checking user login status:', error));
+							.catch(error => console.error('Error adding to cart:', error));
 				}
+				document.querySelectorAll('.compares').forEach(item => {
+					item.addEventListener('click', function (event) {
+						event.preventDefault();
+						const currentPrice = item.getAttribute('data-price');
+						comparePrices(currentPrice);
+						console.log("Compares");
+
+					});
+				});
+				// Hàm so sánh giá
+				function comparePrices(currentPrice) {
+					const products = document.querySelectorAll('.single-product');
+					let prices = [];
+
+					products.forEach(product => {
+						const priceElement = product.querySelector('.price h6');
+						if (priceElement) {
+							const price = parseFloat(priceElement.textContent.replace('$', ''));
+							prices.push({ product, price });
+						}
+					});
+
+					prices.forEach(({ product, price }) => {
+						const priceElement = product.querySelector('.price h6');
+
+						const difference = (price - currentPrice).toFixed(2);
+
+						let differenceElement = product.querySelector('.price-difference');
+						if (!differenceElement) {
+							differenceElement = document.createElement('span');
+							differenceElement.classList.add('price-difference');
+							priceElement.parentNode.appendChild(differenceElement);
+						}
+
+						if (price < currentPrice) {
+							priceElement.style.color = 'green';
+							differenceElement.textContent = ` (-$${Math.abs(difference)})`;
+							differenceElement.style.color = 'green';
+						} else if (price > currentPrice) {
+							priceElement.style.color = 'red';
+							differenceElement.textContent = ` (+$${difference})`;
+							differenceElement.style.color = 'red';
+						} else {
+							priceElement.style.color = 'orange';
+							differenceElement.textContent = ` ($0.00)`;
+							differenceElement.style.color = 'orange';
+						}
+					});
+				}
+
 
 			}
 
@@ -305,10 +341,10 @@
 			createPaginationFunction = function createPagination(totalProducts, pageSize, currentPage = 1) {
 				const totalPages = Math.ceil(totalProducts / pageSize);
 				const paginationContainer = document.querySelector('.pagination');
-				paginationContainer.innerHTML = ''; // Xóa nội dung cũ
+				paginationContainer.innerHTML = '';
 				for (let i = 1; i <= totalPages; i++) {
 					const pageLink = document.createElement('a');
-					pageLink.className = i === currentPage ? 'active' : ''; // Đánh dấu trang hiện tại là 'active'
+					pageLink.className = i === currentPage ? 'active' : '';
 					pageLink.textContent = i;
 					pageLink.dataset.page = i;
 					pageLink.addEventListener('click', () => changePage(i));
@@ -316,7 +352,6 @@
 				}
 			}
 
-			// Khởi tạo phân trang
 			fetchProductsFunction("", lowerValue, upperValue, currentSort, 1);
 
 		});
@@ -328,6 +363,7 @@
 			createPaginationFunction(quantityItems, sizePage, selectedPage);
 
 		}
+
 
 
 	</script>
