@@ -1,0 +1,123 @@
+<div th:fragment="login" class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="login_box_img">
+                <img class="img-fluid" src="/img/login.jpg" alt="">
+                <div class="hover">
+                    <h4>New to our website?</h4>
+                    <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                    <a class="primary-btn" th:href="@{/register}">Create an Account</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="login_form_inner">
+                <h3>Log in to enter</h3>
+                <form class="row login_form" method="post"
+                      th:action="@{/login}"
+                      th:object="${login}" id="contactForm">
+                    <div class="col-md-12 form-group">
+                        <input type="email" class="form-control" placeholder="Email"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"
+                               th:field="*{email}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="password" class="form-control" placeholder="Password"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'"
+                               th:field="*{password}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="text-danger col-md-12 form-group" th:if="${error}" th:text="${error}"></div>
+                    <div class="col-md-12 form-group">
+                        <button type="submit" class="primary-btn">Log In</button>
+                        <a th:href="@{/forgotPassword}">Forgot Password ?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="register" class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="login_form_inner pt-4">
+                <h3>Register</h3>
+                <form class="row login_form" method="post"
+                      th:action="@{/register}"
+                      th:object="${register}" id="contactForm">
+                    <div class="col-md-12 form-group">
+                        <input type="text" class="form-control" placeholder="Username"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'"
+                               th:field="*{username}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="text" class="form-control" placeholder="Email"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"
+                               th:field="*{email}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="number" class="form-control" placeholder="Phone"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone'"
+                               th:field="*{phone}"
+                        >
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="text" class="form-control" placeholder="Address"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'"
+                               th:field="*{address}"
+                        >
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div class="date-picker-container">
+                            <input type="date" class="form-control" th:field="*{dateOfBirth}">
+                        </div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="password" class="form-control" placeholder="Password"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'"
+                               th:field="*{password}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <input type="password" class="form-control" placeholder="Repassword"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Repassword'"
+                               th:field="*{repassword}"
+                        >
+                        <div class="text-danger" th:if="${#fields.hasErrors('repassword')}" th:errors="*{repassword}"></div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <th:block th:if="${globalErrors}">
+                            <ul>
+                                <li class="text-danger" th:each="error : ${globalErrors}" th:text="${error.defaultMessage}"></li>
+                            </ul>
+                        </th:block>
+                    </div>
+                    <div class="text-danger col-md-12 form-group" th:if="${error}" th:text="${error}"></div>
+                    <div class="col-md-12 form-group">
+                        <button type="submit" class="primary-btn">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="login_box_img">
+                <img class="img-fluid" src="/img/login.jpg" alt="">
+                <div class="hover">
+                    <h4>Are you a member of our website?</h4>
+                    <p>There are advances vouchers, if you want to take privilege</p>
+                    <a class="primary-btn" th:href="@{/login}">Login Existing Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

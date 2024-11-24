@@ -32,17 +32,9 @@ public class AuthenticationController {
     @GetMapping({"/login","/login.html"})
     String Login(HttpServletRequest request, Model model) throws ParseException, JOSEException {
         HttpSession session = request.getSession();
-        String token =(String) session.getAttribute("myToken");
-
-        if(token != null) {
-            authenticationService
-                    .logout(LogoutRequest.builder()
-                            .token(token)
-                            .build());
-            session.removeAttribute("myToken");
-        }
+        session.getAttribute("myToken");
         model.addAttribute("login", new LoginRequest());
-        return "/client_layout/login";
+        return "Authentication/login";
     }
 
     @PostMapping("/login")
@@ -64,7 +56,7 @@ public class AuthenticationController {
     @GetMapping("/register")
     String Register(HttpServletRequest request, Model model) {
         model.addAttribute("register", new RegisterRequest());
-        return "/client_layout/register";
+        return "Authentication/register";
     }
 
     @PostMapping("/register")
