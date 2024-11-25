@@ -13,9 +13,11 @@ import dev.lvpq.CS502052.Repository.InvoiceDetailRepository;
 import dev.lvpq.CS502052.Repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import dev.lvpq.CS502052.Utils.InvoiceUtil;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -78,18 +80,16 @@ public class InvoiceService {
         return invoiceMapper.toResponse(invoice);
     }
     public InvoiceResponse updateTotalPrice(Invoice invoice, double discount) {
-        // Tính toán lại tổng giá của hóa đơn
-        double total = 0;
+        BigDecimal total = BigDecimal.valueOf(0);
 
         for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
-            double productPrice = detail.getProduct().getPrice(); // Lấy giá sản phẩm
-            int quantity = detail.getQuantity(); // Lấy số lượng của sản phẩm
+            var productPrice = detail.getProduct().getPrice();
+            var quantity = detail.getQuantity();
 
-            total += productPrice * quantity; // Cộng giá trị của sản phẩm vào tổng giá
+            total = total.add(productPrice.multiply(BigDecimal.valueOf(quantity)));
         }
-
-        // Cập nhật tổng giá hóa đơn
-        invoice.setTotalPrice(total - discount);
+        total = total.subtract(BigDecimal.valueOf(discount));
+        invoice.setTotalPrice(total.doubleValue());
         return invoiceMapper.toResponse(invoice);
     }
 

@@ -1,6 +1,5 @@
 package dev.lvpq.CS502052.Entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -21,12 +20,14 @@ import java.util.Set;
 public class Brand {
     @Id
     String brand;
+    LocalDate expirityContractDate;
+    String logo;
     String meta;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
     LocalDate createAt = LocalDate.now();
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "brand")
     @Builder.Default
     private Set<Product> products = new HashSet<>();
 }

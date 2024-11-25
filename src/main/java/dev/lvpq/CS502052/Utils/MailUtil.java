@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Slf4j
@@ -48,10 +49,10 @@ public class MailUtil {
         Map<Product, Integer> products = invoice.getProduct();
 
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            Product product = entry.getKey();
-            Integer quantity = entry.getValue();
+            var product = entry.getKey();
+            var quantity = entry.getValue();
 
-            double totalPrice = product.getPrice() * quantity;
+            var totalPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));
 
             content.append("<tr>")
                     .append("<td>").append(product.getName()).append("</td>")

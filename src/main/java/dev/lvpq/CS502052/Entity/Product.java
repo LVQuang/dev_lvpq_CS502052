@@ -3,9 +3,11 @@ package dev.lvpq.CS502052.Entity;
 import dev.lvpq.CS502052.Enums.ProductStatus;
 import dev.lvpq.CS502052.Enums.ProductType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,12 +25,14 @@ public class Product {
     String id;
     String description;
     String name;
-    double price;
+    @Min(0)
+    BigDecimal price;
     String image;
-    int quantity;
+    @Min(0)
+    Integer quantity;
     ProductStatus status;
     ProductType type;
-    int totalSold;
+    Integer totalSold;
     @ManyToOne
     @JoinColumn(name = "brand_id")
     Brand brand;
@@ -41,7 +45,7 @@ public class Product {
     @Builder.Default
     boolean hide = false;
     @Builder.Default
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany()
     Set<Size> sizes = new HashSet<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -61,17 +65,5 @@ public class Product {
     public void removeSize(Size size) {
         sizes.remove(size);
         size.getProducts().add(this);
-    }
-    public void setAvailable(){
-        this.status = ProductStatus.Available;
-    }
-    public void setOutOfStock(){
-        this.status = ProductStatus.OutOfStock;
-    }
-    public void setDiscontinued(){
-        this.status = ProductStatus.Discontinued;
-    }
-    public void setPreOrder(){
-        this.status = ProductStatus.PreOrder;
     }
 }

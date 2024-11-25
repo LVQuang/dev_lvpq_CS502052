@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import java.util.NoSuchElementException;
@@ -45,7 +46,7 @@ public class ProductService {
         Product product = new Product();
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
+        product.setPrice(BigDecimal.valueOf(productRequest.getPrice()));
         product.setType(productRequest.getType() != null ? productRequest.getType() : ProductType.LATEST);
 
         product.setImage(productRequest.getImage());
@@ -61,11 +62,11 @@ public class ProductService {
                 .orElseThrow(() -> new AppException(AuthExceptionCode.PRODUCT_NOT_EXISTED));
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
+        product.setPrice(BigDecimal.valueOf(productRequest.getPrice()));
         product.setImage(productRequest.getImage());
         product.setType(productRequest.getType());
         product.setStatus(productRequest.getStatus());
-        // Cập nhật các thuộc tính khác nếu cần
+        
         Product updatedProduct = productRepository.save(product);
         return productMapper.toDetailResponse(updatedProduct);
     }
