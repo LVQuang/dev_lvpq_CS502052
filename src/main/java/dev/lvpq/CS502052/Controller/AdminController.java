@@ -28,7 +28,7 @@ public class AdminController {
     @GetMapping("/admin")
     public String admin(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
-        return "/admin_layout/index";
+        return "/admin_layout/widgets";
     }
 
     @GetMapping({"product.html", "product"})

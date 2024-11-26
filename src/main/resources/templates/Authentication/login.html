@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zxx" class="no-js" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{Fragments/Header :: client-header}">
+<head th:replace="~{Fragments/Header :: client}">
 
 <body>
 
-	<div th:insert="~{Fragments/Navbar :: client-navbar}" class="header_area sticky-header"></div>
+	<div th:insert="~{Fragments/Navbar :: client}" class="header_area sticky-header"></div>
 	
 	<section th:insert="~{Fragments/Banner :: login}" class="banner-area organic-breadcrumb"></section>
 
@@ -12,7 +12,7 @@
 	
 	<footer th:replace="Fragments/Footer :: footer" class="footer-area section_gap"></footer>
 
-	<div th:replace="~{Fragments/Scripts :: client-scripts}" class="header_area sticky-header"></div>
+	<div th:replace="~{Fragments/Scripts :: client}" class="header_area sticky-header"></div>
 </body>
 
 </html>

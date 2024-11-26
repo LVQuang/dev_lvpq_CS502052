@@ -40,8 +40,18 @@ public class AuthenticationController {
     @PostMapping("/login")
     String Login(HttpServletRequest request,
                  @Valid @ModelAttribute("login") LoginRequest login,
-                 BindingResult bindingResult, Model model)
+                 BindingResult bindingResult, Model model) throws ParseException, JOSEException
     {
+        HttpSession session = request.getSession();
+        String token =(String) session.getAttribute("myToken");
+
+        if(token != null) {
+            authenticationService
+                    .logout(LogoutRequest.builder()
+                            .token(token)
+                            .build());
+            session.removeAttribute("myToken");
+        }
         if (bindingResult.hasErrors()) {
             model.addAttribute("validation", bindingResult.getAllErrors());
             return "/client_layout/login";

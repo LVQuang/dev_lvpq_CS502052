@@ -5,30 +5,32 @@
         <title>Karma Shop - Manage Voucher</title>
         <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
         <link th:href="@{/img/fav.png}" rel="icon" type="image/x-icon" />
+        <script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
+
+        <script>
+            WebFont.load({
+                google: { families: ["Public Sans:300,400,500,600,700"] },
+                custom: {
+                    families: [
+                        "Font Awesome 5 Solid",
+                        "Font Awesome 5 Regular",
+                        "Font Awesome 5 Brands",
+                        "simple-line-icons",
+                    ],
+                    urls: ["/admin_style/css/fonts.min.css"],
+                },
+                active: function () {
+                    sessionStorage.fonts = true;
+                },
+            });
+        </script>
+
         <link th:href="@{/admin_style/css/bootstrap.min.css}" rel="stylesheet" />
         <link th:href="@{/admin_style/css/plugins.min.css}" rel="stylesheet" />
         <link th:href="@{/admin_style/css/kaiadmin.min.css}" rel="stylesheet" />
         <link th:href="@{/admin_style/css/demo.css}" rel="stylesheet" />
     </head>
     <body>
-    <script src="/admin_style/js/plugin/webfont/webfont.min.js"></script>
-    <script>
-        WebFont.load({
-            google: { families: ["Public Sans:300,400,500,600,700"] },
-            custom: {
-                families: [
-                    "Font Awesome 5 Solid",
-                    "Font Awesome 5 Regular",
-                    "Font Awesome 5 Brands",
-                    "simple-line-icons",
-                ],
-                urls: ["/admin_style/css/fonts.min.css"],
-            },
-            active: function () {
-                sessionStorage.fonts = true;
-            },
-        });
-    </script>
 
     <div class="wrapper">
         <div th:replace="~{admin_fragments/sidebar :: sidebarFragment}"></div>
@@ -115,10 +117,6 @@
                                         <label for="expiryDate" class="form-label">Expiry Date</label>
                                         <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
                                     </div>
-<!--                                    <div class="mb-3">-->
-<!--                                        <label for="eligibleUsers" class="form-label">Eligible Users</label>-->
-<!--                                        <select multiple class="form-control" id="eligibleUsers" name="eligibleUsers"></select>-->
-<!--                                    </div>-->
                                     <button type="button" class="btn btn-primary" onclick="submitVoucher()">Create</button>
                                 </form>
                             </div>

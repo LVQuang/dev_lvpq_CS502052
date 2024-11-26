@@ -21,6 +21,6 @@ public class ExceptionController {
                             Model model) {
         log.debug(message);
         model.addAttribute("message", message);
-        return "/system/exception";
+        return "/System/exception";
     }
 }
