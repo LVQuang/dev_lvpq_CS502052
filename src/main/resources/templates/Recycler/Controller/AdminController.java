@@ -35,7 +35,7 @@ public class AdminController {
     public String manageProduct(Model model, HttpServletRequest request,@RequestParam(required = false) String query) {
         List<ProductResponse> allProducts = productService.findProductsByName(query);
         model.addAttribute("all_products", allProducts);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/Admin/product";
     }
 
