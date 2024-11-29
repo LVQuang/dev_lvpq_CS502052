@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head th:replace="~{Fragments/Header :: admin}"></head>
 
-<head th:replace="~{Fragments/Header :: admin}"></head>
+  <body>
+    <div class="wrapper">
+      <div th:replace="~{Fragments/Sidebar :: admin}"></div>
 
-<body>
-  <div class="wrapper">
-    
-    <div th:replace="~{Fragments/Sidebar :: admin}"></div>
+      <div class="main-panel">
+        <div th:insert="~{Fragments/Admin :: main-header}"></div>
 
-    <div class="main-panel">
-      <div th:insert="~{Fragments/Admin :: main-header}"></div>
-      
-      <div class="container">
-        <div class="page-inner">
-          <div th:insert="~{Fragments/Admin :: general}"></div>
-          <div th:insert="~{Fragments/Brand :: brands}"></div>          
+        <div class="container">
+          <div class="page-inner">
+            <div th:insert="~{Fragments/Admin :: general}"></div>
+            <div th:insert="~{Fragments/Brand :: brands}"></div>
+          </div>
         </div>
+
+        <footer th:replace="Fragments/Footer :: admin"></footer>
       </div>
-
-      <footer th:replace="Fragments/Footer :: admin"></footer>
-
     </div>
-  </div>
-  <div th:replace="~{Fragments/Scripts :: admin}"></div>
-</body>
 
+    <div th:replace="~{Fragments/Scripts :: admin}"></div>
+
+    <div th:replace="~{Fragments/Modal :: brand-registration}"></div>
+  </body>
 </html>

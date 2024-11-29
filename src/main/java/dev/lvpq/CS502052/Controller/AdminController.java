@@ -1,8 +1,6 @@
 package dev.lvpq.CS502052.Controller;
 
-import dev.lvpq.CS502052.Dto.Response.ProductResponse;
 import dev.lvpq.CS502052.Dto.Response.UserDetailResponse;
-import dev.lvpq.CS502052.Service.ProductService;
 import dev.lvpq.CS502052.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -21,22 +19,12 @@ import java.util.List;
 @RequestMapping("admin")
 @Controller
 public class AdminController {
-
-    private final UserService userService;
-    private final ProductService productService;
-
+    UserService userService;
+    
     @GetMapping()
     public String admin(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         return "/Admin/index";
-    }
-
-    @GetMapping({"product.html", "product"})
-    public String manageProduct(Model model, HttpServletRequest request,@RequestParam(required = false) String query) {
-        List<ProductResponse> allProducts = productService.findProductsByName(query);
-        model.addAttribute("all_products", allProducts);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
-        return "/Admin/product";
     }
 
     @GetMapping({"voucher.html", "voucher"})

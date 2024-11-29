@@ -1,10 +1,8 @@
 package dev.lvpq.CS502052.Config;
 
-import dev.lvpq.CS502052.Entity.Brand;
 import dev.lvpq.CS502052.Entity.Role;
 import dev.lvpq.CS502052.Entity.User;
 import dev.lvpq.CS502052.Enums.RoleFeature;
-import dev.lvpq.CS502052.Repository.BrandRepository;
 import dev.lvpq.CS502052.Repository.OTPRepository;
 import dev.lvpq.CS502052.Repository.RoleRepository;
 import dev.lvpq.CS502052.Repository.UserRepository;
@@ -19,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 @Slf4j
@@ -34,13 +30,11 @@ public class StartUp {
     @Bean
     ApplicationRunner applicationRunner (UserRepository userRepository,
                                          RoleRepository roleRepository,
-                                         OTPRepository otpRepository,
-                                         BrandRepository brandRepository){
+                                         OTPRepository otpRepository){
         return args -> {
             InitializeRole(roleRepository);
             InitializeManager(userRepository, roleRepository);
             otpRepository.deleteAll();
-            TestBrand(brandRepository);
         };
     }
 
@@ -74,17 +68,5 @@ public class StartUp {
             user.addRole(role);
             userRepository.save(user);
         }
-    }
-
-    void TestBrand(BrandRepository brandRepository) {
-        var brand = Brand.builder()
-            .name("Testing")
-            .logoURL("#")
-            .contractURL("#")
-            .brandWebLink("#")
-            .expirityContractDate(LocalDate.now().plus(1, ChronoUnit.YEARS))
-            .build();
-
-        brandRepository.save(brand);
     }
 }
