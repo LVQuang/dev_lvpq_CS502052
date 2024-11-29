@@ -1,0 +1,46 @@
+<div th:fragment="brands" class="row">
+    <div class="col-md-12">
+        <div class="card card-round">
+            <div class="card-header">
+                <div class="card-head-row card-tools-still-right">
+                    <h4 class="card-title">Brands</h4>
+                </div>
+                <p class="card-category">
+                    There are brands contract with own shop
+                </p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive table-hover table-sales">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Logo</th>
+                                        <th>Name</th>
+                                        <th>Contract</th>
+                                        <th>Web link</th>
+                                        <th>Registy Date</th>
+                                        <th>Expirity Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="brand : ${brands}">
+                                        <td>
+                                            <a th:href="@{brand.logoURL}" th:text="${brand.logoURL}"></a>
+                                        </td>
+                                        <td class="text-end" th:text="${brand.name}"></td>
+                                        <td class="text-end" th:text="${brand.contractURL}"></td>
+                                        <td class="text-end" th:text="${brand.brandWebLink}"></td>
+                                        <td class="text-end" th:text="${brand.registyDate}"></td>
+                                        <td class="text-end" th:text="${brand.expirityContractDate}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

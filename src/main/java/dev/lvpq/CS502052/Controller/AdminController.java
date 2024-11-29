@@ -18,14 +18,14 @@ import java.util.List;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-@RequestMapping("")
+@RequestMapping("admin")
 @Controller
 public class AdminController {
 
     private final UserService userService;
     private final ProductService productService;
 
-    @GetMapping("/admin")
+    @GetMapping()
     public String admin(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         return "/Admin/index";
@@ -43,7 +43,7 @@ public class AdminController {
     public String manageUsers(Model model, HttpServletRequest request) {
         List<UserDetailResponse> users = userService.getAllCustomer();
         model.addAttribute("users", users);
-        model.addAttribute("request", request);  // Truyền HttpServletRequest vào model
+        model.addAttribute("request", request);
         return "/Admin/voucher";
     }
 

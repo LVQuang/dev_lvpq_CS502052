@@ -1,6 +1,9 @@
 package dev.lvpq.CS502052.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -19,14 +22,18 @@ import java.util.Set;
 @Builder
 public class Brand {
     @Id
-    String brand;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+    @Column(nullable = false, unique = true)
+    String name;
     LocalDate expirityContractDate;
-    String logo;
-    String meta;
+    String logoURL;
+    String brandWebLink;
+    String contractURL;
     @Builder.Default
     boolean hide = false;
     @Builder.Default
-    LocalDate createAt = LocalDate.now();
+    LocalDate registyDate = LocalDate.now();
     @OneToMany(mappedBy = "brand")
     @Builder.Default
     private Set<Product> products = new HashSet<>();
