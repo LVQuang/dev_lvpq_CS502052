@@ -12,8 +12,8 @@ import dev.lvpq.CS502052.Entity.Brand;
 
 @Mapper(componentModel = "spring")
 public interface BrandMapper {
-    @Mapping(target = "expirityContractDate", source = "expirityContractDate", qualifiedByName = "localDateToString")
-    @Mapping(target = "registyDate", source = "registyDate", qualifiedByName = "localDateToString")
+    @Mapping(target = "expirationDate", source = "expirationDate", qualifiedByName = "localDateToString")
+    @Mapping(target = "registrationDate", source = "registrationDate", qualifiedByName = "localDateToString")
     BrandListing toBrandListing(Brand brand);
 
     @Named("localDateToString")

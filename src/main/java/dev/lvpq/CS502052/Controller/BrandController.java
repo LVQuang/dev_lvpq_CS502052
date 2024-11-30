@@ -24,6 +24,7 @@ public class BrandController {
     @GetMapping("")
     public String getBrands(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
+
         var brands = brandService.getBrandListings();
         brands.forEach(brand -> {
             log.info("Brand name: {}", brand.getName());

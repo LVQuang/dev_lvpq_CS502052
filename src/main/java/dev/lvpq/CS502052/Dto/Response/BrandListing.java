@@ -10,9 +10,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandListing {
     String name;
-    String expirityContractDate;
     String logoURL;
-    String brandWebLink;
     String contractURL;
-    String registyDate;    
+    String brandWebLink;
+    String expirationDate;
+    String registrationDate;    
 }

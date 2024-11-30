@@ -49,7 +49,8 @@
                 <form class="row login_form" method="post"
                       th:action="@{/register}"
                       th:object="${register}" id="contactForm">
-                    <div class="col-md-12 form-group">
+                    
+                      <div class="col-md-12 form-group">
                         <input type="text" class="form-control" placeholder="Username"
                                onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'"
                                th:field="*{username}"

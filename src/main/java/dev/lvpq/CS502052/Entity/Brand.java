@@ -26,14 +26,14 @@ public class Brand {
     String id;
     @Column(nullable = false, unique = true)
     String name;
-    LocalDate expirityContractDate;
     String logoURL;
-    String brandWebLink;
     String contractURL;
+    String brandWebLink;
     @Builder.Default
     boolean hide = false;
+    LocalDate expirationDate;
     @Builder.Default
-    LocalDate registyDate = LocalDate.now();
+    LocalDate registrationDate = LocalDate.now();
     @OneToMany(mappedBy = "brand")
     @Builder.Default
     private Set<Product> products = new HashSet<>();
