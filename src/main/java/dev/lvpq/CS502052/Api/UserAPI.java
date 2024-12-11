@@ -75,6 +75,4 @@ public class UserAPI {
                 .result(users)
                 .build();
     }
-
-
 }

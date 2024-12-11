@@ -1,0 +1,27 @@
+.file-input {
+  display: none;
+}
+
+.file-upload-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-btn:hover {
+  background-color: #0056b3;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #666;
+}

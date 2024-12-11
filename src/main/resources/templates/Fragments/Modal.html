@@ -8,48 +8,92 @@
     <div class="modal-content">
       <form class="card" method="post">
         <div class="modal-header card-header">
-          <h5 class="modal-title card-title">Brand Registration Hello World</h5>
-          <button
-            type="button"
-            class="btn-danger"
-            data-bs-dismiss="modal"
-          >&times;</button>
+          <h5 class="modal-title card-title">Brand Registration</h5>
         </div>
 
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="brand-name" class="form-label">Brand Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="brand-name"
-              name="brand-name"
-              required
-            />
+        <div class="modal-body card-body">
+          <div class="row">
+            <div class="col-8 form-group">
+              <label for="brand-name" class="form-label">Brand Name:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="brand-name"
+                name="brand-name"
+                required
+              />
+            </div>
+
+            <div class="col-4 form-group">
+              <label for="brand-expiration-date" class="form-label"
+                >Expiration Date:</label
+              >
+              <div class="date-picker-container">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="brand-expiration-date"
+                  name="brand-expiration-date"
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="brand-name" class="form-label">Brand Website link</label>
-            <input
-              type="text"
-              class="form-control"
-              id="brand-name"
-              name="brand-name"
-              required
-            />
+          <div class="row">
+            <div class="col-12 form-group">
+              <label for="brand-link" class="form-label"
+                >Brand Website Link:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="brand-link"
+                name="brand-link"
+                required
+              />
+            </div>
           </div>
 
+          <div class="row">
+            <div class="col-6 form-group">
+              <label for="brand-logo" class="form-label"
+                >Upload Logo:</label
+              >
+              <div class="file-upload-container">
+                <input
+                  type="file"
+                  id="brand-logo"
+                  name="brand-logo"
+                  class="file-input"
+                />
+                <button type="button" id="brand-logo-btn" class="upload-btn btn btn-primary">Choose File</button>
+                <span id="brand-logo-file-name">No file chosen</span>
+              </div>
+            </div>
+
+            <div class="col-6 form-group">
+              <label for="brand-contract" class="form-label"
+                >Upload Contract:</label
+              >
+              <div class="file-upload-container">
+                <input
+                  type="file"
+                  id="brand-contract"
+                  name="brand-contract"
+                  class="file-input"
+                />
+                <button type="button" id="brand-contract-btn" class="upload-btn btn btn-primary">Choose File</button>
+                <span id="brand-contract-file-name">No file chosen</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Register</button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
             Cancel
           </button>
+          <button type="submit" class="btn btn-primary">Register</button>
         </div>
       </form>
     </div>
